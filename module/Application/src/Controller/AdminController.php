@@ -66,7 +66,7 @@ class AdminController extends AbstractAdminController
                 break;
             case false:
                 $post = (array)$this->getRequest()->getPost();
-                var_dump($post);
+                //var_dump($post);
                 foreach ($appSettings as $data) {
                    // var_dump($data);
                     switch(strtolower($data['settingType'])) {

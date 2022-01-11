@@ -94,7 +94,6 @@ class UserController extends AbstractController
                 }
                 // testing
                 $validatedData = $form->getData();
-                var_dump(['validatedPassword' => $validatedData['password'], 'postedPassword' => $post['password'], '$queriedUserPassWord' => $user->password]);
                 
                 // ok so just because we have a valid password doesnt mean we want to use it here
                 if($post['password'] === '') {
@@ -104,10 +103,7 @@ class UserController extends AbstractController
                      */
                     unset($validatedData['password']);
                 }
-                
                 $result = $this->table->save($validatedData, true);
-                
-                
                 if($result) {
                     // Redirect to User list
                     return $this->redirect()->toRoute('user', ['action' => 'index']);
@@ -117,6 +113,7 @@ class UserController extends AbstractController
                 }
             }
         } catch (RuntimeException $e) {
+            
         }
     }
     
