@@ -1,0 +1,97 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer|\Laminas\Form\View\HelperTrait $this
+ */
+?>
+<?= $this->doctype() ?>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?= $this->headTitle(isset($this->appSettings->appName) ? $this->appSettings->appName : '')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?= $this->headMeta()
+        ->prependName('keywords', isset($this->appSettings->seoKeyWords) ? $this->appSettings->seoKeyWords : '')
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            
+        ?>
+
+        <!-- Le styles -->
+        <?= $this->headLink([
+                                'rel' => 'shortcut icon',
+                                'type' => 'image/vnd.microsoft.icon',
+                                'href' => $this->basePath() . '/img/favicon.ico'
+                            ])
+            ->prependStylesheet($this->basePath('css/style.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
+?>
+
+        <!-- Scripts -->
+        <?= $this->headScript() ?>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark mb-4" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                     <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?=isset($this->appSettings->appName) ? $this->translate($this->appSettings->appName) : 'Home'; ?></a>
+                </div>
+                
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                
+                <?php 
+               // var_dump($this->user);
+                $this->navigation()->setAcl($this->acl);
+                $this->navigation()->setRole($this->user->role);
+                $this->navigation()->menu()->setUlClass('navbar-nav');
+                echo $this->navigation('Laminas\Navigation\Static')->menu();
+                ?>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <?php
+                $plugin = $this->flashMessenger()->getPluginFlashMessenger();
+            
+        	   if($plugin->hasCurrentErrorMessages()) {
+        	       $this->partial('/partials/notifications/error.phtml');
+        	   }
+        	   if($plugin->hasCurrentWarningMessages()) {
+        	       $this->partial('/partials/notifications/warning.phtml');
+        	   }
+        	   if($plugin->hasCurrentInfoMessages()) {
+        	       $this->partial('/partials/notifications/info.phtml');
+        	   }
+        	   if($plugin->hasCurrentSuccessMessages()) {
+        	       //die(__FILE__);
+        	       $this->partial('/partials/notifications/success.phtml');
+        	   }
+        	?>
+            
+            <?= $this->content ?>
+            <hr>
+            <footer>
+                <p>
+                    &copy; <?= date('Y') ?>
+                    <a href="<?= isset($this->appSettings->copyRightLink) ? $this->appSettings->copyRightLink : '#'; ?>">
+                    <?= isset($this->appSettings->copyRightText) ? $this->appSettings->copyRightText : 'Default text'; ?></a> 
+                    | 
+                    <?= isset($this->appSettings->footerText) ? $this->appSettings->footerText : 'Default Text'; ?>
+                </p>
+            </footer>
+        </div>
+        <?= $this->inlineScript()
+            ->prependFile($this->basePath('js/bootstrap.min.js'))
+            ->prependFile($this->basePath('js/jquery-3.5.1.min.js')) ?>
+    </body>
+</html>

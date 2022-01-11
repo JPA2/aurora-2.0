@@ -1,0 +1,168 @@
+<?php
+namespace User;
+
+use Laminas\Router\Http\Segment;
+use Laminas\ServiceManager\Factory\InvokableFactory;
+
+return [
+    'router' => [
+        'routes' => [
+            'user' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user[/:action[/:userName]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\UserController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'profile' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user/profile[/:action[/:userName]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ProfileController::class,
+                        'action'     => 'view',
+                    ],
+                ],
+            ],
+            'user.register' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user/register[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\RegisterController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'user.verify' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user/register/verify',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\RegisterController::class,
+                        'action'     => 'verify',
+                    ],
+                ],
+            ],
+            'user.admin' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user/admin[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            Controller\ErrorController::class => InvokableFactory::class,
+        ],
+    ],
+    'navigation' => [
+        'static' => [
+            [
+                'label' => 'Users',
+                'route' => 'user',
+                'class' => 'nav-link',
+                'resource' => 'user',
+                'privilege' => 'user.view.list',
+            ],
+            [
+                'label' => 'Profile',
+                'route' => 'profile',
+                'class' => 'nav-link',
+                'action' => 'view',
+                'resource' => 'user',
+                'privilege' => 'view',
+            ],
+            [
+                'label' => 'Login',
+                'route' => 'user',
+                'class' => 'nav-link',
+                'action' => 'login',
+                'resource' => 'user',
+                'privilege' => 'login.view',
+            ],
+            [
+                'label' => 'Logout',
+                'route' => 'user',
+                'class' => 'nav-link',
+                'action' => 'logout',
+                'resource' => 'user',
+                'privilege' => 'logout',
+            ],
+            [
+                'label' => 'Register',
+                'route' => 'user.register',
+                'class' => 'nav-link',
+                'action' => 'index',
+                'resource' => 'user',
+                'privilege' => 'register.view',
+            ],
+        ],
+        'admin' => [
+            [
+                'label' => 'Admin Users',
+                'route' => 'user.admin',
+                'class' => 'nav-link',
+                //'controller' => 'admin',
+                'action' => 'index',
+                'resource' => 'admin',
+                'privilege' => 'admin.access',
+            ],
+            [
+                'label' => 'Logout',
+                'route' => 'user',
+                'class' => 'nav-link',
+                'action' => 'logout',
+                'resource' => 'user',
+                'privilege' => 'logout',
+                'order' => 100,
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'template_path_stack' => [
+            'user' => __DIR__ . '/../view',
+        ],
+    ],
+//     'language' => [
+//         'en' => [
+//             'US' => [
+//                 'errors' => [
+//                     'login' => [
+//                         'FAILURE_IDENTITY_NOT_FOUND' => 'If you are certain you have registered you may need to verify your account before you can login',
+//                         'FAILURE_CREDENTIAL_INVALID' => 'The supplied password was invalid',
+//                     ],
+//                 ],
+//             ],
+//         ],
+//     ],
+];
