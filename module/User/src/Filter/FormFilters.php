@@ -122,12 +122,15 @@ class FormFilters
                         'min' => 1,
                         'max' => 100,
                     ],
-//                     'name' => NoRecordExists::class,
-//                     'options' => [
-//                         'table' => $this->table->getTable(),
-//                         'field' => 'email',
-//                         'dbAdapter' => $this->table->getAdapter(),
-//                     ],
+                    'name' => NoRecordExists::class,
+                    'options' => [
+                        'table' => $this->table->getTable(),
+                        'field' => 'email',
+                        'dbAdapter' => $this->table->getAdapter(),
+                    	'messages' => [
+                    			\Laminas\Validator\Db\NoRecordExists::ERROR_RECORD_FOUND => 'Sorry, that email is already in use!!',
+                    	],
+                    ],
                 ],
             ],
         ]);

@@ -129,9 +129,16 @@ class RegisterController extends AbstractController
         			$user->active = 1;
         			$user->verified = 1;
         			$user->regHash = null;
-        			$this->view->setVariable('verified', true);
+        			$result = $user->save();
+        			if($result) {
+        				$this->view->setVariable('verified', true);
+        			}
+        			else {
+        				$this->view->setVariable('verified', false);
+        			}
         		}
         	}
         }
+        return $this->view;
     }
 }
