@@ -1,12 +1,12 @@
 <?php
-namespace Application\Model\RowGateway;
+namespace Application\Db\RowGateway;
 
-use Laminas\Db\RowGateway\RowGateway;
+use Laminas\Db\RowGateway\RowGateway as LaminasRowGateWay;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 
-class ApplicationRowGateway extends RowGateway implements RoleInterface, ResourceInterface, ProprietaryInterface
+class RowGateway extends LaminasRowGateway implements RoleInterface, ResourceInterface, ProprietaryInterface
 {
     /**
      * {@inheritDoc}

@@ -26,7 +26,7 @@ class RegisterController extends AbstractController
 {
     /**
      * 
-     * @var $table \Laminas\Db\TableGateway\TableGateway
+     * @var $table \User\Model\UserTable
      */
     public $table;
     public function __construct(UserTable $table)
@@ -78,9 +78,10 @@ class RegisterController extends AbstractController
         
         // get  the valid data from the form, we need to add to it before user is saved
         $formData = $form->getData();
-        $hash = new Filter($formData['email'], $timeStamp);
-        $hash = $hash->getHash();
-        
+        $value = ['email' => $formData['email'], 'timestamp' => $timeStamp];
+        $filter = new Filter();
+        $hash = $filter->filter($value);
+        $token = $formData['email'] . $hash;
         //$user = new User($this->table->getAdapter());
         
         $formData['regDate'] = $timeStamp;
@@ -106,16 +107,31 @@ class RegisterController extends AbstractController
         if($sendEmail) {
             $this->hostName = $this->request->getServer('HTTP_HOST');
             $this->requestScheme = $this->request->getServer('REQUEST_SCHEME');
-            $message = new Message();
-            $message->setBody();
+            //$message = new Message();
             
-            $mailer->sendMessage($formData['email'], $message);
+            $mailer->sendMessage($formData['email'], Mailer::VERIFICATION, $token);
         }
     }
     public function verifyAction()
     {
+    	
         $token = $this->request->getQuery('token');
         //$token = $this->params('token');
-        $this->debug::dump($token);
+        $this->debug::dump($token, '$token');
+        if(!empty($token)) {
+        	$position = strpos($token, '$');
+        	$email = substr($token, 0, $position);
+        	$this->debug::dump($email, '$email');
+        	$user = $this->table->fetchByColumn('email', $email);
+        	if($user instanceof User) {
+        		$check = password_verify($email.$user->regDate, $user->regHash);
+        		if($check) {
+        			$user->active = 1;
+        			$user->verified = 1;
+        			$user->regHash = null;
+        			$this->view->setVariable('verified', true);
+        		}
+        	}
+        }
     }
 }

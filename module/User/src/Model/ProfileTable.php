@@ -9,11 +9,11 @@ use Laminas\Db\RowGateway\RowGateway;
 use Laminas\Db\RowGateway\RowGatewayInterface;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\Sql\Select;
-use Application\Model\GatewayTrait;
+use Application\Db\TableGateway\TableGatewayTrait;
 
 class ProfileTable extends TableGateway
 {
-    use GatewayTrait;
+    use TableGatewayTrait;
     protected $userTable;
     protected $user;
     public $pk = 'id';

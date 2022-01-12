@@ -1,7 +1,7 @@
 <?php
 namespace User\Model;
 
-use Application\Model\RowGateway\ApplicationRowGateway as Row;
+use Application\Db\RowGateway\RowGateway as Row;
 //use Laminas\Db\Sql\Sql;
 
 class User extends Row

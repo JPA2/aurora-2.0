@@ -1,10 +1,10 @@
 <?php
-namespace Application\Model;
+namespace Application\Db\TableGateway;
 use Laminas\Db\Metadata\Metadata;
-use Laminas\Db\RowGateway\RowGateway;
+//use Laminas\Db\RowGateway\RowGateway;
 use Laminas\Db\RowGateway\RowGatewayInterface;
 use \RuntimeException;
-trait GatewayTrait
+trait TableGatewayTrait
 {
     public $lastInsertId;
     public function fetchByColumn($column, $value)

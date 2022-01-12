@@ -10,7 +10,7 @@ use User\Form\EditUserForm;
 use User\Filter\FormFilters;
 use Laminas\Db\RowGateway\RowGatewayInterface;
 use Laminas\Db\TableGateway\TableGateway as Table;
-//use Application\Model\RowGateway\ApplicationRowGateway as Prototype;
+//use Application\Model\RowGateway\RowGateway as Prototype;
 use Laminas\Authentication\Result;
 //use Laminas\Validator\Db\NoRecordExists;
 
@@ -145,6 +145,10 @@ class UserController extends AbstractController
         } catch (RuntimeException $e) {
             
         }
+    }
+    public function forgotPasswordAction()
+    {
+        
     }
     public function logoutAction()
     {

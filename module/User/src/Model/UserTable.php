@@ -12,11 +12,11 @@ use Laminas\Authentication\Result;
 use Laminas\Db\Sql\Select as Select;
 use Laminas\Db\Metadata\Metadata;
 use Laminas\Db\RowGateway\RowGatewayInterface;
-use Application\Model\GatewayTrait;
+use Application\Db\TableGateway\TableGatewayTrait;
 
 class UserTable extends TableGateway
 {
-    use GatewayTrait;
+    use TableGatewayTrait;
     public $pk = 'id';
     public function login(RowGatewayInterface $user)
     {
@@ -76,22 +76,7 @@ class UserTable extends TableGateway
         }
     }
 
-//     public function fetchAll()
-//     {
-//         return $this->select();
-//     }
-//     public function fetchByColumn($column, $value)
-//     {
-//         $column = (string) $column;
-//         $rowset = $this->select([$column => $value]);
-//         $row = $rowset->current();
-//         //unset($row->password);
-//         if (! $row) {
-//             throw new RuntimeException(sprintf('Could not find row with column: ' . $column . ' with value: ' . $value));
-//         }
-        
-//         return $row;
-//     }
+
     public function getHashByEmail($email)
     {
         $rowset = $this->select(['email' => $email]);

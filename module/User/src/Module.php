@@ -9,7 +9,7 @@ use User\Model\UserTable;
 use User\Model\Profile;
 use User\Model\ProfileTable;
 use User\Model\RolesTable;
-use Application\Model\RowGateway\ApplicationRowGateway;
+use Application\Db\RowGateway\RowGateway;
 use Laminas\Permissions\Acl\Acl;
 use User\Permissions\PermissionsManager;
 
@@ -50,7 +50,7 @@ class Module implements ConfigProviderInterface
                 Model\RolesTable::class => function($container) {
                   $dbAdapter = $container->get(AdapterInterface::class);
                   $resultSetPrototype = new ResultSet();
-                  $resultSetPrototype->setArrayObjectPrototype(new ApplicationRowGateway('id', 'user_roles', $dbAdapter));
+                  $resultSetPrototype->setArrayObjectPrototype(new RowGateway('id', 'user_roles', $dbAdapter));
                   return new Model\RolesTable('user_roles', $dbAdapter, null, $resultSetPrototype);
                 },
                 ],

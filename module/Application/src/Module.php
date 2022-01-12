@@ -16,6 +16,7 @@ use Laminas\Mvc\Application;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 use Application\Utilities\Mailer;
+use Application\Utilities\Debug;
 use Laminas\Log\Logger;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Writer\Db;
@@ -189,22 +190,13 @@ class Module
                 Utilities\Mailer::class => function($container) {
                     $settings = $container->get('AuroraSettings');
                     $request = $container->get('request');
-                    return new Mailer($settings, $request);
+                    return new Mailer($settings, $request, $container);
+                },
+                Utilities\Debug::class => function($container) {
+                	return new Debug();
                 },
             ],
             
         ];
-    }
-    public function getFilterConfig()
-    {
-        return [
-            'factories' => [
-                Filter\RenameUploadedFile::class => function($container) {
-                    return new Filter\RenameUploadedFile(
-                        $container->get(Filter\RenameUploadedFile::class)
-                        );
-                },
-                ],
-                ];
     }
 }

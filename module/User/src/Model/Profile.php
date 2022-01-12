@@ -1,9 +1,9 @@
 <?php
 namespace User\Model;
 
-use Application\Model\RowGateway\ApplicationRowGateway;
+use Application\Db\RowGateway\RowGateway;
 
-class Profile extends ApplicationRowGateway
+class Profile extends RowGateway
 {
 
 }
