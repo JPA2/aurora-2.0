@@ -3,6 +3,8 @@ namespace User;
 
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use User\Controller\PasswordController;
+use User\Controller\Service\PasswordControllerFactory;
 
 return [
     'router' => [
@@ -35,6 +37,20 @@ return [
                     ],
                 ],
             ],
+        	'password' => [
+        		'type'    => Segment::class,
+        		'options' => [
+        			'route' => '/user/password[/:action]',
+        			'constraints' => [
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				//'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				],
+        				'defaults' => [
+        					'controller' => Controller\PasswordController::class,
+        					'action'     => 'index',
+        				],
+        		],
+        	],
             'user.register' => [
                 'type'    => Segment::class,
                 'options' => [
@@ -83,6 +99,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\ErrorController::class => InvokableFactory::class,
+        	Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class,
         ],
     ],
     'navigation' => [

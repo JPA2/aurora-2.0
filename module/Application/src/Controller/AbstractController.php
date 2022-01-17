@@ -140,6 +140,7 @@ abstract class AbstractController extends AbstractActionController
         $this->layout()->user = $this->user;
         $this->layout()->authenticated = $this->authenticated;
         $this->_init();
+        
         return parent::onDispatch($e);
     }
 
