@@ -36,7 +36,13 @@ $submit->setAttribute('class', 'btn btn-primary');
 
 // $form->setAttribute('action', $this->url('user', ['action' => 'add']));
 // $form->prepare();
-
+$buttonOptions = [
+'button_options' => [
+'class' => 'btn btn-primary btn-sm',
+'link_text' => 'Reset Password'
+		],
+		];
+echo $this->userControl('user', 'button', $this->url('password', ['action' => 'reset']), $buttonOptions);
 echo $this->form()->openTag($form);
 ?>
 <?php // Wrap the elements in divs marked as form groups, and render the
