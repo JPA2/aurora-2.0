@@ -15,6 +15,8 @@ use Application\Model\SettingsTable;
 use Laminas\Mvc\Application;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
+use Laminas\Session\SaveHandler\DbTableGateway;
+use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Application\Utilities\Mailer;
 use Application\Utilities\Debug;
 use Laminas\Log\Logger;
@@ -132,6 +134,10 @@ class Module implements ViewHelperProviderInterface
         try {
             $serviceManager = $e->getApplication()->getServiceManager();
             $session = $serviceManager->get(SessionManager::class);
+            $tableGateway = new TableGateway('session', $serviceManager->get(AdapterInterface::class));
+            $saveHandler  = new DbTableGateway($tableGateway, new DbTableGatewayOptions());
+            $session->setSaveHandler($saveHandler);
+            
             $session->start();
             $container = new Session\Container('initialized');
             //new session creation
