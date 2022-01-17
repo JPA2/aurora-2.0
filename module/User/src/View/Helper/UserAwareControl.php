@@ -5,23 +5,27 @@ use Laminas\Permissions\Acl\Acl;
 use User\Model\User;
 use Application\Utilities\Debug;
 use Laminas\View\Renderer\PhpRenderer;
-use Laminas\View\Helper\Url;
+use Laminas\View\Helper\TranslatorAwareTrait;
+
 class UserAwareControl extends AbstractHelper
 {
+	use TranslatorAwareTrait;
 	public $iconPath   = '/icons/bootstrap-icons.svg#';
 	public $iconHeight = '32';
 	public $iconWidth  = '32';
 	public $fill       = 'currentColor';
 	public $iconName   = '';
 	public $svgClass   = 'bi';
-	public $iconOptions = [];
+	public $options = [];
 	public $type        = 'button';
+	public $buttonClass = 'btn btn-primary';
 	/**
 	 * 
 	 * @var \Laminas\View\Renderer\PhpRenderer;
 	 */
 	protected $view;
 	private $iconOptionsConfigKey = 'icon_options';
+	private $buttonOptionsConfigKey = 'button_options';
 	/**
 	 * 
 	 * @var User\Model\User|User\Model\Guest $user
@@ -40,16 +44,27 @@ class UserAwareControl extends AbstractHelper
 
 		//Debug::dump($user);
 	}
-	public function buildControl($type = 'button', $url, array $options = [])
+	public function buildControl($resource, $type = 'button', $url, array $options = [])
 	{
+		$translator = $this->getTranslator();
+		//Debug::dump($translator);
 		$html = '';
 		$this->setType($type);
 		if($this->type === 'button') {
+			if(isset($options[$this->buttonOptionsConfigKey])) {
+				$this->setOptions($options[$this->buttonOptionsConfigKey]);
+				if(isset($this->options['class'])) {
+					$this->buttonClass = $this->options['class'];
+				}
+			}
+			
 			// if we are building a button then build it and return early
 			/*
 			 * <a class="btn btn-primary" href="<?= $this->url('profile', ['action' => 'edit-profile', 'userName' => $data->userName]) ?>" role="button">Edit Profile</a>
 			 */
-			$html .= '';
+			$html .= '<a class="'.$this->buttonClass.'"';
+			$html .= 'href="'.$url.'" role="button">'. $translator->translate($this->options['link_text']) .'</a>';
+			return $html;
 		}
 		
 		/**
@@ -65,10 +80,10 @@ class UserAwareControl extends AbstractHelper
 		$html .= '<svg class="'.$this->svgClass;
 		
 	}
-	public function __invoke($resource, $type, Url $url, $options = [])
+	public function __invoke($resource, $type, $url, $options = [])
 	{
-		//Debug::dump(func_get_args());
-		return $this->buildControl($type, $url);
+		//Debug::dump($url, __CLASS__ . '::' . __LINE__);
+		return $this->buildControl($resource, $type, $url, $options);
 	}
 	/**
 	 * @return the $iconPath
@@ -164,8 +179,8 @@ class UserAwareControl extends AbstractHelper
 	/**
 	 * @param multitype: $iconOptions
 	 */
-	public function setIconOptions($iconOptions) {
-		$this->iconOptions = $iconOptions;
+	public function setOptions($options) {
+		$this->options = $options;
 	}
 	/**
 	 * 

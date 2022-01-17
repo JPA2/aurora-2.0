@@ -3,6 +3,8 @@ namespace User;
 
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use User\Controller\PasswordController;
+use User\Controller\Service\PasswordControllerFactory;
 
 return [
     'router' => [
@@ -97,6 +99,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\ErrorController::class => InvokableFactory::class,
+        	Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class,
         ],
     ],
     'navigation' => [
