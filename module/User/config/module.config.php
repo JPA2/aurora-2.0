@@ -35,6 +35,20 @@ return [
                     ],
                 ],
             ],
+        	'password' => [
+        		'type'    => Segment::class,
+        		'options' => [
+        			'route' => '/user/password[/:action]',
+        			'constraints' => [
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				//'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				],
+        				'defaults' => [
+        					'controller' => Controller\PasswordController::class,
+        					'action'     => 'index',
+        				],
+        		],
+        	],
             'user.register' => [
                 'type'    => Segment::class,
                 'options' => [

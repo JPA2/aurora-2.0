@@ -25,8 +25,9 @@ use Laminas\Log\Formatter\Db as DbFormatter;
 use Laminas\Log\Formatter\FirePhp as FireBugformatter;
 
 use Laminas\Config\Config;
+use Laminas\ModuleManager\Feature\ViewHelperProviderInterface;
 
-class Module
+class Module implements ViewHelperProviderInterface
 {
     public function getConfig(): array
     {
@@ -198,5 +199,18 @@ class Module
             ],
             
         ];
+    }
+    public function getViewHelperConfig()
+    {
+    	return [
+    			'aliases' => [
+    					'iconifiedcontrol' => View\Helper\IconifiedControl::class,
+    					'IconifiedControl' => View\Helper\IconifiedControl::class,
+    					'iconifiedControl' => View\Helper\IconifiedControl::class,
+    			],
+    			'factories' => [
+    					View\Helper\IconifiedControl::class => View\Helper\Service\IconifiedControlFactory::class,
+    			],
+    	];
     }
 }
