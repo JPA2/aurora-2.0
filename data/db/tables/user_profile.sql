@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 02, 2022 at 03:25 AM
+-- Generation Time: Jan 17, 2022 at 11:29 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -30,15 +30,15 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `user_profile`;
 CREATE TABLE IF NOT EXISTS `user_profile` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
-  `firstName` varchar(255) NOT NULL,
-  `lastName` varchar(255) NOT NULL,
-  `avatarPath` mediumtext NOT NULL,
-  `age` int(11) NOT NULL,
-  `birthday` varchar(10) NOT NULL,
-  `gender` varchar(6) NOT NULL,
-  `race` varchar(255) NOT NULL,
-  `bio` text NOT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `firstName` varchar(255) DEFAULT NULL,
+  `lastName` varchar(255) DEFAULT NULL,
+  `profileImage` mediumtext,
+  `age` int(11) DEFAULT NULL,
+  `birthday` varchar(10) DEFAULT NULL,
+  `gender` varchar(6) DEFAULT NULL,
+  `race` varchar(255) DEFAULT NULL,
+  `bio` text,
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='dependent upon users table relational key is userId';
