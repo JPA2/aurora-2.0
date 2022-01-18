@@ -1,9 +1,11 @@
 <?php
 namespace User\Controller\Service;
+
+use Application\Utilities\Debug;
 use Interop\Container\ContainerInterface;
 use User\Controller\PasswordController;
-use Application\Utilities\Debug;
-class PasswordControllerFactory
+
+class PasswordControllerFactory 
 {
 	public function __invoke(ContainerInterface $container)
 	{

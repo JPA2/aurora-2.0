@@ -2,7 +2,6 @@
 namespace User\Controller;
 use Application\Controller\AbstractController;
 use Laminas\Db\TableGateway\TableGatewayInterface;
-use Application\Utilities\Debug;
 class PasswordController extends AbstractController
 {
 	/**
