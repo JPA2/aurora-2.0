@@ -5,6 +5,7 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use User\Controller\PasswordController;
 use User\Controller\Service\PasswordControllerFactory;
+
 return [
     'router' => [
         'routes' => [
