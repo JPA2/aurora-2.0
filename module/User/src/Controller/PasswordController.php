@@ -3,7 +3,9 @@ namespace User\Controller;
 
 use Application\Controller\AbstractController;
 use Laminas\Db\TableGateway\TableGatewayInterface;
+use Laminas\Form\Form;
 use \RuntimeException;
+use \DateTime;
 
 class PasswordController extends AbstractController
 {
@@ -32,7 +34,20 @@ class PasswordController extends AbstractController
          */
         try {
             $step = $this->params('step');
-            $this->debug::dump($step);
+            $dateTime = new DateTime('NOW');
+            
+
+            switch($step)
+            {
+                case 'one':
+                    $startTime = $dateTime->format($this->appSettings->timeFormat);
+
+                break;
+                case 'two':
+
+                break;
+            }
+            //$this->debug::dump();
             if ($step !== 'two') {
                 throw new RuntimeException('Step is not two');
             }
