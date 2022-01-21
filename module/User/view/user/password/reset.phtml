@@ -1,2 +1,9 @@
 <?php
 echo $this->translate('loading');
+if (isset($form) )
+{
+    $form->prepare();
+    echo $this->form()->openTag($form);
+    echo $this->form($form);
+    echo $this->form()->closeTag($form);
+}
