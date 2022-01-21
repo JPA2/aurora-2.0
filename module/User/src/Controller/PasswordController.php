@@ -35,6 +35,7 @@ class PasswordController extends AbstractController
          * TODO: write reset email method in Utilities\Mailer to send reset password email with link and token
          * TODO: use a /:step param to divide workflow
          * TODO: create form for resetting password
+         * testing commit
          */
         try {
             $step = $this->params('step');
