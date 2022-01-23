@@ -38,28 +38,35 @@ class PasswordController extends AbstractController
          * testing commit
          */
         try {
-            $step = $this->params('step');
+            //$mailer = $this->sm->get('Application\Utilities\Mailer');
+            $step = $this->params('step', 'zero');
+            $this->logger->log(6, "$step");
             $dateTime = new DateTime('NOW');
-            $options = ['db' => $this->userTable];
+            $options = ['db' => $this->userTable, 'enableCaptcha' => $this->appSettings->enableCaptcha];
             $form = new ResetPassword(null, $options);
+            $this->view->setVariable('showForm', true);
             switch ($step)
             {
-                case 'one':
-                    if(!$this->request->isPost()) 
+                case 'submit-email':
+                    $startTime = $dateTime->format($this->appSettings->timeFormat);
+                    $formData = ['resetTimeStamp' => $startTime, 'step' => 'two'];
+                    $form->remove('password');
+                    $form->remove('conf_password');
+                    $form->setAttribute('action', '/user/password/reset/send-email');
+                    $form->setData($formData);
+                    break;
+                case 'send-email':
+                    if($this->request->isPost())
                     {
-                        // create and inject the timestamp into form
-                        
-                        $startTime = $dateTime->format($this->appSettings->timeFormat);
-                        $formData = ['resetTimeStamp' => $startTime, 'step' => 'two'];
-                        $form->remove('password');
-                        $form->remove('conf_password');
-                        $form->setAttribute('action', '/user/password/progress/one');
-                        $form->setData($formData);
-                    }
-                    else {
-                        
+                        $this->view->setVariable('showForm', false);
+                        $form->setValidationGroup('email');
                         $post = $this->request->getPost();
+                        $form->setData($post);
+                        if($form->isValid()) {
+                            $data = $form->getData();
+                        }
                         $user = $this->userTable->fetchByColumn('email', $post['email']);
+
                         if ($user instanceof User)
                         {
                             $filter = new RegistrationHash();
@@ -79,27 +86,17 @@ class PasswordController extends AbstractController
                                 } catch (\Throwable $th) {
                                     $this->logger->log(2, $th->getMessage());
                                 }
-                                
                                 // redirect
+                                $this->logger->log(6, 'Password change request', $user->getLogData());
                             }
                             else {
                                 throw new RuntimeException('Information not saved');
                             }
-                            
-                        }
-                        $form->setData($post);
-                        if ($form->isValid())
-                        {
-                            $form->remove('submit');
-                            $data = $form->getData();
-
                         }
                     }
-                    
-                    
                     break;
-                case 'two':
-                    // this will be incoming from email
+                case 'reset-password':
+                    
                 break;
             }
             $this->view->setVariable('form', $form);
@@ -114,7 +111,8 @@ class PasswordController extends AbstractController
     }
     public function progressAction()
     {
-        $step = $this->request->params('step', 'zero');
-        $this->debug::dump($step);
+        $step = $this->params('step');
+        
+        return $this->view;
     }
 }
