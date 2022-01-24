@@ -59,7 +59,7 @@ class PasswordController extends AbstractController
                     if($this->request->isPost())
                     {
                         $this->view->setVariable('showForm', false);
-                        $form->setValidationGroup('email');
+                        $form->setValidationGroup('email', 'resetTimeStamp');
                         $post = $this->request->getPost();
                         $form->setData($post);
                         if($form->isValid()) {
@@ -96,7 +96,49 @@ class PasswordController extends AbstractController
                     }
                     break;
                 case 'reset-password':
-                    
+                    $token = $this->request->getQuery('token');
+                    $user = $this->userTable->fetchByColumn('resetHash', $token);
+                    $dateTime = new DateTime('NOW');
+                    if(!$this->request->isPost())
+                    {
+                        $this->view->setVariable('showForm', true);
+                        $form->remove('email');
+                        $form->setAttribute(
+                            'action',
+                            '/user/password/reset/reset-password?token='.$token
+                        );
+                        $startTime = DateTime::createFromFormat($this->appSettings->timeFormat, $user->resetTimeStamp);
+                        $limit = DateTime::createFromFormat(
+                                            $this->appSettings->timeFormat, 
+                                            $dateTime->format($this->appSettings->timeFormat)
+                                        );
+                        $interval = $startTime->diff($limit);
+                        $validLimit = 24;
+                        if($interval->h > $validLimit)
+                        {
+                            //TODO: set a flashmessage here before the redirect 
+                            // to let them know their link has expired and for them to re-enter 
+                            // their email and try again.
+                            return $this->redirect()->toRoute('password', ['action' => 'reset', 'step' => 'submit-email']);
+                        }
+                    }
+                    else {
+                        $form->setInputFilter($form->addInputFilter());
+                        $form->setValidationGroup('password', 'conf_password');
+                        $post = $this->request->getPost();
+                        
+                        $form->setData($post);
+                        if($form->isValid())
+                        {
+                            $data = $form->getData();
+                            $user->password = $data['password'];
+                            if($user->save())
+                            {
+                                $this->flashmessenger()->addSuccessMessage('Your password has been succesfully updated');
+                                return $this->redirect()->toRoute('password', ['action' => 'progress', 'step' => 'success']);
+                            }
+                        }
+                    }
                 break;
             }
             $this->view->setVariable('form', $form);

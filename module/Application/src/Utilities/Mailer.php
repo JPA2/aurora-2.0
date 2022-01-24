@@ -63,7 +63,11 @@ class Mailer implements ResourceInterface
     public $message;
 
     public $user;
-
+    /**
+     * 
+     * @var \Laminas\ServiceManager\ServiceManager $sm
+     */
+    protected $sm;
     /**
      *
      * @var \Laminas\Mail\Transport\Smtp
@@ -72,6 +76,11 @@ class Mailer implements ResourceInterface
 
     public function __construct(Config $settings = null, Request $request = null, ServiceLocatorInterface $sm)
     {
+        if($sm instanceof ServiceLocatorInterface) 
+        {
+            $this->sm = $sm;
+            //$this->setTranslator($this->sm->get('Translator'));
+        }
         if (! empty($settings)) {
             $this->appSettings = $settings;
         }
@@ -135,11 +144,11 @@ class Mailer implements ResourceInterface
     protected function passwordResetMessage($address, $message, $token)
     {
         try {
-            $translator = $this->getTranslator();
+            //$translator = $this->getTranslator();
             if (empty($token)) {
                 throw new \RuntimeException('You must pass a token to send a password reset email!!');
             }
-            $textContent = $translator->translate('Please click the link below to change your password.');
+            $textContent = 'Please click the link below to change your password.';
 
             $text = new MimePart($textContent);
             $text->type = Mime::TYPE_TEXT;
@@ -148,7 +157,7 @@ class Mailer implements ResourceInterface
 
             $htmlMarkup = '<p>' . $textContent . '<br>';
             $format = '<a href="%s://%s/user/password/reset/reset-password?token=%s">Change Password</a>';
-            $htmlMarkup .= $translator->translate(sprintf($format, $this->requestScheme, $this->hostName, $token));
+            $htmlMarkup .= sprintf($format, $this->requestScheme, $this->hostName, $token);
             $htmlMarkup .= '</p>';
 
             $html = new MimePart($htmlMarkup);

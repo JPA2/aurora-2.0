@@ -10,6 +10,12 @@ use Laminas\Validator\Identical;
 use Laminas\Validator\Db\RecordExists;
 use Laminas\Form\Form;
 use Laminas\InputFilter\Input;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
+use User\Filter\PasswordFilter;
+use Laminas\Filter\StringToLower;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\Db\NoRecordExists;
 
 class ResetPassword extends Form
 {
@@ -17,8 +23,14 @@ class ResetPassword extends Form
     {
         parent::__construct('reset_password');
         parent::setOptions($options);
+        $this->table = $this->options['db'];
+
         $this->add([
             'name' => 'resetTimeStamp',
+            'type' => 'hidden',
+        ]);
+        $this->add([
+            'name' => 'validationTimeStamp',
             'type' => 'hidden',
         ]);
         $this->add([
@@ -149,5 +161,6 @@ class ResetPassword extends Form
                 ],
             ],
         ]);
+        return $inputFilter;
     }
 }
