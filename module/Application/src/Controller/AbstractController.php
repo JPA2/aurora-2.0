@@ -14,6 +14,9 @@ use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 abstract class AbstractController extends AbstractActionController
 {
     /**
+     * @method \Laminas\Http\PhpEnvironment\Request getServer($name = null, $default = null)
+     */
+    /**
      * @var $fm \Laminas\Mvc\Plugin\FlashMessenger
      */
     public $fm;

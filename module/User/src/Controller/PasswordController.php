@@ -7,6 +7,7 @@ use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Form\Form;
 use \RuntimeException;
 use \DateTime;
+use PhpParser\Node\Stmt\TryCatch;
 use User\Form\ResetPassword;
 use User\Model\User;
 use User\Filter\RegistrationHash;
@@ -94,10 +95,24 @@ class PasswordController extends AbstractController
                             }
                         }
                     }
+                    else {
+                        //TODO: test this part of routine
+                        // condition is when you have just submitted your email to be sent a link to reset
+                        $this->flashMessenger()->addInfoMessage('You have been sent a reset link via the submitted email, please click the provided link to rest your password');
+                        $this->redirect()->toRoute('password', ['action' => 'progress', 'step' => 'submit-email-complete']);
+                    }
                     break;
                 case 'reset-password':
                     $token = $this->request->getQuery('token');
-                    $user = $this->userTable->fetchByColumn('resetHash', $token);
+                    try {
+                        $user = $this->userTable->fetchByColumn('resetHash', $token);
+                    } catch (\Throwable $th) {
+                        $this->logger->log(
+                            5,
+                            'Unknown user from IP:' . $this->request->getServer('REMOTE_ADDR') . ' attempted to reset password with invalid or expired token'
+                        );
+                    }
+                    
                     $dateTime = new DateTime('NOW');
                     if(!$this->request->isPost())
                     {
@@ -113,12 +128,9 @@ class PasswordController extends AbstractController
                                             $dateTime->format($this->appSettings->timeFormat)
                                         );
                         $interval = $startTime->diff($limit);
-                        $validLimit = 24;
-                        if($interval->h > $validLimit)
+                        if($interval->d > 0)
                         {
-                            //TODO: set a flashmessage here before the redirect 
-                            // to let them know their link has expired and for them to re-enter 
-                            // their email and try again.
+                            $this->flashmessenger()->addErrorMessage('Your reset link has expired, please submit your email to send a valid reset link');
                             return $this->redirect()->toRoute('password', ['action' => 'reset', 'step' => 'submit-email']);
                         }
                     }
@@ -132,10 +144,15 @@ class PasswordController extends AbstractController
                         {
                             $data = $form->getData();
                             $user->password = $data['password'];
+                            $user->resetTimeStamp = null;
+                            $user->resetHash = null;
                             if($user->save())
                             {
                                 $this->flashmessenger()->addSuccessMessage('Your password has been succesfully updated');
-                                return $this->redirect()->toRoute('password', ['action' => 'progress', 'step' => 'success']);
+                                return $this->redirect()->toRoute('user', ['action' => 'login']);
+                            } else {
+                                $this->flashmessenger()->addErrorMessage('Your password was not updated due to an error processing your request');
+                                return $this->redirect()->toRoute('password', ['action' => 'progress', 'step' => 'failure']);
                             }
                         }
                     }
