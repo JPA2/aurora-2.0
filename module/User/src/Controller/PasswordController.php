@@ -14,7 +14,6 @@ use User\Filter\RegistrationHash;
 
 class PasswordController extends AbstractController
 {
-
     /**
      *
      * @var User\Model\UserTable $userTable
@@ -29,17 +28,7 @@ class PasswordController extends AbstractController
 
     public function resetAction()
     {
-        /*
-         * TODO: create timestamp representing now
-         * TODO: store now stamp in the db
-         * TODO: add 86,400 seconds to that stamp and save it as expire time
-         * TODO: write reset email method in Utilities\Mailer to send reset password email with link and token
-         * TODO: use a /:step param to divide workflow
-         * TODO: create form for resetting password
-         * testing commit
-         */
         try {
-            //$mailer = $this->sm->get('Application\Utilities\Mailer');
             $step = $this->params('step', 'zero');
             $this->logger->log(6, "$step");
             $dateTime = new DateTime('NOW');
@@ -89,17 +78,14 @@ class PasswordController extends AbstractController
                                 }
                                 // redirect
                                 $this->logger->log(6, 'Password change request', $user->getLogData());
+                                // condition is when you have just submitted your email to be sent a link to reset
+                                $this->flashMessenger()->addInfoMessage('You have been sent a reset link via the submitted email, please click the provided link to rest your password');
+                                $this->redirect()->toRoute('home');
                             }
                             else {
                                 throw new RuntimeException('Information not saved');
                             }
                         }
-                    }
-                    else {
-                        //TODO: test this part of routine
-                        // condition is when you have just submitted your email to be sent a link to reset
-                        $this->flashMessenger()->addInfoMessage('You have been sent a reset link via the submitted email, please click the provided link to rest your password');
-                        $this->redirect()->toRoute('password', ['action' => 'progress', 'step' => 'submit-email-complete']);
                     }
                     break;
                 case 'reset-password':
@@ -111,9 +97,13 @@ class PasswordController extends AbstractController
                             5,
                             'Unknown user from IP:' . $this->request->getServer('REMOTE_ADDR') . ' attempted to reset password with invalid or expired token'
                         );
+                        $this->flashMessenger()
+                             ->addErrorMessage(
+                                 'The supplied reset token is invlaid or expired please contact the site adminitrators. This action has been logged');
+                        // this needs to redirect to a contact page.
+                        $this->redirect()->toRoute('home');
                     }
-                    
-                    $dateTime = new DateTime('NOW');
+                    //$dateTime = new DateTime('NOW');
                     if(!$this->request->isPost())
                     {
                         $this->view->setVariable('showForm', true);
@@ -136,9 +126,9 @@ class PasswordController extends AbstractController
                     }
                     else {
                         $form->setInputFilter($form->addInputFilter());
+                        $form->remove('email');
                         $form->setValidationGroup('password', 'conf_password');
                         $post = $this->request->getPost();
-                        
                         $form->setData($post);
                         if($form->isValid())
                         {
@@ -152,7 +142,7 @@ class PasswordController extends AbstractController
                                 return $this->redirect()->toRoute('user', ['action' => 'login']);
                             } else {
                                 $this->flashmessenger()->addErrorMessage('Your password was not updated due to an error processing your request');
-                                return $this->redirect()->toRoute('password', ['action' => 'progress', 'step' => 'failure']);
+                                return $this->redirect()->toRoute('home');
                             }
                         }
                     }
@@ -160,18 +150,8 @@ class PasswordController extends AbstractController
             }
             $this->view->setVariable('form', $form);
             return $this->view;
-            //$this->debug::dump();
-            if ($step !== 'two') {
-                throw new RuntimeException('Step is not two');
-            }
         } catch (RuntimeException $e) {
             $this->logger->log(2, $e->getMessage());
         }
-    }
-    public function progressAction()
-    {
-        $step = $this->params('step');
-        
-        return $this->view;
     }
 }

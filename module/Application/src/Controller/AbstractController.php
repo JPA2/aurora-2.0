@@ -14,9 +14,6 @@ use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 abstract class AbstractController extends AbstractActionController
 {
     /**
-     * @method \Laminas\Http\PhpEnvironment\Request getServer($name = null, $default = null)
-     */
-    /**
      * @var $fm \Laminas\Mvc\Plugin\FlashMessenger
      */
     public $fm;
@@ -95,7 +92,7 @@ abstract class AbstractController extends AbstractActionController
         // The Logger Service
         $this->logger = $this->sm->get('Laminas\Log\Logger');
         // Not sure why we need this....
-        $this->baseUrl = $this->getRequest()->getBasePath();
+        $this->baseUrl = $this->request->getBasePath();
         $this->basePath = dirname(__DIR__, 4);
         // The authentication Object
         $this->authService = new AuthService();
@@ -133,11 +130,8 @@ abstract class AbstractController extends AbstractActionController
         		'acl' => $this->acl,
         		'debug' => $this->debug
         ]);
-        //$this->view->setVariable('appSettings', $this->appSettings);
-        
+        $this->debug::dump($this->response);
         $this->layout()->appSettings = $this->appSettings;
-//         $this->view->user = $this->user;
-//         $this->view->acl = $this->acl;
         $this->action = $this->params()->fromRoute('action');
         $this->layout()->acl = $this->acl;
         $this->layout()->user = $this->user;

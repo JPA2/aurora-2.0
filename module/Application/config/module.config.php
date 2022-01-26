@@ -36,13 +36,23 @@ return [
                     ],
                 ],
             ],
-            'application' => [
+            'site' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/application[/:action]',
+                    'route'    => '/site[/:action]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
+                    ],
+                ],
+            ],
+            'contact' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/site[/:action]',
+                    'defaults' => [
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'contact',
                     ],
                 ],
             ],
