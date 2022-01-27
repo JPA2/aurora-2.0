@@ -19,7 +19,7 @@ abstract class AbstractController extends AbstractActionController
     public $fm;
     /**
      * 
-     * @var $sm \Laminas\ServiceManager\ServiceManager
+     * @var \Laminas\ServiceManager\ServiceManager $sm
      */
     public $sm;
     /**
@@ -117,7 +117,6 @@ abstract class AbstractController extends AbstractActionController
             case true :
                 $this->authenticated = true;
                 $this->user = $table->fetchByColumn('userName', $this->authService->getIdentity());
-                //var_dump($this->user->toArray());
                 break;
             default;
                 $user = new Guest();
@@ -130,7 +129,6 @@ abstract class AbstractController extends AbstractActionController
         		'acl' => $this->acl,
         		'debug' => $this->debug
         ]);
-        $this->debug::dump($this->response);
         $this->layout()->appSettings = $this->appSettings;
         $this->action = $this->params()->fromRoute('action');
         $this->layout()->acl = $this->acl;

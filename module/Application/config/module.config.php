@@ -49,7 +49,7 @@ return [
             'contact' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/site[/:action]',
+                    'route'    => '/site/contact[/:action]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'contact',
@@ -137,6 +137,12 @@ return [
                 'route' => 'home',
                 'class' => 'nav-link',
                 'order' => '-10',
+            ],
+            [
+                'label' => 'Contact Us',
+                'route' => 'contact',
+                'class' => 'nav-link',
+                'order' => '20',
             ],
             [
                 'label' => 'Admin',

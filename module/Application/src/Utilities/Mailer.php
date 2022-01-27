@@ -30,6 +30,8 @@ class Mailer implements ResourceInterface
 
     const NEWSLETTER = 'newsletterMessage';
 
+    const CONTACT = 'contactUs';
+
     /**
      *
      * @var $acl Acl
@@ -61,6 +63,8 @@ class Mailer implements ResourceInterface
     protected $requestScheme;
 
     public $message;
+
+    public $subject;
 
     public $user;
     /**
@@ -137,6 +141,43 @@ class Mailer implements ResourceInterface
                     throw new \RuntimeException('Unsupported message type detected!!');
                     break;
             }
+        } catch (RuntimeException $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function contactUsMessage($fromAddress, $fromName, $formText)
+    {
+        if (empty($fromAddress)) {
+            throw new \RuntimeException('Unknown From address...');
+        }
+        $textContent = $formText;
+
+        $text = new MimePart($textContent);
+        $text->type = Mime::TYPE_TEXT;
+        $text->charset = 'utf-8';
+        $text->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+
+        $htmlMarkup = '<p>' . $textContent . '</p>';
+
+        $html = new MimePart($htmlMarkup);
+        $html->type = Mime::TYPE_HTML;
+        $html->charset = 'utf-8';
+        $html->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+
+        $body = new MimeMessage();
+        $body->setParts([
+            $text,
+            $html
+        ]);
+        $this->message->setBody($body);
+        $this->message->setFrom($fromAddress, $fromName);
+        $this->message->addTo($this->appSettings->appContactEmail);
+        $this->message->setSubject($this->appSettings->appName . ' Contact Page Submission');
+        $contentTypeHeader = $this->message->getHeaders()->get('Content-Type');
+        $contentTypeHeader->setType('multipart/alternative');
+
+        try {
+            $this->transport->send($this->message);
         } catch (RuntimeException $e) {
             echo $e->getMessage();
         }
