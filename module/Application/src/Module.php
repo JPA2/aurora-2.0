@@ -43,6 +43,9 @@ class Module implements ViewHelperProviderInterface
         $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
         $this->boostrapTranslation($e);
+        $config = $e->getApplication()->getServiceManager()->get('config');
+        $viewConfig = $config['view_manager'];
+        $exit = '';
     }
     public function bootstrapSettings($e)
     {
@@ -167,7 +170,7 @@ class Module implements ViewHelperProviderInterface
             //session has expired
             return;
         }
-        //let’s check if our session is not already created (for the guest or user)
+        //letï¿½s check if our session is not already created (for the guest or user)
         if (isset($container->init)) {
             return;
         }
