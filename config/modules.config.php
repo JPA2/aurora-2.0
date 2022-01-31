@@ -30,5 +30,4 @@ return [
     'Laminas\DeveloperTools',
     'Application',
     'User',
-    'Skin',
 ];
