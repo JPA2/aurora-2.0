@@ -37,6 +37,12 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_orders', $dbAdapter));
                     return new Db\TableGateway\OrderTable('store_orders', $dbAdapter, null, $resultSetPrototype);
                 },
+                Db\TableGateway\CategoriesTable::class => function($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_categories', $dbAdapter));
+                    return new Db\TableGateway\CategoriesTable('store_categories', $dbAdapter, null, $resultSetPrototype);
+                }
             ],
         ];
     }
