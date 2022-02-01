@@ -32,5 +32,4 @@ class Category extends RowGateway
     {
         parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
     }
-
 }

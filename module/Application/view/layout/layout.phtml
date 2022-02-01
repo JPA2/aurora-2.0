@@ -50,6 +50,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 
                 <?php 
+                //TODO: move this to a delegator
                 $this->navigation()->setAcl($this->acl);
                 $this->navigation()->setRole($this->user->role);
                 $this->navigation()->menu()->setUlClass('navbar-nav');
