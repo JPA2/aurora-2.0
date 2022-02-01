@@ -8,11 +8,12 @@ use Laminas\Db\Adapter\Adapter as dbAdapter;
 use Laminas\Session;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\SessionManager;
-use Laminas\Session\Config\SessionConfig;
-use Laminas\Session\Container;
+;use Laminas\Session\Config\SessionConfig;
+;use Laminas\Session\Container;
 use Laminas\Session\Validator;
 use Application\Model\SettingsTable;
-use Laminas\Mvc\Application;
+use Application\Model\ModuleSettings;
+;use Laminas\Mvc\Application;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 use Laminas\Session\SaveHandler\DbTableGateway;
@@ -43,17 +44,6 @@ class Module implements ViewHelperProviderInterface
         $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
         $this->boostrapTranslation($e);
-        $config = $e->getApplication()->getServiceManager()->get('config');
-        $viewConfig = $config['view_manager'];
-        $skinName = 'default';
-        // $base_template_path_stack = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'skin'. DIRECTORY_SEPARATOR .'view' . DIRECTORY_SEPARATOR . $skinName;
-        // $viewConfig['template_path_stack'] = $base_template_path_stack . DIRECTORY_SEPARATOR . 'module';
-        // $viewConfig['template_map']['layout/layout'] = $base_template_path_stack . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . 'layout.phtml';
-        // $viewConfig['template_map']['application/index/index'] = $viewConfig['template_path_stack'] . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR . 'index' . DIRECTORY_SEPARATOR . 'index.phtml';
-        // $viewConfig['template_map']['error/403'] = $viewConfig['template_path_stack'] . DIRECTORY_SEPARATOR . 'error' . DIRECTORY_SEPARATOR . '403.phtml';
-        // $viewConfig['template_map']['error/404'] = $viewConfig['template_path_stack'] . DIRECTORY_SEPARATOR . 'error' . DIRECTORY_SEPARATOR . '404.phtml';
-        // $viewConfig['template_map']['error/index'] = $viewConfig['template_path_stack'] . DIRECTORY_SEPARATOR . 'error' . DIRECTORY_SEPARATOR . 'index.phtml';
-        $exit = '';
         $application = $e->getApplication();
         $sm = $e->getApplication()->getServiceManager();
 
@@ -198,22 +188,13 @@ class Module implements ViewHelperProviderInterface
     {
         return [
             'factories' => [
-                // SessionManager::class => function ($container) {
-                //     $config = $container->get('session_config');
-                //     $session = $config['session'];
-                //     $sessionConfig = new $session['session_config']['class']();
-                //    // $sessionConfig->setOptions($session['session_config']['options']);
-                //     $sessionManager = new Session\SessionManager($sessionConfig,
-                //         new $session['storage'](),
-                //         null
-                //         );
-                //     \Laminas\Session\Container::setDefaultManager($sessionManager);
-                    
-                //     return $sessionManager;
-                // },
                 Model\SettingsTableGateway::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
+                },
+                Model\ModuleSettings::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    return new ModuleSettings(new TableGateway('modulesettings', $dbAdapter, new RowGatewayFeature('id')));
                 },
                 Utilities\Mailer::class => function($container) {
                     $settings = $container->get('AuroraSettings');

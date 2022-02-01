@@ -15,4 +15,12 @@ class IndexController extends AbstractController
     {
         return $this->view;
     }
+    public function viewOrderAction()
+    {
+        return $this->view;
+    }
+    public function addItemAction()
+    {
+       return $this->view;
+    }
 }

@@ -14,7 +14,7 @@ return [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'category' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'subcategory' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'prooductId' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'productId' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
@@ -22,6 +22,26 @@ return [
                     ]
                 ]
             ],
+            'shipping' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/store/shipping[/:action[/:orderId]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'orderId' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ShippingController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            Controller\ShippingController::class => Controller\Service\ShippingControllerFactory::class,
+            Controller\IndexController::class => Controller\Service\IndexControllerFactory::class
         ],
     ],
     'view_manager' => [
