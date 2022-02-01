@@ -9,6 +9,15 @@ use Laminas\Permissions\Acl\ProprietaryInterface;
 class RowGateway extends LaminasRowGateway implements RoleInterface, ResourceInterface, ProprietaryInterface
 {
     /**
+     * @var string $forKey
+     */
+    public $forKey;
+    /**
+     * Parent id for this row is defined
+     * @var int $parentId|$this->data['parentId']
+     */
+    public $parentId;
+    /**
      * {@inheritDoc}
      * @see \Laminas\Permissions\Acl\Resource\ResourceInterface::getResourceId()
      */
