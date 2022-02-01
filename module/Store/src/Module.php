@@ -3,8 +3,6 @@ namespace Store;
 
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\ModuleManager\Feature\ServiceProviderInterface;
-use Store\Controller\IndexController;
-use Store\Controller\Factory\PasswordControllerFactory;
 use Store\Model\Basket;
 use Store\Model\Product;
 use Store\Model\Order;
@@ -30,17 +28,5 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                 },
             ],
         ];
-    }
-    public function getControllerConfig()
-    {
-        // return [
-        //     'factories' => [
-        //         Controller\IndexController::class => function($container) {
-        //             return new Controller\IndexController(
-        //                 $container->get(Model\Basket::class)
-        //                 );
-        //         },
-        //     ],
-        // ];
     }
 }
