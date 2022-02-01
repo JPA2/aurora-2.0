@@ -30,4 +30,5 @@ return [
     'Laminas\DeveloperTools',
     'Application',
     'User',
+    "Store",
 ];
