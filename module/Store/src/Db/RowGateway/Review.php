@@ -3,8 +3,8 @@ namespace Store\Db\RowGateway;
 use Application\Db\RowGateway\RowGateway;
 use Laminas\Db\RowGateway\Exception\InvalidArgumentException;
 use Laminas\Db\RowGateway\Exception\RuntimeException;
-use Laminas\Json\Json;
-class Order extends RowGateway
+
+class Review extends RowGateway
 {
     /**
      * 
@@ -17,31 +17,24 @@ class Order extends RowGateway
      */
     protected $userId;
     /**
+     * @var int $productId|$this->data['productId']
+     */
+    protected $productId;
+    /**
      * 
      * @var string $createdDate|$this->data['createdDate']
      */
     protected $createdDate;
     /**
-     * 
-     * @var string $processedDate|$this->data['processedDate']
+     * @var string $editDate|$this->data['editDate']
      */
-    protected $processedDate;
     /**
-     * 
-     * @var int|bool $completed|$this->data['completed']
+     * @var int $rating|$this->data['rating']
      */
-    protected $completed;
+    protected $rating;
     /**
-     * 
-     * @var [] $orderData|$this->data['orderData'][]
+     * @var string $content|$this->data['content']
      */
-    protected $orderData = [
-        'products' => [],
-    ];
-    /**
-     * @var Json $json
-     */
-    public $json;
     /**
      * 
      * @param string $primaryKeyColumn 
@@ -51,10 +44,13 @@ class Order extends RowGateway
      * @throws InvalidArgumentException 
      * @throws RuntimeException 
      */
-    public function __construct($primaryKeyColumn = 'id', $table = 'store_orders', $adapterOrSql = null)
+    public function __construct(
+        $primaryKeyColumn = 'id', 
+        $table = 'store_product_reviews', 
+        $adapterOrSql = null
+        )
     {
         parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
-        $this->json = new Json();
     }
 
 }

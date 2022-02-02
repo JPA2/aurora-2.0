@@ -7,4 +7,5 @@ class CategoriesTable extends TableGateway
 {
     use TableGatewayTrait;
     public $pk = 'id';
+    public $parentId;
 }
