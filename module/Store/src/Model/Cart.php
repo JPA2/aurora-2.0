@@ -77,9 +77,7 @@ class Cart
         $this->productsTable = $container->get(ProductsTable::class);
         $this->ordersTable = $container->get(OrdersTable::class);
         $this->userTable = $container->get(UserTable::class);
-        $this->sessionContainer = new SessionContainer('cart');
-        $this->sessionManager = $container->get(SessionManager::class);
-        $this->sessionManager->
+        $this->sessionContainer = new SessionContainer('Cart');
         if($this->auth->hasIdentity())
         {
             $identity = $this->auth->getIdentity();
