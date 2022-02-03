@@ -24,10 +24,7 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
         return [
             'factories' => [
                 Model\Cart::class => function($container) {
-                	return new Cart(
-                        $container->get(ProductsTable::class),
-                        $container->get(OrdersTable::class)
-                    );
+                	return new Cart($container);
                 },
                 Db\TableGateway\ProductsTable::class => function($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
