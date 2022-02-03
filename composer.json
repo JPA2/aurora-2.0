@@ -35,6 +35,7 @@
 	"autoload" : {
 		"psr-4" : {
 			"Application\\" : "module/Application/src/",
+			"Fedex\\" : "module/Fedex/src",
 			"User\\" : "module/User/src/",
 			"Store\\" : "module/Store/src/"
 		}

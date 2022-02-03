@@ -1,5 +1,5 @@
 <?php
-namespace Store\Shipping\Services;
+namespace Fedex\Model;
 
 class Fedex
 {

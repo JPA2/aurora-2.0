@@ -2,14 +2,18 @@
 declare(strict_types=1);
 namespace Store\Controller;
 use Application\Controller\AbstractController;
-use Store\Model\Basket;
+use Store\Model\Cart;
 
 class IndexController extends AbstractController
 {
-    public $basket;
-    public function __construct(Basket $basket)
+    /**
+     * 
+     * @var \Store\Model\Cart $cart
+     */
+    public $cart;
+    public function __construct(Cart $cart)
     {
-        $this->basket = $basket;
+        $this->cart = $cart;
     }
     public function indexAction()
     {
