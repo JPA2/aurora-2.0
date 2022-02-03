@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 02, 2022 at 04:53 AM
+-- Generation Time: Feb 03, 2022 at 02:23 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `session` (
 --
 
 INSERT INTO `session` (`id`, `name`, `modified`, `lifetime`, `data`) VALUES
-('t54fig0bda8pjfdah0649ck0vn', 'PHPSESSID', 1643766206, 86400, '__Laminas|a:5:{s:20:\"_REQUEST_ACCESS_TIME\";d:1643766205.74339;s:6:\"_VALID\";a:1:{s:28:\"Laminas\\Session\\Validator\\Id\";s:26:\"idquf0tmgn6pg1rf9eq61mdkfe\";}s:14:\"FlashMessenger\";a:0:{}s:53:\"Laminas_Form_Captcha_1996ea41c164db908151532edd5f20f2\";a:2:{s:11:\"EXPIRE_HOPS\";a:2:{s:4:\"hops\";i:1;s:2:\"ts\";d:1643591759.057923;}s:6:\"EXPIRE\";i:1643592059;}s:53:\"Laminas_Form_Captcha_54f68b3f99bf3b88b42b418c0b10760b\";a:2:{s:11:\"EXPIRE_HOPS\";a:2:{s:4:\"hops\";i:1;s:2:\"ts\";d:1643691386.84114;}s:6:\"EXPIRE\";i:1643691686;}}initialized|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:3:{s:4:\"init\";i:1;s:10:\"remoteAddr\";s:3:\"::1\";s:13:\"httpUserAgent\";s:90:\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0 FirePHP/0.5\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}Laminas_Auth|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:7:\"storage\";s:6:\"jsmith\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}FlashMessenger|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:0:{}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}Laminas_Form_Captcha_1996ea41c164db908151532edd5f20f2|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:4:\"word\";s:5:\"xo9up\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}Laminas_Form_Captcha_54f68b3f99bf3b88b42b418c0b10760b|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:4:\"word\";s:5:\"j82a7\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}'),
+('k63t90um19gcq16fr26mpo0hgm', 'PHPSESSID', 1643868777, 86400, '__Laminas|a:5:{s:20:\"_REQUEST_ACCESS_TIME\";d:1643868777.303873;s:6:\"_VALID\";a:1:{s:28:\"Laminas\\Session\\Validator\\Id\";s:26:\"idquf0tmgn6pg1rf9eq61mdkfe\";}s:14:\"FlashMessenger\";a:0:{}s:53:\"Laminas_Form_Captcha_1996ea41c164db908151532edd5f20f2\";a:2:{s:11:\"EXPIRE_HOPS\";a:2:{s:4:\"hops\";i:1;s:2:\"ts\";d:1643591759.057923;}s:6:\"EXPIRE\";i:1643592059;}s:53:\"Laminas_Form_Captcha_54f68b3f99bf3b88b42b418c0b10760b\";a:2:{s:11:\"EXPIRE_HOPS\";a:2:{s:4:\"hops\";i:1;s:2:\"ts\";d:1643691386.84114;}s:6:\"EXPIRE\";i:1643691686;}}initialized|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:3:{s:4:\"init\";i:1;s:10:\"remoteAddr\";s:3:\"::1\";s:13:\"httpUserAgent\";s:90:\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0 FirePHP/0.5\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}Laminas_Auth|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:7:\"storage\";s:6:\"jsmith\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}FlashMessenger|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:0:{}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}Laminas_Form_Captcha_1996ea41c164db908151532edd5f20f2|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:4:\"word\";s:5:\"xo9up\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}Laminas_Form_Captcha_54f68b3f99bf3b88b42b418c0b10760b|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:4:\"word\";s:5:\"j82a7\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}'),
 ('6ek6r7sm9mjia27l2q95dr9sn8', 'PHPSESSID', 1643693844, 86400, '__Laminas|a:2:{s:20:\"_REQUEST_ACCESS_TIME\";d:1643693844.364872;s:6:\"_VALID\";a:1:{s:28:\"Laminas\\Session\\Validator\\Id\";s:26:\"ouiicscgsklfas4r26c866633n\";}}initialized|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:3:{s:4:\"init\";i:1;s:10:\"remoteAddr\";s:3:\"::1\";s:13:\"httpUserAgent\";s:114:\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}');
 
 -- --------------------------------------------------------
@@ -203,6 +203,7 @@ CREATE TABLE IF NOT EXISTS `store_images` (
   `userId` int(11) NOT NULL,
   `productId` int(11) DEFAULT NULL,
   `categoryId` int(11) DEFAULT NULL,
+  `type` enum('thumbnail','slideshow','category','primary','catalogue','gallery') NOT NULL DEFAULT 'primary',
   `fileName` tinytext,
   `uploadedTime` varchar(255) DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
@@ -251,6 +252,10 @@ CREATE TABLE IF NOT EXISTS `store_products` (
   `sku` varchar(255) DEFAULT NULL,
   `createdDate` varchar(255) NOT NULL,
   `active` int(1) NOT NULL DEFAULT '0',
+  `onSale` int(1) NOT NULL DEFAULT '0',
+  `discount` decimal(3,2) NOT NULL DEFAULT '0.00',
+  `saleStartDate` varchar(255) DEFAULT NULL,
+  `saleEndDate` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='will join user table on userId > id';
