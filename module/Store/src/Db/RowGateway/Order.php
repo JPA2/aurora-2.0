@@ -8,38 +8,13 @@ class Order extends RowGateway
 {
     /**
      * 
-     * @var int $id|$this->data['id']
-     */
-    protected $id;
-    /**
-     * 
-     * @var int $userId|$this->data['userId']
-     */
-    protected $userId;
-    /**
-     * 
-     * @var string $createdDate|$this->data['createdDate']
-     */
-    protected $createdDate;
-    /**
-     * 
-     * @var string $processedDate|$this->data['processedDate']
-     */
-    protected $processedDate;
-    /**
-     * 
-     * @var int|bool $completed|$this->data['completed']
-     */
-    protected $completed;
-    /**
-     * 
-     * @var [] $orderData|$this->data['orderData'][]
+     * @var array $orderData
      */
     protected $orderData = [
         'products' => [],
     ];
     /**
-     * @var Json $json
+     * @var \Laminas\Json\Json $json
      */
     public $json;
     /**
@@ -56,5 +31,11 @@ class Order extends RowGateway
         parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
         $this->json = new Json();
     }
-
+    public function getCompleted()
+    {
+        if($this->offsetExists($this->data['completed']))
+        {
+            return $this->offsetGet('completed');
+        }
+    }
 }

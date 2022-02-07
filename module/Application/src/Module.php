@@ -30,6 +30,7 @@ use Application\Listener\SkinListener;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\Config\Config;
 use Laminas\ModuleManager\Feature\ViewHelperProviderInterface;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 class Module implements ViewHelperProviderInterface
 {
@@ -215,9 +216,21 @@ class Module implements ViewHelperProviderInterface
     					'iconifiedcontrol' => View\Helper\IconifiedControl::class,
     					'IconifiedControl' => View\Helper\IconifiedControl::class,
     					'iconifiedControl' => View\Helper\IconifiedControl::class,
+                        'BootstrapForm'    => View\Helper\BootstrapForm::class,
+                        'bootstrapform'    => View\Helper\BootstrapForm::class,
+                        'bootstrapForm'    => View\Helper\BootstrapForm::class,
+                        'BootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
+                        'bootstrapformcollection' => View\Helper\BootstrapFormCollection::class,
+                        'bootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
+                        'BootstrapFormRow' => View\Helper\BootstrapFormRow::class,
+                        'bootstrapformrow' => View\Helper\BootstrapFormRow::class,
+                        'bootstrapFormRow' => View\Helper\BootstrapFormRow::class,
     			],
     			'factories' => [
     					View\Helper\IconifiedControl::class => View\Helper\Service\IconifiedControlFactory::class,
+                        View\Helper\BootstrapForm::class => InvokableFactory::class,
+                        View\Helper\BootstrapFormCollection::class => InvokableFactory::class,
+                        View\Helper\BootstrapFormRow::class => InvokableFactory::class,
     			],
     	];
     }

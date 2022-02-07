@@ -3,6 +3,7 @@ namespace Store;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\ModuleManager\Feature\ServiceProviderInterface;
+use Laminas\ModuleManager\Feature\ControllerProviderInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Store\Model\Cart;
@@ -12,8 +13,18 @@ use Store\Db\TableGateway\CategoriesTable;
 use Store\Db\RowGateway\Product;
 use Store\Db\RowGateway\Order;
 use Store\Db\RowGateway\Category;
+use Store\Controller\AdminController;
+use Store\Controller\AdminProductsController;
+use Store\Controller\IndexController;
+use Store\Controller\Service\IndexControllerFactory;
+use Store\Controller\Service\AdminControllerFactory;
+use Store\Controller\Service\AdminProductsControllerFactory;
+use Store\Controller\Service\ShippingControllerFactory;
 
-class Module implements ConfigProviderInterface, ServiceProviderInterface
+class Module implements 
+ConfigProviderInterface, 
+ServiceProviderInterface,
+ControllerProviderInterface
 {
     public function getConfig()
     {
@@ -50,6 +61,17 @@ class Module implements ConfigProviderInterface, ServiceProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_categories', $dbAdapter));
                     return new Db\TableGateway\CategoriesTable('store_categories', $dbAdapter, null, $resultSetPrototype);
                 }
+            ],
+        ];
+    }
+    public function getControllerConfig()
+    {
+        return [
+            'factories' => [
+                Controller\ShippingController::class => Controller\Service\ShippingControllerFactory::class,
+                Controller\IndexController::class => Controller\Service\IndexControllerFactory::class,
+                Controller\AdminController::class => Controller\Service\AdminControllerFactory::class,
+                Controller\AdminProductsController::class => Controller\Service\AdminProductsControllerFactory::class,
             ],
         ];
     }

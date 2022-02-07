@@ -1,0 +1,18 @@
+<?php
+if(isset($form)) :
+    $form->prepare();
+    echo $this->form()->openTag($form);
+    
+    
+   // foreach($form as $element) :
+?>
+    <!-- <div class="form-group"> -->
+<?php
+        echo $this->bootstrapForm($form);
+?>
+    <!-- </div> -->
+<?php
+   // endforeach;
+    echo $this->form()->closeTag($form);
+endif;
+?>

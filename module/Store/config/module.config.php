@@ -1,7 +1,5 @@
 <?php
 namespace Store;
-use Store\Controller\IndexController;
-use Store\Controller\Factory\PasswordControllerFactory;
 use Laminas\Router\Http\Segment;
 return [
     'router' => [
@@ -37,6 +35,21 @@ return [
                     ],
                 ],
             ],
+            'store-admin-products' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/admin/store/products[/:action[/:step[/:area]]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'area' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AdminProductsController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
             'shipping' => [
                 'type' => Segment::class,
                 'options' => [
@@ -53,13 +66,9 @@ return [
             ],
         ],
     ],
-    'controllers' => [
-        'factories' => [
-            Controller\ShippingController::class => Controller\Service\ShippingControllerFactory::class,
-            Controller\IndexController::class => Controller\Service\IndexControllerFactory::class,
-            Controller\AdminController::class => Controller\Service\AdminControllerFactory::class
-        ],
-    ],
+    // 'controllers' => [
+
+    // ],
     'navigation' => [
         'static' => [
             [

@@ -9,7 +9,7 @@
  */
 /**
  *     'router' => [
-        'router_class' => TranslatorAwareTreeRouteStack::class,
+ *       'router_class' => TranslatorAwareTreeRouteStack::class,
  */
 return [
     // Retrieve list of modules used in this application.

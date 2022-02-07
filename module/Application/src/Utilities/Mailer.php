@@ -14,6 +14,10 @@ use Laminas\Mime\Mime;
 use Laminas\Mime\Part as MimePart;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
+use Laminas\Mail\Exception\DomainException;
+use Laminas\Mail\Exception\InvalidArgumentException;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use User\Model\User as User;
 use \RuntimeException;
 
@@ -77,7 +81,15 @@ class Mailer implements ResourceInterface
      * @var \Laminas\Mail\Transport\Smtp
      */
     protected $transport;
-
+    /**
+     * 
+     * @param Config|null $settings 
+     * @param Request|null $request 
+     * @param ServiceLocatorInterface $sm 
+     * @return void 
+     * @throws NotFoundExceptionInterface 
+     * @throws ContainerExceptionInterface 
+     */
     public function __construct(Config $settings = null, Request $request = null, ServiceLocatorInterface $sm)
     {
         if($sm instanceof ServiceLocatorInterface) 
@@ -85,6 +97,7 @@ class Mailer implements ResourceInterface
             $this->sm = $sm;
             //$this->setTranslator($this->sm->get('Translator'));
         }
+        $config = $this->sm->get('config');
         if (! empty($settings)) {
             $this->appSettings = $settings;
         }
@@ -95,28 +108,33 @@ class Mailer implements ResourceInterface
         }
         $this->setMessage(new Message());
         $transport = new SmtpTransport();
-
-        $options = new SmtpOptions([
-            'name' => 'webinertia.net',
-            'host' => 'smtp-relay.gmail.com',
-            'port' => '587',
-            'connection_class' => 'login',
-            'connection_config' => [
-                'username' => $this->appSettings->smtpSenderAddress,
-                'password' => $this->appSettings->smtpSenderPasswd,
-                'ssl' => 'tls'
-            ]
-        ]);
+        /** this removes the connection info from the db since we are tracking the
+         * db exports in git, which would expose our connection creds
+         * see /config/autoload/local.php for connection config options
+         */
+        $options = new SmtpOptions($config['smtp_options']);
         $transport->setOptions($options);
         // currently only Smtp transport is supported
         $this->setTransport($transport);
     }
-
+    /**
+     * 
+     * @param TransportInterface $transport 
+     * @return void 
+     */
     public function setTransport(TransportInterface $transport)
     {
         $this->transport = $transport;
     }
-
+    /**
+     * 
+     * @param mixed $address 
+     * @param mixed $type 
+     * @param mixed $token 
+     * @return void 
+     * @throws DomainException 
+     * @throws InvalidArgumentException 
+     */
     public function sendMessage($address, $type, $token = null)
     {
         try {

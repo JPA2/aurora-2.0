@@ -8,19 +8,6 @@ class Category extends RowGateway
 {
     /**
      * 
-     * @var int $id|$this->data['id']
-     */
-    protected $id;
-    /**
-     * @var int $parentId|$this->data['parentId']
-     */
-    protected $parentId;
-    /**
-     * @var string $name|$this->data['name']
-     */
-    public $name;
-    /**
-     * 
      * @param string $primaryKeyColumn 
      * @param string $table 
      * @param mixed $adapterOrSql 

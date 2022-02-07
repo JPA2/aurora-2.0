@@ -1,12 +1,20 @@
 <?php
 namespace Application\Db\TableGateway;
 use Laminas\Db\Metadata\Metadata;
-//use Laminas\Db\RowGateway\RowGateway;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\RowGateway\RowGatewayInterface;
 use \RuntimeException;
+use function sprintf;
 trait TableGatewayTrait
 {
     public $lastInsertId;
+    /**
+     * 
+     * @param string $column 
+     * @param int|string $value 
+     * @return \Laminas\Db\RowGateway\RowGatewayInterface 
+     * @throws RuntimeException 
+     */
     public function fetchByColumn($column, $value)
     {
         $column = (string) $column;
@@ -14,6 +22,25 @@ trait TableGatewayTrait
         $row = $rowset->current();
         if (! $row) {
             throw new RuntimeException(sprintf('Could not find row with column: ' . $column . ' with value: ' . $value));
+        }
+        return $row;
+    }
+    /**
+     * 
+     * @param string $column 
+     * @param string|int $value 
+     * @param null|array $columns 
+     * @return \Laminas\Db\RowGateway\RowGatewayInterface 
+     * @throws RuntimeException 
+     */
+    public function fetchColumnsByColumn($column, $value, ?array $columns)
+    {
+        $resultSet = $this->select(function(Select $select) use ($column, $value, $columns) {
+            $select->columns($columns)->where([$column => $value]);
+        });
+        $row = $resultSet->current();
+        if(!$row) {
+            throw new RuntimeException(sprintf('could not find row with column: ' . $column . ' with value: ' . $value));
         }
         return $row;
     }
@@ -25,43 +52,13 @@ trait TableGatewayTrait
     {
         return $this->lastInsertId;
     }
+    /**
+     * 
+     * @deprecated
+     */
     public function save($data, $isEdit = false, array $where = null)
     {
-        if($data instanceof RowGatewayInterface) {
-            $data = $data->toArray();
-        }
-        $data = $this->filterColumns($data);
-        if($isEdit) {
-            $result = $this->update($data, $where);
-        }
-        else {
-            $result = $this->insert($data);
-            $result = $this->getLastInsertValue();
-        }
-        return $result;
-//         try {
-//             if($data instanceof RowGatewayInterface) {
-//                 $data = $data->toArray();
-//                 $data = $this->filterColumns($data);
-//             }
-//             elseif(is_array($data) && !empty($data)) {
-//                 $data = $this->filterColumns($data);
-//             }
-//             $row = new RowGateway($this->pk, $this->table, $this->getAdapter());
-//             $row->populate($data, $isEdit);
-//             if(!$isEdit) {
-//                 $row->save();
-//                 // see if we can get the last inserted id to return
-//                 $this->lastInsertId = $this->getLastInsertValue();
-//                 return $row->save();
-//             } else {
-//                 // returns the number of affected rows
-//                 return $row->save();
-//             }
-            
-//         } catch (RuntimeException $e) {
-//             echo $e->getMessage();
-//         }
+        throw new RuntimeException('Save method is deprecated use insert or update!!');
     }
     public function filterColumns($data) {
         if($data instanceof RowGatewayInterface) {
