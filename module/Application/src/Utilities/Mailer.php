@@ -81,6 +81,7 @@ class Mailer implements ResourceInterface
      * @var \Laminas\Mail\Transport\Smtp
      */
     protected $transport;
+    protected $config;
     /**
      * 
      * @param Config|null $settings 
@@ -97,7 +98,7 @@ class Mailer implements ResourceInterface
             $this->sm = $sm;
             //$this->setTranslator($this->sm->get('Translator'));
         }
-        $config = $this->sm->get('config');
+        $this->config = $this->sm->get('config');
         if (! empty($settings)) {
             $this->appSettings = $settings;
         }
@@ -112,7 +113,7 @@ class Mailer implements ResourceInterface
          * db exports in git, which would expose our connection creds
          * see /config/autoload/local.php for connection config options
          */
-        $options = new SmtpOptions($config['smtp_options']);
+        $options = new SmtpOptions($this->config['smtp_options']);
         $transport->setOptions($options);
         // currently only Smtp transport is supported
         $this->setTransport($transport);
@@ -141,7 +142,9 @@ class Mailer implements ResourceInterface
             $message = $this->getMessage();
             $message->addTo($address);
             // This email must match the connection_config key in the options above
-            $message->addFrom($this->appSettings->smtpSenderAddress);
+            $userName = $this->appSettings->smtpSenderAddress ?? 
+                        $this->config['smpt_options']['connection_config']['username'];
+            $message->addFrom($userName);
             
             switch ($type) {
                 case self::VERIFICATION:
