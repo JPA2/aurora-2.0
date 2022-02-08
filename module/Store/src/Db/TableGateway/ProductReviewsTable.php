@@ -7,14 +7,6 @@ class ProductReviewsTable extends TableGateway
 {
     use TableGatewayTrait;
     /**
-     * foreign keys pointing to user.id|store_products.id
-     * @var int|[]
-     */
-    public $forKey = [
-        'userId' => 0, 
-        'productId' => 0
-    ];
-    /**
      * primaryKey column for this table
      * @var string $pk
      */

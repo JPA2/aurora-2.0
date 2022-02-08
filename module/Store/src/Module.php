@@ -4,6 +4,7 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\ModuleManager\Feature\ServiceProviderInterface;
 use Laminas\ModuleManager\Feature\ControllerProviderInterface;
+use Laminas\ModuleManager\Feature\FormElementProviderInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Store\Model\Cart;
@@ -24,7 +25,8 @@ use Store\Controller\Service\ShippingControllerFactory;
 class Module implements 
 ConfigProviderInterface, 
 ServiceProviderInterface,
-ControllerProviderInterface
+ControllerProviderInterface,
+FormElementProviderInterface
 {
     public function getConfig()
     {
@@ -72,6 +74,14 @@ ControllerProviderInterface
                 Controller\IndexController::class => Controller\Service\IndexControllerFactory::class,
                 Controller\AdminController::class => Controller\Service\AdminControllerFactory::class,
                 Controller\AdminProductsController::class => Controller\Service\AdminProductsControllerFactory::class,
+            ],
+        ];
+    }
+    public function getFormElementConfig()
+    {
+        return [
+            'factories' => [
+                Form\Fieldset\ProductInfo::class => Form\Fieldset\Factory\ProductInfoFactory::class,
             ],
         ];
     }

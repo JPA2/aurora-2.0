@@ -31,11 +31,16 @@ class Order extends RowGateway
         parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
         $this->json = new Json();
     }
-    public function getCompleted()
+    public function getJson()
     {
-        if($this->offsetExists($this->data['completed']))
+        /**
+         * enforce what type of Json handler to use
+         */
+        if($this->json instanceof \Laminas\Json\Json)
         {
-            return $this->offsetGet('completed');
+            return $this->json;
         }
+        $this->json = new Json();
+        return $this->json;
     }
 }
