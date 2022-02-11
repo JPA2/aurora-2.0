@@ -1,26 +1,13 @@
 <?php
 namespace Store;
-use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\ModuleManager\Feature\ServiceProviderInterface;
 use Laminas\ModuleManager\Feature\ControllerProviderInterface;
 use Laminas\ModuleManager\Feature\FormElementProviderInterface;
-use Laminas\Db\ResultSet\ResultSet;
-use Laminas\Db\TableGateway\TableGateway;
 use Store\Model\Cart;
-use Store\Db\TableGateway\ProductsTable;
-use Store\Db\TableGateway\OrdersTable;
-use Store\Db\TableGateway\CategoriesTable;
-use Store\Db\RowGateway\Product;
-use Store\Db\RowGateway\Order;
-use Store\Db\RowGateway\Category;
-use Store\Controller\AdminController;
-use Store\Controller\AdminProductsController;
-use Store\Controller\IndexController;
-use Store\Controller\Service\IndexControllerFactory;
-use Store\Controller\Service\AdminControllerFactory;
-use Store\Controller\Service\AdminProductsControllerFactory;
-use Store\Controller\Service\ShippingControllerFactory;
+use Store\Model\Order;
+use Store\Model\Category;
+use Store\Model\Product;
 
 class Module implements 
 ConfigProviderInterface, 
@@ -39,30 +26,18 @@ FormElementProviderInterface
                 Model\Cart::class => function($container) {
                 	return new Cart($container);
                 },
-                Db\TableGateway\ProductsTable::class => function($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_products', $dbAdapter));
-                    return new Db\TableGateway\ProductsTable('store_products', $dbAdapter, null, $resultSetPrototype);
+                Model\Product::class => function($container) {
+                    return new Product($container->get(Db\TableGateway\ProductsTable::class));
                 },
-                Db\TableGateway\ProductReviewsTable::class => function($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_products_reviews', $dbAdapter));
-                    return new Db\TableGateway\ProductReviewsTable('store_products_reviews', $dbAdapter, null, $resultSetPrototype);
+                Model\Category::class => function($container) {
+                    return new Category($container->get(Db\TableGateway\CategoriesTable::class));
                 },
-                Db\TableGateway\OrdersTable::class => function($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_orders', $dbAdapter));
-                    return new Db\TableGateway\OrdersTable('store_orders', $dbAdapter, null, $resultSetPrototype);
+                Model\Category::class => function($container) {
+                    return new Order($container->get(Db\TableGateway\OrdersTable::class));
                 },
-                Db\TableGateway\CategoriesTable::class => function($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Product('id','store_categories', $dbAdapter));
-                    return new Db\TableGateway\CategoriesTable('store_categories', $dbAdapter, null, $resultSetPrototype);
-                }
+                Db\TableGateway\ProductsTable::class => Db\TableGateway\Service\ProductsTableFactory::class,
+                Db\TableGateway\CategoriesTable::class => Db\TableGateway\Service\CategoriesTableFactory::class,
+                Db\TableGateway\OrdersTable::class => Db\TableGateway\Service\OrdersTableFactory::class,
             ],
         ];
     }

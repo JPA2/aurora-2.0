@@ -1,13 +1,21 @@
 <?php
 namespace Store\Db\TableGateway;
-use Laminas\Db\TableGateway\TableGateway;
+use Application\Db\TableGateway\AbstractDbTableGateway;
 use Application\Db\TableGateway\TableGatewayTrait;
-
-class CategoriesTable extends TableGateway
+use Laminas\EventManager\EventManager;
+use Laminas\Db\ResultSet\ResultSet;
+use Store\Model\Category;
+class CategoriesTable extends AbstractDbTableGateway
 {
     use TableGatewayTrait;
-    public $pk = 'id';
-    public $parentId;
+    public function __construct($table, EventManager $e)
+    {
+        parent::__construct($table, $e);
+        $resultSet = new ResultSet();
+        $resultSet->setArrayObjectPrototype(new Category($this));
+        $this->resultSetPrototype = $resultSet;
+        $this->initialize();
+    }
     public function fetchSelectValueOptions()
     {
         $data = [];

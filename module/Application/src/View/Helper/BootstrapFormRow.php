@@ -127,7 +127,7 @@ class BootstrapFormRow extends \Laminas\Form\View\Helper\FormRow
             ) {
                 $classMapping = [
                     'radio' => 'form-check mb-2',
-                    'multi_checkbox' => 'form-check mb-2'
+                    'multi_checkbox' => 'form-check mb-2',
                 ];
 
                 $markup .= sprintf(

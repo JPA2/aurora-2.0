@@ -1,21 +1,20 @@
 <?php
 namespace Store\Db\TableGateway;
-use Laminas\Db\TableGateway\TableGateway;
+use Application\Db\TableGateway\AbstractDbTableGateway;
 use Application\Db\TableGateway\TableGatewayTrait;
+use Laminas\EventManager\EventManager;
+use Laminas\Db\ResultSet\ResultSet;
+use Store\Model\Order;
 
-class OrdersTable extends TableGateway
+class OrdersTable extends AbstractDbTableGateway
 {
     use TableGatewayTrait;
-    /**
-     * foreignKey pointing to user.id
-     * @var string $forKey
-     */
-    public $forKey = 'userId';
-    /**
-     * primaryKey column for this table
-     * @var string $pk
-     */
-    public $pk = 'id';
-    protected $table;
-
+    public function __construct($table, EventManager $e)
+    {
+        parent::__construct($table, $e);
+        $resultSet = new ResultSet();
+        $resultSet->setArrayObjectPrototype(new Order($this));
+        $this->resultSetPrototype = $resultSet;
+        $this->initialize();
+    }
 }

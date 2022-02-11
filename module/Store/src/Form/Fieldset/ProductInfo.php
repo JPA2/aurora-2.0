@@ -1,11 +1,13 @@
 <?php
 namespace Store\Form\Fieldset;
 
+use Application\Form\Fieldset\FieldsetTrait;
 use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
 use Store\Db\TableGateway\CategoriesTable;
-
 class ProductInfo extends Fieldset
 {
+    use FieldsetTrait;
     public function __construct(CategoriesTable $categoriesTable)
     {
         $this->categoriesTable = $categoriesTable;
@@ -63,7 +65,7 @@ class ProductInfo extends Fieldset
             'name' => 'cost',
             'type' => \Laminas\Form\Element\Number::class,
             'attributes' => [
-                //'class' => 'form-control',
+                'step' => '.01',
             ],
             'options' => [
                 'label' => 'Product Cost:'
@@ -74,7 +76,7 @@ class ProductInfo extends Fieldset
             'name' => 'weight',
             'type' => \Laminas\Form\Element\Number::class,
             'attributes' => [
-                //'class' => 'form-control',
+                'step' => '.01',
             ],
             'options' => [
                 'label' => 'Product Weight:',
@@ -169,5 +171,9 @@ class ProductInfo extends Fieldset
                 'day_attributes' => [],
             ],
         ]);
+    }
+    public function getInputFilterSpecification()
+    {
+        return [];
     }
 }

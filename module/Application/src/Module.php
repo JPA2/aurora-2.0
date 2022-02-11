@@ -41,12 +41,14 @@ class Module implements ViewHelperProviderInterface
     }
     public function onBootstrap(MvcEvent $e)
     {
+        $application = $e->getApplication();
+        $sm = $e->getApplication()->getServiceManager();
+        \Laminas\Db\TableGateway\Feature\GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->bootstrapSettings($e);
         $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
         $this->boostrapTranslation($e);
-        $application = $e->getApplication();
-        $sm = $e->getApplication()->getServiceManager();
+        
 
         /** @var TemplateMapResolver $templateMapResolver */
         $templateMapResolver = $sm->get('ViewTemplateMapResolver');

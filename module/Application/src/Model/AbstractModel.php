@@ -1,76 +1,224 @@
 <?php
+
 namespace Application\Model;
 
 use Laminas\Db\TableGateway\TableGatewayInterface;
-use Laminas\Db\TableGateway\TableGateway;
+use Application\Db\TableGateway\AbstractDbTableGateway;
 use Application\Permissions\PermissionsManager as Acl;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use Laminas\Permissions\Acl\Role\RoleInterface;
+use ArrayAccess;
+use Countable;
+use RuntimeException;
+use function get_called_class;
+use function is_array;
 
-abstract class AbstractModel implements ResourceInterface, ProprietaryInterface
+class AbstractModel implements
+    ArrayAccess,
+    Countable,
+    ResourceInterface,
+    ProprietaryInterface,
+    RoleInterface
 {
     /**
      * 
-     * @var $tableGateway TableGateway
+     * @var Application\Db\TableGateway\AbstractDbTableGateway $db
      */
-    protected $tableGateway;
+    protected $db;
     /**
      * 
-     * @var $logger Laminas\Log\Logger
+     * @var Laminas\Log\Logger $log
      */
-    protected $logger;
-    /**
-     * 
-     * @var $dependentTables TableGateway
-     */
-    protected $dependentTables;
+    protected $log;
+
     /**
      * 
      * @var $acl Laminas\Permissions\Acl\Acl
      */
     public $acl;
+    /**
+     * 
+     * @var array $data
+     */
+    protected $data = [];
 
-    public function __construct(TableGateway $tableGateway)
+    public function __construct(AbstractDbTableGateway $tableGateway)
     {
-        //var_dump(func_get_args());
-        $this->tableGateway = $tableGateway;
-        $this->_init();
+        $this->db = $tableGateway;
+    }
+    public function insert($data)
+    {
+        if (is_array($data)) {
+            return $this->db->insert($data);
+        }
+        if ($data instanceof $this) {
+            return $this->db->insert($data->toArray());
+        }
+    }
+    public function update($data)
+    {
+        if (is_array($data)) {
+            return $this->db->update($data);
+        }
+        if ($data instanceof $this) {
+            return $this->db->insert($data->toArray());
+        }
     }
     public function getAdapter()
     {
-        return $this->tableGateway->getAdapter();
+        return $this->db->getAdapter();
+    }
+    /**
+     * @param mixed $array
+     * @return AbstractRowGateway
+     */
+    public function exchangeArray(array $array)
+    {
+        $this->data = $array;
+    }
+
+    /**
+     * Offset Exists
+     *
+     * @param  string $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->data);
+    }
+
+    /**
+     * Offset get
+     *
+     * @param  string $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->data[$offset];
+    }
+
+    /**
+     * Offset set
+     *
+     * @param  string $offset
+     * @param  mixed $value
+     * @return self Provides a fluent interface
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->data[$offset] = $value;
+        return $this;
+    }
+
+    /**
+     * Offset unset
+     *
+     * @param  string $offset
+     * @return self Provides a fluent interface
+     */
+    public function offsetUnset($offset)
+    {
+        $this->data[$offset] = null;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->data);
+    }
+
+    /**
+     * To array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->data;
+    }
+
+    /**
+     * __get
+     *
+     * @param  string $name
+     * @throws RuntimeException
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        } else {
+            throw new RuntimeException('Not a valid column in this table: ' . $name);
+        }
+    }
+
+    /**
+     * __set
+     *
+     * @param  string $name
+     * @param  mixed $value
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        $this->offsetSet($name, $value);
+    }
+
+    /**
+     * __isset
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return $this->offsetExists($name);
+    }
+
+    /**
+     * __unset
+     *
+     * @param  string $name
+     * @return void
+     */
+    public function __unset($name)
+    {
+        $this->offsetUnset($name);
     }
     /**
      * 
-     * @return \Application\Model\AbstractModel
-     */
-    public function _init()
-    {
-        return $this;
-    }
-    public function setAcl($acl)
-    {
-        $this->acl = $acl;
-    }
-    public function getAcl()
-    {
-        return $this->acl;
-    }
-    /**
-     * {@inheritDoc}
      * @see \Laminas\Permissions\Acl\Resource\ResourceInterface::getResourceId()
      */
     public function getResourceId()
     {
         // TODO Auto-generated method stub
-        return $this->tableGateway->getTable();
+        return $this->db->getTable();
     }
     /**
-     * {@inheritDoc}
+     * 
      * @see \Laminas\Permissions\Acl\ProprietaryInterface::getOwnerId()
      */
     public function getOwnerId()
     {
-        // TODO Auto-generated method stub
-    } 
+        if ($this instanceof RoleInterface) {
+            return $this->offsetGet('id');
+        } elseif ($this->offsetExists('userId')) {
+            return $this->offsetGet('userId');
+        }
+        return null;
+    }
+    public function getRoleId()
+    {
+        if ((get_called_class()) === 'User' && $this->offsetExists('role')) {
+            return $this->offsetGet('role');
+        }
+        return 'guest';
+    }
 }

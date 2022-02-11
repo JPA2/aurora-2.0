@@ -5,7 +5,7 @@ use Laminas\Permissions\Acl\Acl;
 use PhpParser\Node\Stmt\TryCatch;
 use Store\Db\TableGateway\CategoriesTable;
 use Store\Db\TableGateway\ProductsTable;
-use Store\Db\RowGateway\Product;
+use Store\Model\Product;
 use Store\Form\ProductForm;
 
 class AdminProductsController extends AbstractAdminController
@@ -59,22 +59,31 @@ class AdminProductsController extends AbstractAdminController
     {   
         $step = $this->params('step', 'product-data');
         $area = $this->params('area', 'main');
+        $data = [];
+        $product = $this->sm->get(Product::class);
+        //$product = $this->productsTable->fetchByColumn('id', 2);
         switch($step)
         {
             case 'product-info':
                 if($this->request->isPost())
                 {
                     $data = $this->request->getPost();
-                    $this->form->populateValues($data);
+                    $this->form->setData($data->toArray());
+                    $validationGroup = $this->form->get('product-info')->getElementNames(['id','category']);
+                    $this->form->setValidationGroup(['product-info' => $validationGroup]);
                     if($this->form->isValid())
                     {
                         $data = $this->form->getData();
                         try {
-                            $result = $this->productsTable->insert($data['product-info']);
+                            $result = $product->insert($data['product-info']);
                         } catch (\Throwable $th) {
                             $this->logger->log(6, $th->getMessage());
                         }
                     }
+                }
+                else {
+                    $data['product-info']['userId'] = $this->user->id;
+                    $this->form->setData($data);
                 }
                 break;
             case 'upload-files':
