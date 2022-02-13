@@ -1,7 +1,7 @@
 <?php
-
 namespace Application\Model;
-
+use Application\Model\ModelInterface;
+use Application\Model\ModelTrait;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Application\Db\TableGateway\AbstractDbTableGateway;
 use Application\Permissions\PermissionsManager as Acl;
@@ -14,13 +14,19 @@ use RuntimeException;
 use function get_called_class;
 use function is_array;
 
-class AbstractModel implements
+abstract class AbstractModel implements
     ArrayAccess,
     Countable,
     ResourceInterface,
     ProprietaryInterface,
-    RoleInterface
+    RoleInterface,
+    ModelInterface
 {
+    /**
+     * All tables should have a autoinc primaryKey id
+     * @var $id
+     */
+    protected $id;
     /**
      * 
      * @var Application\Db\TableGateway\AbstractDbTableGateway $db
@@ -43,10 +49,11 @@ class AbstractModel implements
      */
     protected $data = [];
 
-    public function __construct(AbstractDbTableGateway $tableGateway)
+    public function __construct(TableGatewayInterface $tableGateway)
     {
         $this->db = $tableGateway;
     }
+
     public function insert($data)
     {
         if (is_array($data)) {
@@ -56,14 +63,17 @@ class AbstractModel implements
             return $this->db->insert($data->toArray());
         }
     }
-    public function update($data)
+    /**
+     * 
+     * @param mixed $data['columnOne' => $valueOne, 'columnTwo' => $columnTwo] 
+     * @param null|array $where['columnOne' => $columnOne] 
+     * @param null|array $joins 
+     * @return int
+     */
+    public function update($data, $where = null, ?array $joins = null)
     {
-        if (is_array($data)) {
-            return $this->db->update($data);
-        }
-        if ($data instanceof $this) {
-            return $this->db->insert($data->toArray());
-        }
+        $result = $this->db->update($data, $where, $joins);
+        return $result;
     }
     public function getAdapter()
     {
@@ -75,7 +85,11 @@ class AbstractModel implements
      */
     public function exchangeArray(array $array)
     {
-        $this->data = $array;
+        foreach($array as $key => $value)
+        {
+            $this->{$key} = $value;
+            //$this->offsetSet($key, $value);
+        }
     }
 
     /**
@@ -142,6 +156,10 @@ class AbstractModel implements
     {
         return $this->data;
     }
+    public function getArrayCopy()
+    {
+        return $this->data;
+    }
 
     /**
      * __get
@@ -155,7 +173,7 @@ class AbstractModel implements
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         } else {
-            throw new RuntimeException('Not a valid column in this table: ' . $name);
+            throw new RuntimeException('Unknown offset: ' . $name);
         }
     }
 

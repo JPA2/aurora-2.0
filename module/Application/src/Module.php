@@ -3,30 +3,30 @@
 declare(strict_types=1);
 
 namespace Application;
+use Application\Listener\SkinListener;
+use Application\Model\Setting;
+use Application\Model\ModuleSettings;
+use Application\Utilities\Mailer;
+use Application\Utilities\Debug;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Adapter as dbAdapter;
 use Laminas\Session;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\SessionManager;
-;use Laminas\Session\Config\SessionConfig;
-;use Laminas\Session\Container;
+//use Laminas\Session\Config\SessionConfig;
+//use Laminas\Session\Container;
 use Laminas\Session\Validator;
-use Application\Model\SettingsTable;
-use Application\Model\ModuleSettings;
-;use Laminas\Mvc\Application;
+//use Laminas\Mvc\Application;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
-use Application\Utilities\Mailer;
-use Application\Utilities\Debug;
 use Laminas\Log\Logger;
 use Laminas\Log\Filter\Priority;
-use Laminas\Log\Writer\Db;
+use Laminas\Log\Writer\Db as Dbwriter;
 use Laminas\Log\Writer\FirePhp;
 use Laminas\Log\Formatter\Db as DbFormatter;
 use Laminas\Log\Formatter\FirePhp as FireBugformatter;
-use Application\Listener\SkinListener;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\Config\Config;
 use Laminas\ModuleManager\Feature\ViewHelperProviderInterface;
@@ -123,7 +123,7 @@ class Module implements ViewHelperProviderInterface
         $settings = $sm->get('AuroraSettings');
         $config = $sm->get('config');
         $logger = $sm->get('Laminas\Log\Logger');
-        $writer = new Db(new dbAdapter($config['db']), 'log');
+        $writer = new Dbwriter(new dbAdapter($config['db']), 'log');
         $standardLogFilter = new Priority(Logger::DEBUG);
         $writer->addFilter($standardLogFilter);
 
@@ -192,13 +192,14 @@ class Module implements ViewHelperProviderInterface
         return [
             'factories' => [
                 Model\SettingsTableGateway::class => function ($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
+                    //$dbAdapter = $container->get(AdapterInterface::class);
+                    return new Setting($container->get(Db\TableGateway\SettingsTable::class));
                 },
                 Model\ModuleSettings::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     return new ModuleSettings(new TableGateway('modulesettings', $dbAdapter, new RowGatewayFeature('id')));
                 },
+                Db\TableGateway\SettingsTable::class => Db\TableGateway\Service\SettingsTableFactory::class,
                 Utilities\Mailer::class => function($container) {
                     $settings = $container->get('AuroraSettings');
                     $request = $container->get('request');

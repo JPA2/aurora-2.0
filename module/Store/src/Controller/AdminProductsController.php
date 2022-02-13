@@ -55,26 +55,27 @@ class AdminProductsController extends AbstractAdminController
     {
 
     }
-    public function createProductAction()
+    public function manageProductAction()
     {   
-        $step = $this->params('step', 'product-data');
-        $area = $this->params('area', 'main');
+        $step = $this->params('step', 'add');
         $data = [];
         $product = $this->sm->get(Product::class);
-        //$product = $this->productsTable->fetchByColumn('id', 2);
+        $id = $this->request->getQuery('id', 0);
         switch($step)
         {
-            case 'product-info':
+            case 'create':
                 if($this->request->isPost())
                 {
                     $data = $this->request->getPost();
                     $this->form->setData($data->toArray());
-                    $validationGroup = $this->form->get('product-info')->getElementNames(['id','category']);
+                    $validationGroup = $this->form->get('product-info')->getElementNames(['id']);
                     $this->form->setValidationGroup(['product-info' => $validationGroup]);
                     if($this->form->isValid())
                     {
                         $data = $this->form->getData();
+
                         try {
+                            // set breakpoint here to check returned value or get lastAutoIncremented value
                             $result = $product->insert($data['product-info']);
                         } catch (\Throwable $th) {
                             $this->logger->log(6, $th->getMessage());
@@ -86,7 +87,16 @@ class AdminProductsController extends AbstractAdminController
                     $this->form->setData($data);
                 }
                 break;
+            case 'edit':
+                $product = $product->fetchByColumn('id', $id);
+                if(!$this->request->isPost()) 
+                {
+                    $this->form->setData(['product-info' =>$product->toArray()]);
+                }
             case 'upload-files':
+
+                break;
+            case 'delete':
 
                 break;
         }

@@ -8,6 +8,7 @@ use Store\Model\Cart;
 use Store\Model\Order;
 use Store\Model\Category;
 use Store\Model\Product;
+use Store\Model\ProductByCategory;
 
 class Module implements 
 ConfigProviderInterface, 
@@ -32,11 +33,15 @@ FormElementProviderInterface
                 Model\Category::class => function($container) {
                     return new Category($container->get(Db\TableGateway\CategoriesTable::class));
                 },
-                Model\Category::class => function($container) {
+                Model\ProductByCategory::class => function($container) {
+                    return new ProductByCategory($container->get(Db\TableGateway\ProductsByCategoryTable::class));
+                },
+                Model\Order::class => function($container) {
                     return new Order($container->get(Db\TableGateway\OrdersTable::class));
                 },
                 Db\TableGateway\ProductsTable::class => Db\TableGateway\Service\ProductsTableFactory::class,
                 Db\TableGateway\CategoriesTable::class => Db\TableGateway\Service\CategoriesTableFactory::class,
+                Db\TableGateway\ProductsByCategoryTable::class => Db\TableGateway\Service\ProductsByCategoryTableFactory::class,
                 Db\TableGateway\OrdersTable::class => Db\TableGateway\Service\OrdersTableFactory::class,
             ],
         ];

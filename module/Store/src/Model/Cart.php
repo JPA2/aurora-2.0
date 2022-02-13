@@ -1,11 +1,13 @@
 <?php
 namespace Store\Model;
+use Application\Model\ModelInterface;
 use Interop\Container\ContainerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Authentication\AuthenticationServiceInterface;
 use Laminas\Session\Container as SessionContainer;
 use Laminas\Session\SessionManager;
+use Laminas\View\Model\ModelInterface as ModelModelInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Store\Db\TableGateway\OrdersTable;
@@ -16,7 +18,7 @@ use User\Model\User;
 use User\Model\UserTable;
 use function func_get_args;
 use function is_array;
-class Cart
+class Cart implements ModelInterface
 {
     /**
      * @var \Laminas\Session\Container $sessionContainer

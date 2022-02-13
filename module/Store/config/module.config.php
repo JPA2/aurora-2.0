@@ -38,11 +38,11 @@ return [
             'store-admin-products' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/admin/store/products[/:action[/:step[/:area]]]',
+                    'route' => '/admin/store/products[/:action[/:step]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'area' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
                     'defaults' => [
                         'controller' => Controller\AdminProductsController::class,

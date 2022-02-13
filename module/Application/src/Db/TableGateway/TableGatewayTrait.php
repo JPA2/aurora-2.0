@@ -7,12 +7,11 @@ use \RuntimeException;
 use function sprintf;
 trait TableGatewayTrait
 {
-    public $lastInsertId;
     /**
      * 
      * @param string $column 
      * @param int|string $value 
-     * @return \Laminas\Db\RowGateway\RowGatewayInterface 
+     * @return self 
      * @throws RuntimeException 
      */
     public function fetchByColumn($column, $value)
@@ -26,11 +25,12 @@ trait TableGatewayTrait
         return $row;
     }
     /**
-     * 
+     * Takes a column argument, a $value argument and returns the 
+     * columns values named in [$columns]
      * @param string $column 
      * @param string|int $value 
      * @param null|array $columns 
-     * @return \Laminas\Db\RowGateway\RowGatewayInterface 
+     * @return Application\Model\ModelInterface 
      * @throws RuntimeException 
      */
     public function fetchColumnsByColumn($column, $value, ?array $columns)
@@ -60,6 +60,10 @@ trait TableGatewayTrait
     {
         throw new RuntimeException('Save method is deprecated use insert or update!!');
     }
+    /**
+     * 
+     * @deprecated
+     */
     public function filterColumns($data) {
         if($data instanceof RowGatewayInterface) {
             $data = $data->toArray();

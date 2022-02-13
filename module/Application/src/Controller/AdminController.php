@@ -19,10 +19,11 @@ class AdminController extends AbstractAdminController
         // get the settings table from the service manager
         $settingsTable = $sm->get('Application\Model\SettingsTableGateway');
         //$sForm = new SettingsForm('appSettings', ['aSettings' => $settingsTable->fetchSettingsForForm()]);
+
         $appSettings = $settingsTable->fetchSettingsForForm();
        // var_dump($appSettings);
         $form = new Form('appSettings');
-        switch(!$this->getRequest()->isPost()) {
+        switch(!$this->request->isPost()) {
             case true:
                     foreach ($appSettings as $data) {
                         //var_dump($data);
@@ -65,7 +66,7 @@ class AdminController extends AbstractAdminController
                 $this->view->setVariable('form',$form);
                 break;
             case false:
-                $post = (array)$this->getRequest()->getPost();
+                $post = $this->request->getPost()->toArray();
                 //var_dump($post);
                 foreach ($appSettings as $data) {
                    // var_dump($data);
@@ -119,7 +120,9 @@ class AdminController extends AbstractAdminController
                 }
                 $this->view->setVariable('form', $form);
                 //var_dump($form->getData(FormInterface::VALUES_AS_ARRAY));
-                $settingsTable->save($form->getData(FormInterface::VALUES_AS_ARRAY));
+                $settingsTable->exchangeArray($form->getData(FormInterface::VALUES_AS_ARRAY));
+                $settingsTable->updateAll();
+                //$settingsTable->save($form->getData(FormInterface::VALUES_AS_ARRAY));
                 $this->redirect()->refresh();
                 break;
             default:
