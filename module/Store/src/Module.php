@@ -28,16 +28,16 @@ FormElementProviderInterface
                 	return new Cart($container);
                 },
                 Model\Product::class => function($container) {
-                    return new Product($container->get(Db\TableGateway\ProductsTable::class));
+                    return new Product( $container->get(Db\TableGateway\ProductsTable::class), $container);
                 },
                 Model\Category::class => function($container) {
-                    return new Category($container->get(Db\TableGateway\CategoriesTable::class));
+                    return new Category($container->get(Db\TableGateway\CategoriesTable::class), $container);
                 },
                 Model\ProductByCategory::class => function($container) {
-                    return new ProductByCategory($container->get(Db\TableGateway\ProductsByCategoryTable::class));
+                    return new ProductByCategory($container->get(Db\TableGateway\ProductsByCategoryTable::class), $container);
                 },
                 Model\Order::class => function($container) {
-                    return new Order($container->get(Db\TableGateway\OrdersTable::class));
+                    return new Order($container->get(Db\TableGateway\OrdersTable::class), $container);
                 },
                 Db\TableGateway\ProductsTable::class => Db\TableGateway\Service\ProductsTableFactory::class,
                 Db\TableGateway\CategoriesTable::class => Db\TableGateway\Service\CategoriesTableFactory::class,

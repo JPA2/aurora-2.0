@@ -10,6 +10,6 @@ class ProductsByCategoryTableFactory implements FactoryInterface
 
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = NULL)
     {
-        return new ProductsByCategoryTable('store_products_by_category_lookup', $container->get(EventManager::class));
+        return new ProductsByCategoryTable('store_products_by_category_lookup', $container);
     }
 }

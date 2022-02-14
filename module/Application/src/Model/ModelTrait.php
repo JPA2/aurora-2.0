@@ -30,4 +30,5 @@ trait ModelTrait
     {
         return $this->db->select();
     }
+
 }

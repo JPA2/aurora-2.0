@@ -9,9 +9,9 @@ use Store\Model\Order;
 class OrdersTable extends AbstractDbTableGateway
 {
     use TableGatewayTrait;
-    public function __construct($table, EventManager $e)
+    public function __construct($table, $container)
     {
-        parent::__construct($table, $e);
+        parent::__construct($table, $container);
         $resultSet = new ResultSet();
         $resultSet->setArrayObjectPrototype(new Order($this));
         $this->resultSetPrototype = $resultSet;

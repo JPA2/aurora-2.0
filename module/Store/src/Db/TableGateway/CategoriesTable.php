@@ -2,15 +2,14 @@
 namespace Store\Db\TableGateway;
 use Application\Db\TableGateway\AbstractDbTableGateway;
 use Application\Db\TableGateway\TableGatewayTrait;
-use Laminas\EventManager\EventManager;
 use Laminas\Db\ResultSet\ResultSet;
 use Store\Model\Category;
 class CategoriesTable extends AbstractDbTableGateway
 {
     use TableGatewayTrait;
-    public function __construct($table, EventManager $e)
+    public function __construct($table, $container)
     {
-        parent::__construct($table, $e);
+        parent::__construct($table, $container);
         $resultSet = new ResultSet();
         $resultSet->setArrayObjectPrototype(new Category($this));
         $this->resultSetPrototype = $resultSet;

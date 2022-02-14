@@ -23,11 +23,9 @@ return [
             'store-admin' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/admin/store[/:action[/:area[/:step]]]',
+                    'route' => '/admin/store[/:action]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'area' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
                     'defaults' => [
                         'controller' => Controller\AdminController::class,
@@ -38,7 +36,7 @@ return [
             'store-admin-products' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/admin/store/products[/:action[/:step]]',
+                    'route' => '/admin/store/products[/:action[/:step[/:id]]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'step' => '[a-zA-Z][a-zA-Z0-9_-]*',

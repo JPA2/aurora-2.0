@@ -56,4 +56,5 @@ class Setting extends AbstractModel
             $result = $this->db->update($saveData, ['variable' => $key]);
         }
     }
+
 }

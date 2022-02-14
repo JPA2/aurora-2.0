@@ -40,7 +40,7 @@ class ProductInfo extends Fieldset
             ],
         ]);
         $this->add([
-            'name' => 'category',
+            'name' => 'categoryId',
             'type' => \Laminas\Form\Element\Select::class,
             'attributes' => [
                 //'class' => 'form-control',

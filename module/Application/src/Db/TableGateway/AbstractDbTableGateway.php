@@ -1,13 +1,13 @@
 <?php
 namespace Application\Db\TableGateway;
-use Laminas\EventManager\EventManager;
+use Interop\Container\ContainerInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\TableGateway\Feature\FeatureSet;
 use Laminas\Db\TableGateway\Feature\EventFeature;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\Feature\MetadataFeature;
-
+use Laminas\EventManager\EventManager;
 
 abstract class AbstractDbTableGateway extends AbstractTableGateway
 {
@@ -16,13 +16,13 @@ abstract class AbstractDbTableGateway extends AbstractTableGateway
      * @var string $table
      */
     public $table;
-    public function __construct($table, EventManager $eventManager, ResultSet $resultSetPrototype = null)
+    public function __construct($table, ContainerInterface $container, ResultSet $resultSetPrototype = null)
     {
         $this->table = $table;
         $this->featureSet = new FeatureSet();
         $this->featureSet->addFeature(new GlobalAdapterFeature());
         $this->featureSet->addFeature(new MetadataFeature());
-        $this->featureSet->addFeature(new EventFeature($eventManager));
+        $this->featureSet->addFeature(new EventFeature($container->get(EventManager::class)));
         if($resultSetPrototype instanceof ResultSet)
         {
             $this->resultSetPrototype = $resultSetPrototype;

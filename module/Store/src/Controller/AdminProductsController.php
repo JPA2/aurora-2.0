@@ -4,6 +4,7 @@ use Application\Controller\AbstractAdminController;
 use Laminas\Permissions\Acl\Acl;
 use PhpParser\Node\Stmt\TryCatch;
 use Store\Db\TableGateway\CategoriesTable;
+use Store\Db\TableGateway\ProductsByCategoryTable;
 use Store\Db\TableGateway\ProductsTable;
 use Store\Model\Product;
 use Store\Form\ProductForm;
@@ -57,7 +58,7 @@ class AdminProductsController extends AbstractAdminController
     }
     public function manageProductAction()
     {   
-        $step = $this->params('step', 'add');
+        $step = $this->params('step', 'create');
         $data = [];
         $product = $this->sm->get(Product::class);
         $id = $this->request->getQuery('id', 0);
@@ -68,15 +69,21 @@ class AdminProductsController extends AbstractAdminController
                 {
                     $data = $this->request->getPost();
                     $this->form->setData($data->toArray());
-                    $validationGroup = $this->form->get('product-info')->getElementNames(['id']);
+                    $validationGroup = $this->form->get('product-info')->getElementNames();
                     $this->form->setValidationGroup(['product-info' => $validationGroup]);
                     if($this->form->isValid())
                     {
                         $data = $this->form->getData();
-
                         try {
                             // set breakpoint here to check returned value or get lastAutoIncremented value
-                            $result = $product->insert($data['product-info']);
+                            //$result = $this->productsTable->insert($data['product-info']);
+                            //$prodToCatLookup = $this->sm->get(ProductsByCategoryTable::class);
+                            //$data['product-info']['productId'] = $this->productsTable->getLastInsertValue();
+                            $product->exchangeArray($data['product-info']);
+                            $product->save($product);
+                            // $lookupData['categoryId'] = $catId;
+                            //$result = $prodToCatLookup->insert($lookupData);
+
                         } catch (\Throwable $th) {
                             $this->logger->log(6, $th->getMessage());
                         }
@@ -91,7 +98,7 @@ class AdminProductsController extends AbstractAdminController
                 $product = $product->fetchByColumn('id', $id);
                 if(!$this->request->isPost()) 
                 {
-                    $this->form->setData(['product-info' =>$product->toArray()]);
+                    $this->form->setData(['product-info' => $product->toArray()]);
                 }
             case 'upload-files':
 

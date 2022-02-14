@@ -14,9 +14,9 @@ class SettingsTable extends AbstractDbTableGateway
     const RESOURCE_ID = 'settings';
     const SETTINGS_NAMESPACE = 'aurora';
  
-    public function __construct($table, EventManager $e)
+    public function __construct($table, $container)
     {
-        parent::__construct($table, $e);
+        parent::__construct($table, $container);
         $resultSet = new ResultSet();
         $resultSet->setArrayObjectPrototype(new Setting($this));
         $this->resultSetPrototype = $resultSet;
