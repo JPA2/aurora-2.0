@@ -4,7 +4,7 @@ namespace Application\Controller;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
-use Laminas\Authentication\AuthenticationService as AuthService;
+use Laminas\Authentication\AuthenticationService;
 use User\Model\UserTable as Table;
 use User\Model\User as User;
 use User\Model\Guest;
@@ -95,7 +95,7 @@ abstract class AbstractController extends AbstractActionController
         $this->baseUrl = $this->request->getBasePath();
         $this->basePath = dirname(__DIR__, 4);
         // The authentication Object
-        $this->authService = new AuthService();
+        $this->authService = $this->sm->get(AuthenticationService::class);
         // This removes the need for more than one db query to make settings available to Aurora
         $this->appSettings = $this->sm->get('AuroraSettings');
         // This may be removed in next branch
@@ -112,11 +112,13 @@ abstract class AbstractController extends AbstractActionController
          * @var $view \Laminas\View\Model\ViewModel
          */
         $this->view = new ViewModel();
+        $check = $this->authService->hasIdentity();
+
         // Is the User Authenticated?
         switch ($this->authService->hasIdentity()) {
             case true :
                 $this->authenticated = true;
-                $this->user = $table->fetchByColumn('userName', $this->authService->getIdentity());
+                $this->user = $table->fetchUserContext($this->authService->getIdentity());
                 break;
             default;
                 $user = new Guest();
@@ -129,11 +131,16 @@ abstract class AbstractController extends AbstractActionController
         		'acl' => $this->acl,
         		'debug' => $this->debug
         ]);
-        $this->layout()->appSettings = $this->appSettings;
+        //$this->layout()->appSettings = $this->appSettings;
         $this->action = $this->params()->fromRoute('action');
-        $this->layout()->acl = $this->acl;
-        $this->layout()->user = $this->user;
-        $this->layout()->authenticated = $this->authenticated;
+        //$this->layout()->acl = $this->acl;
+        $this->layout()->setVariables(
+            [
+                'user' => $this->user,
+                'acl'  => $this->acl,
+                'appSettings' => $this->appSettings,
+                'authenticated' => $this->authenticated,
+            ]);
         $this->_init();
         
         return parent::onDispatch($e);

@@ -140,7 +140,7 @@ class ProductInfo extends Fieldset
         // saleStartDate datepicker
         $this->add([
             'name' => 'saleStartDate',
-            'type' => \Laminas\Form\Element\DateSelect::class,
+            'type' => \Laminas\Form\Element\Date::class,
             'attributes' => [
                 //'class' => 'form-control',
             ],
@@ -157,7 +157,7 @@ class ProductInfo extends Fieldset
         // saleEndDate datepicker
         $this->add([
             'name' => 'saleEndDate',
-            'type' => \Laminas\Form\Element\DateSelect::class,
+            'type' => \Laminas\Form\Element\Date::class,
             'attributes' => [
                 //'class' => 'form-control',
             ],

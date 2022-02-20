@@ -7,24 +7,29 @@ use Laminas\Log\Logger;
 class Product extends AbstractModel
 {
     use ModelTrait;
-    private $lookupTable;
-    private $logger;
+    /**
+     * 
+     * @var \Store\Db\TableGateway\ProductsByCategoryTable;
+     */
+    protected $lookupTable;
+    protected $logger;
     public function __construct($tableGateway, $container)
     {
         $this->db = $tableGateway;
         $this->lookupTable = $container->get(ProductsByCategoryTable::class);
         $this->logger = $container->get(Logger::class);
+        // This must be called !!!!!!!!!!!!!
+        parent::__construct($tableGateway, $container);
     }
     public function save(Product $product)
     {
         try {
-            //code...
             $lookupData = [];
-            $lookupData['categoryId'] = $product->offsetGet('categoryId');
-            $product->offsetUnset('categoryId');
+            $lookupData['categoryId'] = $product->categoryId;
+            unset($product->categoryId);
             // decide if this is insert or update 
-            if(empty($this->offsetGet('id'))) {
-                $this->offsetUnset('id');
+            if(empty($product->id)) {
+                unset($product->id);
                 $result = $this->db->insert($product->getArrayCopy());
                 $lookupData['productId'] = $this->db->getLastInsertValue();
                 $result = $this->lookupTable->insert($lookupData);

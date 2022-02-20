@@ -14,123 +14,134 @@ class AdminController extends AbstractAdminController
 {
     public function indexAction()
     {
-        // get an instance of the service manager
-        $sm = $this->getEvent()->getApplication()->getServiceManager();
-        // get the settings table from the service manager
-        $settingsTable = $sm->get('Application\Model\SettingsTableGateway');
-        //$sForm = new SettingsForm('appSettings', ['aSettings' => $settingsTable->fetchSettingsForForm()]);
-
-        $appSettings = $settingsTable->fetchSettingsForForm();
-       // var_dump($appSettings);
-        $form = new Form('appSettings');
-        switch(!$this->request->isPost()) {
-            case true:
-                    foreach ($appSettings as $data) {
-                        //var_dump($data);
-                        switch(strtolower($data['settingType'])) {
-                            case 'checkbox' :
-                                $element = new Checkbox();
-                                $element->setName($data['variable']);
-                                $element->setValue($data['value']);
-                                $element->setLabel($data['label']);
-                                // $element->setAttribute('class', 'form-control');
-                                $element->setLabelAttributes(['class' => 'form-control-sm']);
-                                //$element->setLabelOption('position', 'top');
-                                $form->add($element);
-                                break;
-                            case 'text' :
-                                $element = new Text();
-                                $element->setName($data['variable']);
-                                $element->setValue($data['value']);
-                                $element->setLabel($data['label']);
-                                $element->setAttribute('class', 'form-control');
-                                //$element->setLabelAttributes(['class' => 'form-control']);
-                                //$element->setOption('order', $data['id']);
-                                $form->add($element);
-                                break;
-                            case 'textarea' :
-                                $element = new Textarea();
-                                $element->setName($data['variable']);
-                                $element->setLabel($data['label']);
-                                //$element->setLabelAttributes(['class' => 'form-control']);
-                                $element->setValue($data['value']);
-                                //$element->setOption('order', $data['id']);
-                                $element->setAttribute('class', 'form-control');
-                                $form->add($element);
-                                break;
-                            default:
-                                break;
+        //$this->layout()->terminate();
+        $memberListWidget = $this->forward()->dispatch(
+            \User\Controller\WidgetController::class, 
+            [
+                'action' => 'member-list',
+                'group'  => 'admin',
+            ]);
+        return ['memberListWidget' => $memberListWidget, 'listType' => 'admin'];
+    }
+    public function manageSettingsAction()
+    {
+                // get an instance of the service manager
+                $sm = $this->getEvent()->getApplication()->getServiceManager();
+                // get the settings table from the service manager
+                $settingsTable = $sm->get('Application\Model\SettingsTableGateway');
+                //$sForm = new SettingsForm('appSettings', ['aSettings' => $settingsTable->fetchSettingsForForm()]);
+        
+                $appSettings = $settingsTable->fetchSettingsForForm();
+               // var_dump($appSettings);
+                $form = new Form('appSettings');
+                switch(!$this->request->isPost()) {
+                    case true:
+                            foreach ($appSettings as $data) {
+                                //var_dump($data);
+                                switch(strtolower($data['settingType'])) {
+                                    case 'checkbox' :
+                                        $element = new Checkbox();
+                                        $element->setName($data['variable']);
+                                        $element->setValue($data['value']);
+                                        $element->setLabel($data['label']);
+                                        // $element->setAttribute('class', 'form-control');
+                                        $element->setLabelAttributes(['class' => 'form-control-sm']);
+                                        //$element->setLabelOption('position', 'top');
+                                        $form->add($element);
+                                        break;
+                                    case 'text' :
+                                        $element = new Text();
+                                        $element->setName($data['variable']);
+                                        $element->setValue($data['value']);
+                                        $element->setLabel($data['label']);
+                                        $element->setAttribute('class', 'form-control');
+                                        //$element->setLabelAttributes(['class' => 'form-control']);
+                                        //$element->setOption('order', $data['id']);
+                                        $form->add($element);
+                                        break;
+                                    case 'textarea' :
+                                        $element = new Textarea();
+                                        $element->setName($data['variable']);
+                                        $element->setLabel($data['label']);
+                                        //$element->setLabelAttributes(['class' => 'form-control']);
+                                        $element->setValue($data['value']);
+                                        //$element->setOption('order', $data['id']);
+                                        $element->setAttribute('class', 'form-control');
+                                        $form->add($element);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            
+                        $this->view->setVariable('form',$form);
+                        break;
+                    case false:
+                        $post = $this->request->getPost()->toArray();
+                        //var_dump($post);
+                        foreach ($appSettings as $data) {
+                           // var_dump($data);
+                            switch(strtolower($data['settingType'])) {
+                                case 'checkbox' :
+                                    $element = new Checkbox();
+                                    $element->setName($data['variable']);
+                                   // $element->setValue($data['value']);
+                                    $element->setLabel($data['label']);
+                                    // $element->setAttribute('class', 'form-control');
+                                    $element->setLabelAttributes(['class' => 'form-control-sm']);
+                                    //$element->setLabelOption('position', 'top');
+                                    $form->add($element);
+                                    break;
+                                case 'text' :
+                                    $element = new Text();
+                                    $element->setName($data['variable']);
+                                   // $element->setValue($data['value']);
+                                    $element->setLabel($data['label']);
+                                    $element->setAttribute('class', 'form-control');
+                                    //$element->setLabelAttributes(['class' => 'form-control']);
+                                    //$element->setOption('order', $data['id']);
+                                    $form->add($element);
+                                    break;
+                                case 'textarea' :
+                                    $element = new Textarea();
+                                    $element->setName($data['variable']);
+                                    $element->setLabel($data['label']);
+                                    //$element->setLabelAttributes(['class' => 'form-control']);
+                                    //$element->setValue($data['value']);
+                                    //$element->setOption('order', $data['id']);
+                                    $element->setAttribute('class', 'form-control');
+                                    $form->add($element);
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                    
-                $this->view->setVariable('form',$form);
-                break;
-            case false:
-                $post = $this->request->getPost()->toArray();
-                //var_dump($post);
-                foreach ($appSettings as $data) {
-                   // var_dump($data);
-                    switch(strtolower($data['settingType'])) {
-                        case 'checkbox' :
-                            $element = new Checkbox();
-                            $element->setName($data['variable']);
-                           // $element->setValue($data['value']);
-                            $element->setLabel($data['label']);
-                            // $element->setAttribute('class', 'form-control');
-                            $element->setLabelAttributes(['class' => 'form-control-sm']);
-                            //$element->setLabelOption('position', 'top');
-                            $form->add($element);
-                            break;
-                        case 'text' :
-                            $element = new Text();
-                            $element->setName($data['variable']);
-                           // $element->setValue($data['value']);
-                            $element->setLabel($data['label']);
-                            $element->setAttribute('class', 'form-control');
-                            //$element->setLabelAttributes(['class' => 'form-control']);
-                            //$element->setOption('order', $data['id']);
-                            $form->add($element);
-                            break;
-                        case 'textarea' :
-                            $element = new Textarea();
-                            $element->setName($data['variable']);
-                            $element->setLabel($data['label']);
-                            //$element->setLabelAttributes(['class' => 'form-control']);
-                            //$element->setValue($data['value']);
-                            //$element->setOption('order', $data['id']);
-                            $element->setAttribute('class', 'form-control');
-                            $form->add($element);
-                            break;
-                        default:
-                            break;
-                    }
+                        // at this point it should be post
+                        $form->setData($post);
+                       // var_dump($data);
+                        foreach($post as $variable => $value) {
+                            if($form->has($variable)) {
+                                $element = $form->get($variable);
+                                $element->setValue($value);
+                            }
+                        }
+                        //var_dump($form->getData(FormInterface::VALUES_AS_ARRAY));
+                        if(!$form->isValid()){
+                            return $this->view->setVariable('form', $form);
+                        }
+                        $this->view->setVariable('form', $form);
+                        //var_dump($form->getData(FormInterface::VALUES_AS_ARRAY));
+                        $settingsTable->exchangeArray($form->getData(FormInterface::VALUES_AS_ARRAY));
+                        $settingsTable->updateAll();
+                        //$settingsTable->save($form->getData(FormInterface::VALUES_AS_ARRAY));
+                        $this->redirect()->refresh();
+                        break;
+                    default:
+                        
+                        break;
                 }
-                // at this point it should be post
-                $form->setData($post);
-               // var_dump($data);
-                foreach($post as $variable => $value) {
-                    if($form->has($variable)) {
-                        $element = $form->get($variable);
-                        $element->setValue($value);
-                    }
-                }
-                //var_dump($form->getData(FormInterface::VALUES_AS_ARRAY));
-                if(!$form->isValid()){
-                    return $this->view->setVariable('form', $form);
-                }
-                $this->view->setVariable('form', $form);
-                //var_dump($form->getData(FormInterface::VALUES_AS_ARRAY));
-                $settingsTable->exchangeArray($form->getData(FormInterface::VALUES_AS_ARRAY));
-                $settingsTable->updateAll();
-                //$settingsTable->save($form->getData(FormInterface::VALUES_AS_ARRAY));
-                $this->redirect()->refresh();
-                break;
-            default:
-                
-                break;
-        }
-        // Send the data, including the form to the view
-        return $this->view;
+                // Send the data, including the form to the view
+                return $this->view;
     }
     public function addsettingAction()
     {

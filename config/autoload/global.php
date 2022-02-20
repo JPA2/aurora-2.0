@@ -20,6 +20,10 @@ return [
     'session_config' => [
         'use_cookies' => true,
         'gc_maxlifetime' => 86400,
+        'remember_me_seconds' => 86400,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Strict',
+        //'cookie_secure' => true,
     ],
     'session_storage' => [
         'type' => \Laminas\Session\Storage\SessionArrayStorage::class,

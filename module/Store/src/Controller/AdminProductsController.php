@@ -50,13 +50,12 @@ class AdminProductsController extends AbstractAdminController
     public function indexAction()
     {
         $product = $this->productsTable->fetchByColumn('id', null);
-        $exit = '';
     }
     public function manageSettings()
     {
 
     }
-    public function manageProductAction()
+    public function manageProductsAction()
     {   
         $step = $this->params('step', 'create');
         $data = [];
@@ -69,21 +68,18 @@ class AdminProductsController extends AbstractAdminController
                 {
                     $data = $this->request->getPost();
                     $this->form->setData($data->toArray());
-                    $validationGroup = $this->form->get('product-info')->getElementNames();
+                    /**
+                     * @var \Application\Form\Fieldset\FieldsetTrait $fieldset
+                     */
+                    $fieldset = $this->form->get('product-info');
+                    $validationGroup = $fieldset->getElementNames();
                     $this->form->setValidationGroup(['product-info' => $validationGroup]);
                     if($this->form->isValid())
                     {
                         $data = $this->form->getData();
                         try {
-                            // set breakpoint here to check returned value or get lastAutoIncremented value
-                            //$result = $this->productsTable->insert($data['product-info']);
-                            //$prodToCatLookup = $this->sm->get(ProductsByCategoryTable::class);
-                            //$data['product-info']['productId'] = $this->productsTable->getLastInsertValue();
                             $product->exchangeArray($data['product-info']);
                             $product->save($product);
-                            // $lookupData['categoryId'] = $catId;
-                            //$result = $prodToCatLookup->insert($lookupData);
-
                         } catch (\Throwable $th) {
                             $this->logger->log(6, $th->getMessage());
                         }

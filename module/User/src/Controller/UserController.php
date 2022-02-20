@@ -206,9 +206,10 @@ class UserController extends AbstractController
                     $element->setMessages($messages);
                     break;
             }
-            $this->view->setVariable('form', $form);
-            return $this->view;
+            
         }
+        $this->view->setVariable('form', $form);
+            return $this->view;
     }
     public function loginFailureAction() {}
 }

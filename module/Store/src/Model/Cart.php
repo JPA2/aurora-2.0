@@ -1,6 +1,6 @@
 <?php
 namespace Store\Model;
-use Application\Model\ModelInterface;
+use Laminas\Stdlib\ArrayObject;
 use Interop\Container\ContainerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Permissions\Acl\Acl;
@@ -10,15 +10,15 @@ use Laminas\Session\SessionManager;
 use Laminas\View\Model\ModelInterface as ModelModelInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Store\Db\TableGateway\OrdersTable;
-use Store\Db\TableGateway\ProductsTable;
-use Store\Db\RowGateway\Order;
+use Store\Model\Order;
+use Store\Model\Product;
 use User\Model\Guest;
 use User\Model\User;
 use User\Model\UserTable;
 use function func_get_args;
 use function is_array;
-class Cart implements ModelInterface
+
+class Cart extends ArrayObject
 {
     /**
      * @var \Laminas\Session\Container $sessionContainer
@@ -41,9 +41,13 @@ class Cart implements ModelInterface
      */
     protected $user;
     /**
-     * @var \Store\Db\RowGateway\Order $order
+     * @var \Store\Model\Order $order
      */
     protected $order;
+    /**
+     * @var \Store\Model\Product $product
+     */
+    protected $product;
     /**
      * @var int $itemCount
      */
@@ -54,17 +58,10 @@ class Cart implements ModelInterface
      */
     protected $items = [];
     /**
-     * @var \Store\Db\TableGateway\OrdersTable $orderTable
-     */
-    protected $ordersTable;
-    /**
-     * @var \Store\Db\TableGateway\ProductsTable $productTable
-     */
-    protected $productsTable;
-    /**
      * @var \User\Model\UserTable $userTable
      */
     protected $userTable;
+    protected $data = [];
     /**
      * 
      * @param ContainerInterface $container 
@@ -76,8 +73,8 @@ class Cart implements ModelInterface
     {
         $this->acl = $container->get('Acl');
         $this->auth = $container->get(AuthenticationService::class);
-        $this->productsTable = $container->get(ProductsTable::class);
-        $this->ordersTable = $container->get(OrdersTable::class);
+        $this->product = $container->get(Product::class);
+        $this->order = $container->get(Order::class);
         $this->userTable = $container->get(UserTable::class);
         $this->sessionContainer = new SessionContainer('Cart');
         if($this->auth->hasIdentity())
@@ -88,14 +85,7 @@ class Cart implements ModelInterface
         else {
             $this->user = new Guest();
         }
-    }
-    public function setOrderTable(OrdersTable $orderTable)
-    {
-        $this->orderTable = $this->orderTable;
-    }
-    public function setProductTable(ProductsTable $productTable)
-    {
-        $this->productTable = $productTable;
+        parent::__construct([], ArrayObject::ARRAY_AS_PROPS);
     }
     public function setUser(User $user)
     {

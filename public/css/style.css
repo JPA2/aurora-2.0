@@ -1,15 +1,10 @@
 :root {
     --brand-color: #013755;
 }
-
-.navbar {
-    background-color: var(--brand-color);
-}
-
 .btn-primary {
     background-color: var(--brand-color);
     border-color: var(--brand-color);
 }
 .navbar {
-	background-color:#013755;
+    background-color: var(--brand-color);
 }

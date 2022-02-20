@@ -1,0 +1,34 @@
+<div id="memberListControl" class="text-muted font-weight-normal" data-ListType="<?=$this->listType?>">
+<?php 
+/**
+ * to build the correct link when not using javascript
+ * $this->url($this->route, ['page' => $page]);
+ */
+if ($this->pageCount > 1): ?>
+
+<!-- Previous page link -->
+<?php if (isset($this->previous)): ?>
+  <span data-id="<?=$this->previous?>"><a href="#">&laquo;</a></span> |
+<?php else: ?>
+  <span class="text-muted font-weight-normal">&laquo;</span> |
+<?php endif; ?>
+
+<!-- Numbered page links -->
+<?php foreach ($this->pagesInRange as $page): ?>
+
+    <span data-id="<?=$page?>">
+    <a class="text-success" href="#">
+        <?= $page; ?>
+    </a></span> |
+
+<?php endforeach; ?>
+
+<!-- Next page link -->
+    <span data-id="<?=$page?>">
+  <a class="text-success" href="#">
+    &raquo;
+  </a>
+    </span>
+
+<?php endif; ?>
+</div>

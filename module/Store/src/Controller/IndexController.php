@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Store\Controller;
 use Application\Controller\AbstractController;
 use Store\Model\Cart;
+use Store\Model\Product;
 
 class IndexController extends AbstractController
 {
@@ -17,6 +18,14 @@ class IndexController extends AbstractController
     }
     public function indexAction()
     {
+        $cartData = [];
+        $products = $this->sm->get(Product::class);
+        $allProducts = $products->fetchAll();
+        foreach($allProducts as $entry) {
+            $cartData[] = $entry->getArrayCopy();
+        }
+        $this->cart->items = $cartData;
+        $exit = '';
         return $this->view;
     }
     public function viewOrderAction()

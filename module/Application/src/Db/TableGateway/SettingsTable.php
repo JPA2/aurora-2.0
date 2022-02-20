@@ -18,7 +18,7 @@ class SettingsTable extends AbstractDbTableGateway
     {
         parent::__construct($table, $container);
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Setting($this));
+        $resultSet->setArrayObjectPrototype(new Setting($this, $container));
         $this->resultSetPrototype = $resultSet;
         $this->initialize();
     }

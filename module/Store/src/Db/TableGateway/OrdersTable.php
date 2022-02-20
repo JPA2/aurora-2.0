@@ -13,7 +13,7 @@ class OrdersTable extends AbstractDbTableGateway
     {
         parent::__construct($table, $container);
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Order($this));
+        $resultSet->setArrayObjectPrototype(new Order($this, $container));
         $this->resultSetPrototype = $resultSet;
         $this->initialize();
     }

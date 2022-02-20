@@ -2,7 +2,7 @@
 namespace Application\Model;
 use Application\Model\ModelInterface;
 use Interop\Container\ContainerInterface;
-use Laminas\Db\TableGateway\TableGatewayInterface;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
@@ -18,33 +18,31 @@ ModelInterface
 {
     /**
      * 
-     * @var \Laminas\Db\TableGateway\AbstractTableGateway;
+     * @var \Laminas\Db\TableGateway\AbstractTableGateway $db;
      */
     protected $db;
     /**
+     * @var \Interop\Container\ContainerInterface $container 
+     */
+    protected $container;
+    protected $role;
+    /**
      * Constructor
-     *
-     * @param array|object $input Object values must act like ArrayAccess
-     * @param int          $flags
-     * @param string       $iteratorClass
+     * @param \Laminas\Db\TableGateway\AbstractTableGateway;
+     * @param Interop\Container\ContainerInterface $container
      */
     public function __construct(
-        TableGatewayInterface $tableGateway,
-        ContainerInterface $container = null,
-        $input = [], 
-        $flags = self::ARRAY_AS_PROPS, 
-        $iteratorClass = 'ArrayIterator')
+        AbstractTableGateway $tableGateway,
+        ContainerInterface $container
+        )
     {
         $this->db = $tableGateway;
-        $this->setFlags($flags);
-        $this->storage = $input;
-        $this->setIteratorClass($iteratorClass);
-        $this->protectedProperties = array_keys(get_object_vars($this));
-        parent::__construct($input, $flags, $iteratorClass);
+        $this->container = $container;
+        parent::__construct([], ArrayObject::ARRAY_AS_PROPS);
     }
     public function getRoleId()
     {
-        if($this->offsetExist('role'))
+        if($this->offsetExists('role'))
         {
             return $this->offsetGet('role');
         }
@@ -52,7 +50,7 @@ ModelInterface
     }
     public function getOwnerId()
     {
-        if($this->offsetExist('userId'))
+        if($this->offsetExists('userId'))
         {
             return $this->offsetGet('userId');
         }

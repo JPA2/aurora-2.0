@@ -28,7 +28,7 @@ FormElementProviderInterface
                 	return new Cart($container);
                 },
                 Model\Product::class => function($container) {
-                    return new Product( $container->get(Db\TableGateway\ProductsTable::class), $container);
+                    return new Product($container->get(Db\TableGateway\ProductsTable::class), $container);
                 },
                 Model\Category::class => function($container) {
                     return new Category($container->get(Db\TableGateway\CategoriesTable::class), $container);

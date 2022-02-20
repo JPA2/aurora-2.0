@@ -11,7 +11,7 @@ class CategoriesTable extends AbstractDbTableGateway
     {
         parent::__construct($table, $container);
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Category($this));
+        $resultSet->setArrayObjectPrototype(new Category($this, $container));
         $this->resultSetPrototype = $resultSet;
         $this->initialize();
     }

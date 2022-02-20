@@ -50,14 +50,14 @@ class Module implements ViewHelperProviderInterface
         $this->boostrapTranslation($e);
         
 
-        /** @var TemplateMapResolver $templateMapResolver */
-        $templateMapResolver = $sm->get('ViewTemplateMapResolver');
-        $templateStackResolver = $sm->get('ViewTemplatePathStack');
-        $prefixPathStackResolver = $sm->get('ViewPrefixPathStackResolver');
+        // /** @var TemplateMapResolver $templateMapResolver */
+        // $templateMapResolver = $sm->get('ViewTemplateMapResolver');
+        // $templateStackResolver = $sm->get('ViewTemplatePathStack');
+        // $prefixPathStackResolver = $sm->get('ViewPrefixPathStackResolver');
 
-        // Create and register Skin listener
-        $listener = new SkinListener($templateMapResolver, $templateStackResolver, $prefixPathStackResolver);
-        $listener->attach($application->getEventManager());
+        // // Create and register Skin listener
+        // $listener = new SkinListener($templateMapResolver, $templateStackResolver, $prefixPathStackResolver);
+        // $listener->attach($application->getEventManager());
     }
     public function bootstrapSettings($e)
     {
@@ -146,46 +146,46 @@ class Module implements ViewHelperProviderInterface
     }
     public function bootstrapSession($e)
     {
-        try {
-            $serviceManager = $e->getApplication()->getServiceManager();
-            $session = $serviceManager->get(SessionManager::class);
-            $tableGateway = new TableGateway('session', $serviceManager->get(AdapterInterface::class));
-            $saveHandler  = new DbTableGateway($tableGateway, new DbTableGatewayOptions());
-            $session->setSaveHandler($saveHandler);
-            $session->rememberMe();
-            $session->start();
-            $container = new Session\Container('initialized');
-            //new session creation
-            $request = $serviceManager->get('Request');
-            $session->regenerateId(true);
-            $container->init = 1;
-            $container->remoteAddr = $request->getServer()->get('REMOTE_ADDR');
-            $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
-            $config = $serviceManager->get('Config');
-            $sessionConfig = $config['session'];
-            $chain = $session->getValidatorChain();
+    //    // try {
+    //         $serviceManager = $e->getApplication()->getServiceManager();
+    //         $session = $serviceManager->get(SessionManager::class);
+    //         //$tableGateway = new TableGateway('session', $serviceManager->get(AdapterInterface::class));
+    //        // $saveHandler  = new DbTableGateway($tableGateway, new DbTableGatewayOptions());
+    //         //$session->setSaveHandler($saveHandler);
+    //         $session->rememberMe();
+    //         $session->start();
+    //         $container = new Session\Container('initialized');
+    //         //new session creation
+    //         $request = $serviceManager->get('Request');
+    //         $session->regenerateId(true);
+    //         $container->init = 1;
+    //         $container->remoteAddr = $request->getServer()->get('REMOTE_ADDR');
+    //         $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
+    //         $config = $serviceManager->get('Config');
+    //         $sessionConfig = $config['session'];
+    //         $chain = $session->getValidatorChain();
             
-            foreach ($sessionConfig['validators'] as $validator) {
-                switch ($validator) {
-                    case Validator\HttpUserAgent::class:
-                        $validator = new $validator($container->httpUserAgent);
-                        break;
-                    case Validator\RemoteAddr::class:
-                        $validator = new $validator($container->remoteAddr);
-                        break;
-                    default:
-                        $validator = new $validator();
-                }
-                $chain->attach('session.validate', array($validator, 'isValid'));
-            }
-        } catch (\Laminas\Session\Exception\RuntimeException $e) {
-            //session has expired
-            return;
-        }
-        //let's check if our session is not already created (for the guest or user)
-        if (isset($container->init)) {
-            return;
-        }
+    //         foreach ($sessionConfig['validators'] as $validator) {
+    //             switch ($validator) {
+    //                 case Validator\HttpUserAgent::class:
+    //                     $validator = new $validator($container->httpUserAgent);
+    //                     break;
+    //                 case Validator\RemoteAddr::class:
+    //                     $validator = new $validator($container->remoteAddr);
+    //                     break;
+    //                 default:
+    //                     $validator = new $validator();
+    //             }
+    //             $chain->attach('session.validate', array($validator, 'isValid'));
+    //         }
+    //     // } catch (\Laminas\Session\Exception\RuntimeException $e) {
+    //     //     //session has expired
+    //     //     return;
+    //     // }
+    //     //let's check if our session is not already created (for the guest or user)
+    //     if (isset($container->init)) {
+    //         return;
+    //     }
     }
     public function getServiceConfig()
     {
@@ -193,7 +193,7 @@ class Module implements ViewHelperProviderInterface
             'factories' => [
                 Model\SettingsTableGateway::class => function ($container) {
                     //$dbAdapter = $container->get(AdapterInterface::class);
-                    return new Setting($container->get(Db\TableGateway\SettingsTable::class));
+                    return new Setting($container->get(Db\TableGateway\SettingsTable::class), $container);
                 },
                 Model\ModuleSettings::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);

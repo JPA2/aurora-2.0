@@ -1,0 +1,64 @@
+<div class="row"><!-- open user grid -->
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Recent Members</h4>
+
+                                <?= $this->paginationControl(
+                                    $this->paginator, 
+                                    'Sliding', 
+                                    'user/widget/controls/pagination',
+                                    ['route' => 'widgets', 'action' => 'member-list', 'listType' => $this->listType],
+                                    ); 
+                                ?>
+
+                <div class="table-responsive">
+                    <table id="user-widget" class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="bi-person-circle" style="font-size:2rem;"></div>
+                                </th>
+                                <th> Member Name </th>
+                                <th> Member Group </th>
+                                <th> Signup date </th>
+                                <th> Verified </th>
+                                <th> Account Status </th>
+                                <th> Tools </th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-data">
+                            <?php
+                            /**
+                             * div badge options -
+                             * <div class="badge badge-outline-danger">Rejected</div>
+                             * <div class="badge badge-outline-warning">Pending</div>
+                             * <div class="badge badge-outline-success">Approved</div>
+                             */
+                            ?>
+                            <?php
+                            foreach ($this->paginator as $member) :
+                            ?>
+                                <tr>
+                                    <td>
+                                        <img src="/modules/user/profile/profileImages/<?= $member->profileImage ?>" alt="Not found" />
+                                    </td>
+                                    <td> <?= $member->firstName . ' ' . $member->lastName ?> </td>
+                                    <td> <?= $member->label ?> </td>
+                                    <td> <?= $member->regDate ?> </td>
+                                    <td> </td>
+                                    <td> 04 Dec 2019 </td>
+                                    <td>
+                                        <div class="badge badge-outline-success">Approved</div>
+                                    </td>
+                                </tr>
+                            <?php
+                            endforeach;
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- close user widget grid -->

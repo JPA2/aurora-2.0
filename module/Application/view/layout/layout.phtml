@@ -7,10 +7,10 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle(isset($this->appSettings->appName) ? $this->appSettings->appName : '')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($this->appSettings->appName ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
-        ->prependName('keywords', isset($this->appSettings->seoKeyWords) ? $this->appSettings->seoKeyWords : '')
+        ->prependName('keywords', $this->appSettings->seoKeyWords ?? '')
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
             
@@ -44,7 +44,7 @@
                     >
                      <span class="navbar-toggler-icon"></span>
                     </button>
-                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?=isset($this->appSettings->appName) ? $this->translate($this->appSettings->appName) : 'Home'; ?></a>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate(($this->appSettings->appName ?? 'Home')); ?></a>
                 </div>
                 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -52,7 +52,7 @@
                 <?php 
                 //TODO: move this to a delegator
                 $this->navigation()->setAcl($this->acl);
-                $this->navigation()->setRole($this->user->role);
+                $this->navigation()->setRole($this->user);
                 $this->navigation()->menu()->setUlClass('navbar-nav');
                 echo $this->navigation('Laminas\Navigation\Static')->menu();
                 ?>

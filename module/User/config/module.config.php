@@ -2,6 +2,7 @@
 namespace User;
 
 use Laminas\Router\Http\Segment;
+use Laminas\Router\Http\Literal;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use User\Controller\PasswordController;
 use User\Controller\Service\PasswordControllerFactory;
@@ -90,15 +91,32 @@ return [
                     'defaults' => [
                         'controller' => Controller\AdminController::class,
                         'action' => 'index'
-                    ]
-                ]
-            ]
-        ]
+                    ],
+                ],
+            ],
+            'widgets' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/user/widgets[/:action[/:group[/:page[/:itemsPerPage]]]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'group' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'page' => '[0-9]+',
+                        'itemsPerPage' => '[0-9]+'
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\WidgetController::class,
+                        'action' => 'list'
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\ErrorController::class => InvokableFactory::class,
-            Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class
+            Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class,
+            Controller\WidgetController::class => Controller\Service\WidgetControllerFactory::class,
         ]
     ],
     'navigation' => [
@@ -168,5 +186,17 @@ return [
         'template_path_stack' => [
             'user' => __DIR__ . '/../view'
         ]
-    ]
+    ],
+    'widgets' => [
+        'member_list' => [
+            'items_per_page' => 2,
+            'display_groups' => 'all',
+            'widget_name' => 'Member List',
+        ],
+        'admin_member_list' => [
+            'items_per_page' => 5,
+            'display_groups' => 'admin',
+            'widget_name' => 'Administrators',
+        ],
+    ],
 ];

@@ -1,0 +1,91 @@
+<?php
+namespace User\Controller;
+
+use Application\Controller\AbstractController;
+use Laminas\Mvc\Plugin\Identity;
+use Laminas\Db\Sql\Select;
+use User\Model\UserTable;
+use Laminas\Paginator\Paginator;
+use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
+use Laminas\paginator\AdapterPluginManager;
+
+class WidgetController extends AbstractController
+{
+    /**
+     * 
+     * @var \Laminas\Paginator\Paginator $paginator
+     */
+    protected $paginator;
+    public function __construct()
+    {
+    }
+    public function _init()
+    {
+            $config = $this->sm->get('Config');
+            $group = $this->getEvent()->getRouteMatch()->getParam('group', 'all');
+            $table = $this->sm->get(UserTable::class);
+            $sql = $table->getSql();
+            $select = new Select();
+            $select
+            ->from('user_roles')
+            ->join(
+                'user',
+                'user.role = user_roles.role',
+                [
+                    'userName',
+                    'email',
+                    'sessionLength',
+                    'companyName',
+                    'regDate',
+                    'active',
+                    'verified',
+                ]
+                )
+            ->join(
+                'user_profile',
+                'user_profile.userId = user.id',
+                [
+                    'firstName',
+                    'lastName',
+                    'profileImage',
+                    'age',
+                    'birthday',
+                    'gender',
+                    'race',
+                    'bio',
+                ]
+            )
+            ->order(['user_profile.userId DSC']);
+            if($group === 'all') {
+                $select->where->greaterThan('user_roles.id', 0);
+            }
+            else {
+                $select->where->equalTo('user_roles.role', $group);
+            }
+            $pluginManager = $this->sm->get(\Zend\Paginator\AdapterPluginManager::class);
+            $adapter = $pluginManager->get(DbSelect::class, [$select, $sql, $table->getResultSetPrototype()]);
+            $paginator = new Paginator($adapter);
+            
+            $paginator->setDefaultItemCountPerPage($config['widgets']['member_list']['items_per_page']);
+    
+            $this->paginator = $paginator;
+        $this->view->setTerminal(true);
+    }
+    public function memberListAction()
+    {
+        //$this->view->setTerminal(true);
+        $page = (int) $this->params('page', '1');
+       // $this->paginator->setDefaultItemCountPerPage(1);
+        $this->paginator->setCurrentPageNumber($page);
+        $this->view->setVariables(['paginator' => $this->paginator, 'listType' => $this->config['widgets']['admin_member_list']['display_groups']]);
+        return $this->view;
+    }
+    public function listDataAction()
+    {
+        $page = (int) $this->params('page', '1');
+        //$this->paginator->setDefaultItemCountPerPage(2);
+        $this->paginator->setCurrentPageNumber($page);
+        $this->view->setVariable('paginator', $this->paginator);
+        return $this->view;
+    }
+}

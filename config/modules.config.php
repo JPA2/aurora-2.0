@@ -6,6 +6,8 @@
  * This should be an array of module namespaces used in the application.
  */
 return [
+    'Laminas\Paginator\Adapter\LaminasDb',
+    'Laminas\Paginator',
     'Laminas\Mail',
     'Laminas\Navigation',
     'Laminas\Mvc\Plugin\FilePrg',
@@ -27,7 +29,7 @@ return [
     'Laminas\Router',
     'Laminas\Validator',
     'Laminas\Diactoros',
-    'Laminas\DeveloperTools',
+    //'Laminas\DeveloperTools',
     'Application',
     'User',
     "Store",

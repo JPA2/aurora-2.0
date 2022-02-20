@@ -69,6 +69,7 @@ class ProfileController extends AbstractController
         if ($this->request->isPost()) {
             // We must merge the $_POST and $_FILES because Laminas\Http\Request remaps the $_FILES array
             $merged = array_merge_recursive($this->request->getPost()->toArray(), $this->request->getFiles()->toArray());
+            unset($merged['submit']);
             /**
              * setting this data should hydrate the bound $profile rowgateway object
              */
@@ -76,7 +77,7 @@ class ProfileController extends AbstractController
             if ($form->isValid()) {
                 $profile = $form->getData();
                 // we should get a hydated rowgateway object here
-                var_dump($profile);
+                //var_dump($profile);
                 // we will need this to rename and move the uploaded file
                 $fileFilter = new RenameUpload();
                 // set it to randomize the file name
@@ -92,9 +93,9 @@ class ProfileController extends AbstractController
                 $baseName = $baseNameFilter->filter($filtered['tmp_name']);
                 //var_dump($baseName);
                 $profile->profileImage = $baseName;
-                
                 try {
-                    $result = $this->profileTable->save($profile, true);
+                    //$profile true
+                    $result = $this->profileTable->update($profile->toArray(), ['userId' => $profile->userId]);
                 } catch (RuntimeException $e) {
                     echo $e->getMessage();
                 }
