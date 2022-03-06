@@ -3,7 +3,6 @@ namespace User\View\Helper;
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\Permissions\Acl\Acl;
 use User\Model\User;
-use Application\Utilities\Debug;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Helper\TranslatorAwareTrait;
 
@@ -47,7 +46,6 @@ class UserAwareControl extends AbstractHelper
 	public function buildControl($resource, $type = 'button', $url, array $options = [])
 	{
 		$translator = $this->getTranslator();
-		//Debug::dump($translator);
 		$html = '';
 		$this->setType($type);
 		if($this->type === 'button') {

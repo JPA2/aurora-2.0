@@ -73,7 +73,7 @@ class WidgetController extends AbstractController
     }
     public function memberListAction()
     {
-        //$this->view->setTerminal(true);
+        $this->view->setTerminal(true);
         $page = (int) $this->params('page', '1');
        // $this->paginator->setDefaultItemCountPerPage(1);
         $this->paginator->setCurrentPageNumber($page);
@@ -82,6 +82,7 @@ class WidgetController extends AbstractController
     }
     public function listDataAction()
     {
+        $this->view->setTerminal(true);
         $page = (int) $this->params('page', '1');
         //$this->paginator->setDefaultItemCountPerPage(2);
         $this->paginator->setCurrentPageNumber($page);

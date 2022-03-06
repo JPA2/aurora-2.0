@@ -1,9 +1,9 @@
 <?php
-
 declare(strict_types=1);
-
 namespace Application;
 
+use Application\Controller\AdminController;
+use Application\Controller\IndexController;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -17,7 +17,7 @@ return [
         'router_class' => TranslatorAwareTreeRouteStack::class,
         'routes' => [
             'home' => [
-                'type'    => Literal::class,
+                'type'    => Segment::class,
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
@@ -56,23 +56,47 @@ return [
                     ],
                 ],
             ],
-            'app.admin' => [
-                'type'    => Segment::class,
-                'options' => [
-                    'route'    => '/cms/admin[/:action]',
-                    'defaults' => [
-                        'controller' => Controller\AdminController::class,
-                        'action'     => 'index',
+            'admin' => [
+                'type'    => \Laminas\Router\Http\Placeholder::class,
+                'may_terminate' => true,
+                'child_routes' => [
+                    'dashboard' => [
+                        'may_terminate' => true,
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/admin',
+                            'defaults' => [
+                                'controller' => AdminController::class,
+                                'action' => 'index',
+                            ],
+                        ],
                     ],
-                ],
-            ],
-            'app.admin.add.setting' => [
-                'type'    => Literal::class,
-                'options' => [
-                    'route'    => '/cms/admin/addsetting',
-                    'defaults' => [
-                        'controller' => Controller\AdminController::class,
-                        'action'     => 'addsetting',
+                    'admin.add.setting' => [
+                        'may_terminate' => true,
+                        'type'    => Literal::class,
+                        'options' => [
+                            'route'    => '/admin/addsetting',
+                            'defaults' => [
+                                'controller' => Controller\AdminController::class,
+                                'action'     => 'addsetting',
+                            ],
+                        ],
+                    ],
+                    // need to add route for image uploads
+                    'admin.add.setting' => [
+                        'may_terminate' => true,
+                        'type'    => Segment::class,
+                        'options' => [
+                            'route'    => '/admin/upload[/:module[/:type]]',
+                            'constraints' => [
+                                'module' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'type' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\AdminController::class,
+                                'action'     => 'upload',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -81,7 +105,6 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\AdminController::class => InvokableFactory::class,
         ],
     ],
     'translator' => [
@@ -146,7 +169,7 @@ return [
             ],
             [
                 'label' => 'Admin',
-                'route' => 'app.admin',
+                'uri' => '/admin',
                 'class' => 'nav-link',
                 'resource' => 'admin',
                 'privilege' => 'admin.access',
@@ -155,14 +178,20 @@ return [
         'admin' => [
             [
                 'label' => 'Home',
-                'route' => 'home',
-                'class' => 'nav-link',
-                'order' => '-10',
+                'uri' => '/',
+                'iconClass' => 'mdi mdi-home text-success',
+                'order' => '-100',
             ],
             [
-                'label' => 'App Settings',
-                'route' => 'app.admin',
-                'class' => 'nav-link',
+                'label' => 'Dashboard',
+                'uri' => '/admin',
+                'iconClass' => 'mdi mdi-speedometer text-success',
+                'order' => '-99',
+            ],
+            [
+                'label' => 'Manage Settings',
+                'uri' => '/admin/manage-settings',
+                'iconClass' => 'mdi mdi-wrench text-danger',
                 'resource' => 'admin',
                 'privilege' => 'admin.access',
             ],
@@ -183,6 +212,11 @@ return [
         ],
         'template_path_stack' => [
              __DIR__ . '/../view',
+        ],
+    ],
+    'upload_manager' => [
+        'application' => [
+            'upload_path' => '/images',
         ],
     ],
 ];

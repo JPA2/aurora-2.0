@@ -2,7 +2,7 @@
 namespace User\Controller;
 
 use Application\Controller\AbstractController;
-use Application\Utilities\Mailer;
+use Application\Utils\Mailer;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Form\Form;
 use \RuntimeException;
@@ -67,9 +67,9 @@ class PasswordController extends AbstractController
                             {
                                 // send reset email 
                                 /**
-                                 * @var Application\Utilities\Mailer $mailer
+                                 * @var Application\Utils\Mailer $mailer
                                  */
-                                $mailer = $this->sm->get('Application\Utilities\Mailer');
+                                $mailer = $this->sm->get('Application\Utils\Mailer');
                                 try {
                                     //code...
                                     $mailer->sendMessage($post['email'], Mailer::RESET_PASSWORD, $hash);

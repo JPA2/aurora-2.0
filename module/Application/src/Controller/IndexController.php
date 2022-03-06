@@ -31,7 +31,7 @@ class IndexController extends AbstractController
             if($form->isValid())
             {
                 $data = $form->getData();
-                $mailer = $this->sm->get('Application\Utilities\Mailer');
+                $mailer = $this->sm->get('Application\Utils\Mailer');
                 $mailer->contactUsMessage($data['email'], $data['fullName'], $data['message']);
                 $this->flashMessenger()->addSuccessMessage('Thank you for contacting us, your message was sent');
                 return $this->redirect()->toRoute('home');

@@ -24,15 +24,19 @@ class Product extends AbstractModel
     public function save(Product $product)
     {
         try {
+            $data = $product->getArrayCopy();
             $lookupData = [];
-            $lookupData['categoryId'] = $product->categoryId;
-            unset($product->categoryId);
+            $lookupData['categoryId'] = $data['categoryId'];
+            unset($data['categoryId']);
             // decide if this is insert or update 
-            if(empty($product->id)) {
-                unset($product->id);
-                $result = $this->db->insert($product->getArrayCopy());
-                $lookupData['productId'] = $this->db->getLastInsertValue();
+            if(empty($data['id'])) {
+                unset($data['id']);
+                $result = $this->db->insert($data);
+                $data['id'] = $lookupData['productId'] = $this->db->getLastInsertValue();
+                $data['categoryId'] = $lookupData['categoryId']; // make sure the returned object has the correct context
+                $product->exchangeArray($data);
                 $result = $this->lookupTable->insert($lookupData);
+                return $product;
             }
             else {
                 // we need to run an update with a join

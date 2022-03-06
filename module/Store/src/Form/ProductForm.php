@@ -10,6 +10,10 @@ class ProductForm extends Form
     public function init()
     {
         $this->add([
+            // you are not required to set a name here as the fieldset overrides it during construction
+            'type' => \Uploader\Fieldset\UploaderAwareFieldset::class,
+        ]);
+        $this->add([
             'name' => 'product-info',
             'type' => \Store\Form\Fieldset\ProductInfo::class
         ]);

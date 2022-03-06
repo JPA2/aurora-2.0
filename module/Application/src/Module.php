@@ -1,22 +1,17 @@
 <?php
-
 declare(strict_types=1);
-
 namespace Application;
-use Application\Listener\SkinListener;
+
+use Application\Controller\AdminController;
+use Application\Controller\Factory\AdminControllerFactory;
+use Application\Listener\AjaxListener;
 use Application\Model\Setting;
 use Application\Model\ModuleSettings;
-use Application\Utilities\Mailer;
-use Application\Utilities\Debug;
+use Application\Utils\Mailer;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Adapter as dbAdapter;
 use Laminas\Session;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Session\SessionManager;
-//use Laminas\Session\Config\SessionConfig;
-//use Laminas\Session\Container;
-use Laminas\Session\Validator;
-//use Laminas\Mvc\Application;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 use Laminas\Session\SaveHandler\DbTableGateway;
@@ -27,12 +22,18 @@ use Laminas\Log\Writer\Db as Dbwriter;
 use Laminas\Log\Writer\FirePhp;
 use Laminas\Log\Formatter\Db as DbFormatter;
 use Laminas\Log\Formatter\FirePhp as FireBugformatter;
-use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\Config\Config;
 use Laminas\ModuleManager\Feature\ViewHelperProviderInterface;
+use Laminas\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\ModuleManager\Feature\ServiceProviderInterface;
+use Laminas\ModuleManager\Feature\ControllerProviderInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
-class Module implements ViewHelperProviderInterface
+class Module implements 
+ConfigProviderInterface,
+ServiceProviderInterface,
+ControllerProviderInterface,
+ViewHelperProviderInterface
 {
     public function getConfig(): array
     {
@@ -42,22 +43,19 @@ class Module implements ViewHelperProviderInterface
     public function onBootstrap(MvcEvent $e)
     {
         $application = $e->getApplication();
+        //$this->bootstrapListeners($e);
         $sm = $e->getApplication()->getServiceManager();
         \Laminas\Db\TableGateway\Feature\GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->bootstrapSettings($e);
-        $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
         $this->boostrapTranslation($e);
-        
 
-        // /** @var TemplateMapResolver $templateMapResolver */
-        // $templateMapResolver = $sm->get('ViewTemplateMapResolver');
-        // $templateStackResolver = $sm->get('ViewTemplatePathStack');
-        // $prefixPathStackResolver = $sm->get('ViewPrefixPathStackResolver');
-
-        // // Create and register Skin listener
-        // $listener = new SkinListener($templateMapResolver, $templateStackResolver, $prefixPathStackResolver);
-        // $listener->attach($application->getEventManager());
+    }
+    public function bootstrapListeners($e)
+    {
+        // $app = $e->getApplication();
+        // $ajaxListener = new AjaxListener();
+        // $ajaxListener->attach($app->getEventManager(), -99);
     }
     public function bootstrapSettings($e)
     {
@@ -144,49 +142,6 @@ class Module implements ViewHelperProviderInterface
             Logger::registerErrorHandler($logger);
         }
     }
-    public function bootstrapSession($e)
-    {
-    //    // try {
-    //         $serviceManager = $e->getApplication()->getServiceManager();
-    //         $session = $serviceManager->get(SessionManager::class);
-    //         //$tableGateway = new TableGateway('session', $serviceManager->get(AdapterInterface::class));
-    //        // $saveHandler  = new DbTableGateway($tableGateway, new DbTableGatewayOptions());
-    //         //$session->setSaveHandler($saveHandler);
-    //         $session->rememberMe();
-    //         $session->start();
-    //         $container = new Session\Container('initialized');
-    //         //new session creation
-    //         $request = $serviceManager->get('Request');
-    //         $session->regenerateId(true);
-    //         $container->init = 1;
-    //         $container->remoteAddr = $request->getServer()->get('REMOTE_ADDR');
-    //         $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
-    //         $config = $serviceManager->get('Config');
-    //         $sessionConfig = $config['session'];
-    //         $chain = $session->getValidatorChain();
-            
-    //         foreach ($sessionConfig['validators'] as $validator) {
-    //             switch ($validator) {
-    //                 case Validator\HttpUserAgent::class:
-    //                     $validator = new $validator($container->httpUserAgent);
-    //                     break;
-    //                 case Validator\RemoteAddr::class:
-    //                     $validator = new $validator($container->remoteAddr);
-    //                     break;
-    //                 default:
-    //                     $validator = new $validator();
-    //             }
-    //             $chain->attach('session.validate', array($validator, 'isValid'));
-    //         }
-    //     // } catch (\Laminas\Session\Exception\RuntimeException $e) {
-    //     //     //session has expired
-    //     //     return;
-    //     // }
-    //     //let's check if our session is not already created (for the guest or user)
-    //     if (isset($container->init)) {
-    //         return;
-    //     }
-    }
     public function getServiceConfig()
     {
         return [
@@ -200,16 +155,20 @@ class Module implements ViewHelperProviderInterface
                     return new ModuleSettings(new TableGateway('modulesettings', $dbAdapter, new RowGatewayFeature('id')));
                 },
                 Db\TableGateway\SettingsTable::class => Db\TableGateway\Service\SettingsTableFactory::class,
-                Utilities\Mailer::class => function($container) {
+                Utils\Mailer::class => function($container) {
                     $settings = $container->get('AuroraSettings');
                     $request = $container->get('request');
                     return new Mailer($settings, $request, $container);
                 },
-                Utilities\Debug::class => function($container) {
-                	return new Debug();
-                },
             ],
-            
+        ];
+    }
+    public function getControllerConfig()
+    {
+        return [
+            'factories' => [
+                Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
+            ],
         ];
     }
     public function getViewHelperConfig()

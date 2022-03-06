@@ -2,7 +2,6 @@
 namespace Application\View\Helper;
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\Permissions\Acl\Acl;
-use Application\Utilities\Debug;
 
 class IconifiedControl extends AbstractHelper
 {

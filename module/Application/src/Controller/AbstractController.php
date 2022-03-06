@@ -22,11 +22,6 @@ abstract class AbstractController extends AbstractActionController
      * @var \Laminas\ServiceManager\ServiceManager $sm
      */
     public $sm;
-    /**
-     *
-     * @var \Application\Utilities\Debug $debug
-     */
-    public $debug;
     public $baseUrl;
     public $basePath;
     /**
@@ -84,7 +79,6 @@ abstract class AbstractController extends AbstractActionController
     {
         // Get an instance of the Service Manager
         $this->sm = $e->getApplication()->getServiceManager();
-        $this->debug = $this->sm->get('Application\Utilities\Debug');
         // Request Object
         $request = $this->sm->get('Request');
         // The Referring Url for the current request ie the previous page
@@ -128,8 +122,7 @@ abstract class AbstractController extends AbstractActionController
         $this->view->setVariables([
         		'appSettings' => $this->appSettings,
         		'user' => $this->user,
-        		'acl' => $this->acl,
-        		'debug' => $this->debug
+        		'acl' => $this->acl
         ]);
         //$this->layout()->appSettings = $this->appSettings;
         $this->action = $this->params()->fromRoute('action');

@@ -9,6 +9,11 @@ class AdminController extends AbstractAdminController
     {
         
     }
+    public function overviewAction()
+    {
+        $this->view->setTerminal(true);
+        return $this->view;
+    }
     public function indexAction()
     {
 

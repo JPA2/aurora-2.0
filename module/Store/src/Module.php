@@ -62,6 +62,7 @@ FormElementProviderInterface
         return [
             'factories' => [
                 Form\Fieldset\ProductInfo::class => Form\Fieldset\Factory\ProductInfoFactory::class,
+                Form\Fieldset\ProductImages::class => Form\Fieldset\Factory\ProductImagesFactory::class,
             ],
         ];
     }

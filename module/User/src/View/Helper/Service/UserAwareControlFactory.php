@@ -1,7 +1,6 @@
 <?php
 namespace User\View\Helper\Service;
 
-use Application\Utilities\Debug;
 use Laminas\ServiceManager\ServiceManager;
 use User\View\Helper\UserAwareControl;
 use User\Model\Guest;

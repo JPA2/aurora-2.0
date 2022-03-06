@@ -16,6 +16,7 @@ class ProductInfo extends Fieldset
     }
     public function init()
     {
+
         $this->add([
             'name' => 'id',
             'type' => \Laminas\Form\Element\Hidden::class,
@@ -54,7 +55,7 @@ class ProductInfo extends Fieldset
             'name' => 'description',
             'type' => \Laminas\Form\Element\Textarea::class,
             'attributes' => [
-                //'class' => 'form-control',
+                'id' => 'description',
             ],
             'options' => [
                 'label' => 'Product Description:'
@@ -129,6 +130,7 @@ class ProductInfo extends Fieldset
         // discount decimal 3,2
         $this->add([
             'name' => 'discount',
+            'required' => false,
             'type' => \Laminas\Form\Element\Number::class,
             'attributes' => [
                 'width' => '50%',

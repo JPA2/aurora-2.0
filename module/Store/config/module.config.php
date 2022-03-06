@@ -1,6 +1,11 @@
 <?php
+
 namespace Store;
+
 use Laminas\Router\Http\Segment;
+use Laminas\Router\Http\Literal;
+use Laminas\Router\Http\Placeholder;
+use Uploader\Adapter\TableGatewayAdapter;
 return [
     'router' => [
         'routes' => [
@@ -20,53 +25,60 @@ return [
                     ],
                 ],
             ],
-            'store-admin' => [
-                'type' => Segment::class,
+            'admin.store' => [
+                'type' => Placeholder::class,
+                'may_terminate' => true,
                 'options' => [
-                    'route' => '/admin/store[/:action]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\AdminController::class,
-                        'action' => 'index'
-                    ],
+                    'route' => '/admin/store',
                 ],
-            ],
-            'store-admin-products' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/admin/store/products[/:action[/:step[/:id]]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                'child_routes' => [
+                    'overview' => [
+                        'type' => Literal::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/admin/store/overview',
+                            'defaults' => [
+                                'controller' => Controller\AdminController::class,
+                                'action' => 'overview',
+                            ],
+                        ],
                     ],
-                    'defaults' => [
-                        'controller' => Controller\AdminProductsController::class,
-                        'action' => 'index'
+                    'manage.product' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/admin/store/products[/:action[/:step[/:id]]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\AdminProductsController::class,
+                                'action' => 'manage',
+                            ],
+                        ],
                     ],
-                ],
-            ],
-            'shipping' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/store/shipping[/:action[/:orderId]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'orderId' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ShippingController::class,
-                        'action' => 'index'
+                    'create.category' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/admin/store/categories[/:action[/:step[/:id]]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\AdminProductsController::class,
+                                'action' => 'manage-gategories',
+                            ],
+                        ],
                     ],
                 ],
             ],
         ],
     ],
-    // 'controllers' => [
-
-    // ],
     'navigation' => [
         'static' => [
             [
@@ -80,17 +92,68 @@ return [
         ],
         'admin' => [
             [
-                'label' => 'Store Admin',
-                'route' => 'store-admin',
-                'class' => 'nav-link',
+                'label' => 'Manage Store',
+                'uri' => '/admin/store',
                 'resource' => 'admin',
                 'privilege' => 'admin.access',
+                'name' => 'Manage Store',
+                'order' => -10,
+                'iconClass' => 'mdi mdi-laptop',
+                'pages' =>
+                [
+                    [
+                        'label' => 'Store Overview',
+                        'route' => 'admin.store/overview',
+                        'resource' => 'admin',
+                        'privilege' => 'admin.access',
+                    ],
+                    [
+                        'label' => 'Add Category',
+                        'route' => 'admin.store/create.category',
+                        'resource' => 'admin',
+                        'privilege' => 'admin.access'
+                    ],
+                    [
+                        'label' => 'Add Product',
+                        'route' => 'admin.store/manage.product',
+                        'action' => 'manage',
+                        'resource' => 'admin',
+                        'privilege' => 'admin.access'
+                    ],
+                ],
             ]
         ],
     ],
     'view_manager' => [
         'template_path_stack' => [
             'store' => __DIR__ . '/../view'
+        ],
+    ],
+    'upload_manager' => [
+        'store' => [
+            'adapter' => TableGatewayAdapter::class,
+            // if not using the type configuration below the uploader will use a image_dir key for the directory name to upload too
+            //'image_dir' => 'images',
+            'type' => [
+                'products' => [
+                    'upload_path' => '/products/images',
+                ],
+                'categories' => [
+                    'upload_path' => '/categories/images',
+                ],
+            ],
+            'db_config' => [
+                'table_name' => 'store_images',
+                'image_column' => 'fileName', // if the record is to be saved this key must be present and must math the key in the columns below
+                'columns' => [
+                    'userId',
+                    'productId',
+                    'categoryId',
+                    'type',
+                    'fileName',
+                    'active',
+                ],
+            ],
         ],
     ],
 ];

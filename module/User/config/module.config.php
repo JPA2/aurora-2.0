@@ -80,10 +80,10 @@ return [
                     ]
                 ]
             ],
-            'user.admin' => [
+            'admin.user' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/user/admin[/:action[/:id]]',
+                    'route' => '/admin/user[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+'
@@ -163,9 +163,9 @@ return [
         ],
         'admin' => [
             [
-                'label' => 'Admin Users',
-                'route' => 'user.admin',
-                'class' => 'nav-link',
+                'label' => 'Manage Users',
+                'route' => 'admin.user',
+                'iconClass' => 'mdi mdi-account-multiple text-primary',
                 // 'controller' => 'admin',
                 'action' => 'index',
                 'resource' => 'admin',
@@ -174,7 +174,7 @@ return [
             [
                 'label' => 'Logout',
                 'route' => 'user',
-                'class' => 'nav-link',
+                'iconClass' => 'mdi mdi-logout text-success',
                 'action' => 'logout',
                 'resource' => 'user',
                 'privilege' => 'logout',

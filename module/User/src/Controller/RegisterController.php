@@ -4,7 +4,7 @@ namespace User\Controller;
 
 use Application\Controller\AbstractController;
 use Application\Event\LogEvents;
-use Application\Utilities\Mailer;
+use Application\Utils\Mailer;
 use Laminas\Validator\Db\NoRecordExists as Validator;
 use Laminas\Mail\Message;
 use User\Form\UserForm;
@@ -33,7 +33,7 @@ class RegisterController extends AbstractController
     {
         $formFilters = new FormFilters(null, $this->table);
         $sm = $this->getEvent()->getApplication()->getServiceManager();
-        $mailer = $sm->get('Application\Utilities\Mailer');        
+        $mailer = $sm->get('Application\Utils\Mailer');        
         if($this->appSettings->disableRegistration) {
            return $this->view; 
         }
@@ -71,7 +71,7 @@ class RegisterController extends AbstractController
         $formData['regDate'] = $timeStamp;
         $formData['regHash'] = $hash;
         // save the new user, $result should be the new users Id
-        $result = $this->table->save($formData);
+        $result = $this->table->insert($formData);
         $this->debug::dump($result, '$result');
         $sendEmail = false;
         if($result > 0) {
@@ -81,7 +81,7 @@ class RegisterController extends AbstractController
              */
             $profileTable = $this->sm->get('User\Model\ProfileTable');
             $data['userId'] = $result;
-            $profileInsertResult = $profileTable->save($data);
+            $profileInsertResult = $profileTable->insert($data);
             if(!$profileInsertResult > 0) {
                 throw new \RuntimeException('Default Profile data was not saved!!');
             }
