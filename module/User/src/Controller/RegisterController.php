@@ -27,7 +27,7 @@ class RegisterController extends AbstractController
         $this->table = $table;
     }
 	/**
-	 * The default action - show the home page
+	 * The default action - show the action
 	 */
     public function indexAction()
     {
@@ -39,23 +39,21 @@ class RegisterController extends AbstractController
         }
         $form = new UserForm('RegistrationForm', $this->appSettings->toArray());
         $form->get('submit')->setValue('Register');
-        
-        $request = $this->getRequest();
-        if (! $request->isPost()) {
+
+        if (! $this->request->isPost()) {
             // Initial page load, send them the form
             return $this->view->setVariable('form', $form);
         }
         // if weve made it to here then its a post request
-        $post = $request->getPost();
-        // we have to have a new one of these so we can hydrate it and call the dbadapter for the validators
-        
-        //$user->setDbAdapter($this->table->getAdapter());
+        $post = $this->request->getPost();
+
         $form->setInputFilter($formFilters->getInputFilter());
-        $form->setData($request->getPost());
+        $form->setData($this->request->getPost());
         // Is the posted form data valid? if not send them the form back and the problems 
         // reported by the filters and validators
         if (! $form->isValid()) {
-            return ['form' => $form];
+            $this->view->setVariable('form', $form);
+            return $this->view;
         }
         // at this point the form has posted and were ready to kick this off
         $now = new \DateTime();
@@ -70,9 +68,11 @@ class RegisterController extends AbstractController
         $token = $formData['email'] . $hash;
         $formData['regDate'] = $timeStamp;
         $formData['regHash'] = $hash;
+        unset($formData['conf_password']);
+        unset($formData['captcha']);
+        unset($formData['submit']);
         // save the new user, $result should be the new users Id
         $result = $this->table->insert($formData);
-        $this->debug::dump($result, '$result');
         $sendEmail = false;
         if($result > 0) {
             /**

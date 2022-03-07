@@ -117,13 +117,16 @@ class UserTable extends TableGateway
         //var_dump($row);
         //$this->logger->info("__FILE__ __LINE__", );
         //unset($row->password);
-        if (!$row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $userName
-            ));
+        try {
+            if (!$row) {
+                throw new RuntimeException(sprintf(
+                    'Could not find row with identifier %d',
+                    $userName
+                ));
+            }
+        } catch (\Throwable $th) {
+            $row = $this->fetchByColumn('userName', $userName);
         }
-
         return $row;
     }
     public function loadMemberContext()

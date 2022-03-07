@@ -107,11 +107,13 @@ abstract class AbstractController extends AbstractActionController
          */
         $this->view = new ViewModel();
         $check = $this->authService->hasIdentity();
-
+        //$this->authService->clearIdentity();
         // Is the User Authenticated?
         switch ($this->authService->hasIdentity()) {
             case true :
                 $this->authenticated = true;
+                $ident = $this->authService->getIdentity();
+                
                 $this->user = $table->fetchUserContext($this->authService->getIdentity());
                 break;
             default;
