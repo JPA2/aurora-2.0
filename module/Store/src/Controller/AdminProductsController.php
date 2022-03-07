@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 namespace Store\Controller;
+
 use Application\Controller\AbstractAdminController;
 use Laminas\Permissions\Acl\Acl;
-use PhpParser\Node\Stmt\TryCatch;
 use Store\Db\TableGateway\CategoriesTable;
 use Store\Db\TableGateway\ProductsByCategoryTable;
 use Store\Db\TableGateway\ProductsTable;
 use Store\Model\Product;
 use Store\Form\ProductForm;
-use Store\Form\Fieldset\ProductImages;
+use Uploader\Fieldset\UploaderAwareMultiFile;
 
 class AdminProductsController extends AbstractAdminController
 {
@@ -94,8 +95,10 @@ class AdminProductsController extends AbstractAdminController
                             $product->exchangeArray($data['product-info']);
                             $product->save($product);
                             $this->form->remove('product-info');
-                            $imageFieldset = $this->sm->get(ProductImages::class);
-                            $this->form->add($imageFieldset->init());
+                            $imageFieldset = $this->sm->get(UploaderAwareMultiFile::class);
+                            $imageFieldset->init();
+                            $this->form->add( $imageFieldset );
+                            
                         } catch (\Throwable $th) {
                             $this->logger->log(6, $th->getMessage());
                         }
@@ -103,7 +106,7 @@ class AdminProductsController extends AbstractAdminController
                     }
                     else {
                         $this->view->setVariable('form', $this->form);
-                        return $this->view;
+                        //return $this->view;
                     }
                     
                 }
@@ -133,8 +136,8 @@ class AdminProductsController extends AbstractAdminController
                     $this->form->setData(['product-info' => $product->toArray()]);
                 }
             case 'upload-files':
-                // this is next step, create the image upload fieldset
-                // add progress bars, try multiple upload
+                // set correct step, listener is intercepting in the javascript file, need to check that in the morning...
+                // finish model save() method to handle updates
                 break;
             case 'delete':
                 // delete the product by id

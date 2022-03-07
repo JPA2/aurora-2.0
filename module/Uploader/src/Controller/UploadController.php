@@ -39,4 +39,8 @@ class UploadController extends AbstractActionController
     {
 
     }
+    public function progressAction()
+    {
+        
+    }
 }

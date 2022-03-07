@@ -11,6 +11,8 @@ use Uploader\AdapterPluginManager;
 use Uploader\AdapterPluginManagerFactory;
 use Uploader\Controller\Factory\UploadControllerFactory;
 use Uploader\Controller\UploadController;
+use Uploader\Fieldset\Factory\UploaderAwareFieldsetFactory;
+use Uploader\Fieldset\UploaderAwareMultiFile;
 use Uploader\Uploader;
 use Uploader\UploaderFactory;
 
@@ -50,6 +52,7 @@ FormElementProviderInterface
         return [
             'factories' => [
                 Fieldset\UploaderAwareFieldset::class => Fieldset\Factory\UploaderAwareFieldsetFactory::class,
+                Fieldset\UploaderAwareMultiFile::class => Fieldset\Factory\UploaderAwareMultiFileFactory::class,
             ],
         ];
     }

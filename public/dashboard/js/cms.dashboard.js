@@ -73,14 +73,15 @@ $(document).bind("ajaxComplete", function() {
     });
 });
 /**
- * // attach to the #workSpace form
+ * // Delegate a listener for any submit coming from a child of the workSpace
  */
-$('div#workSpace').on("submit", function(event){
+$('div#workSpace').on("submit", function(event) {
     event.preventDefault();
-    ////
-    let location = $(this).attr("action");
-    let postData = $(this).serialize();
-    let formMethod = $(this).attr("method");
+    let f = $(event.target);
+    let location = $(f).attr("action");
+    let postData = $(f).serialize();
+    let formMethod = $(f).attr("method");
+    console.log(postData);
     let request = $.ajax({
         // handle all of the form submissions based on form action and the data
         url: location,
