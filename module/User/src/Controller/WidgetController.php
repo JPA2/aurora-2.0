@@ -34,7 +34,7 @@ class WidgetController extends AbstractController
                 [
                     'userName',
                     'email',
-                    'sessionLength',
+                    //'sessionLength',
                     'companyName',
                     'regDate',
                     'active',
