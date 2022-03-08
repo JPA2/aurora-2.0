@@ -6,6 +6,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\EventManager\EventManager;
 use Uploader\Adapter\TableGatewayAdapter;
 use Uploader\AdapterPluginManager;
 use Uploader\Uploader;
@@ -24,6 +25,7 @@ class TableGatewayAdapterFactory implements FactoryInterface
         return new TableGatewayAdapter(
             $container->get(AdapterInterface::class), 
             $container->get('config'),
+            $container->get(EventManager::class),
             $logger ?? null
         );
     }

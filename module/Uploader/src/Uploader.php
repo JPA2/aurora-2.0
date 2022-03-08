@@ -68,6 +68,11 @@ class Uploader
     }
     public function upload()
     {
+        $this->adapter->getEventManager()->attach(__FUNCTION__, function($e){
+            $event = $e->getName();
+            $target = get_class($e->getTarget());
+            $params = $e->getParams();
+        });
         $this->adapter->upload();
     }
     public function getPublicPath()

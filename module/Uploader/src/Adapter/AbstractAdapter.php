@@ -1,14 +1,22 @@
 <?php
 declare(strict_types=1);
 namespace Uploader\Adapter;
+use Laminas\EventManager\EventManager;
+use Laminas\EventManager\EventManagerAwareInterface;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\SharedEventManager;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Filter\BaseName;
 use Laminas\Log\Logger;
 use Uploader\Adapter\AdapterInterface;
 use RuntimeException;
 
-abstract class AbstractAdapter implements AdapterInterface
+abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInterface
 {
+    /**
+     * @var  \Laminas\EventManager\EventManager $eventManager
+     */
+    protected $eventManager;
     /**
      * 
      * @var \Laminas\Log\Logger $logger
@@ -73,7 +81,23 @@ abstract class AbstractAdapter implements AdapterInterface
      * @var bool $useUploadedExt
      */
     protected $useUploadedExt = true;
-
+    /**
+     * 
+     * @param EventManagerInterface $eventManager 
+     * @return void 
+     */
+    public function setEventManager(EventManagerInterface $eventManager)
+    {
+        $eventManager->setIdentifiers([__CLASS__, get_class($this)]);
+        $this->eventManager = $eventManager;
+    }
+    public function getEventManager()
+    {
+        if(!$this->eventManager) {
+            $this->setEventManager(new EventManager());
+        }
+        return $this->eventManager;
+    }
     public function getConfig(array $config)
     {
        if(!isset($config['upload_manager'])) {

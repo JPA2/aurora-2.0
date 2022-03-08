@@ -5,6 +5,7 @@ namespace Uploader\Adapter;
 
 use Laminas\Db\Adapter\AdapterInterface as DbAdapterInterface;
 use Laminas\Db\TableGateway\TableGateway as TableGateway;
+use Laminas\EventManager\EventManager;
 use Laminas\Log\Logger;
 use Uploader\Adapter\AbstractAdapter;
 use RuntimeException;
@@ -30,10 +31,11 @@ class TableGatewayAdapter extends AbstractAdapter
      * @param DbAdapterInterface $dbAdapter 
      * @return void 
      */
-    public function __construct(DbAdapterInterface $dbAdapter, array $config, Logger $logger = null)
+    public function __construct(DbAdapterInterface $dbAdapter, array $config, EventManager $eventManager, Logger $logger = null)
     {
         $this->dbAdapter = $dbAdapter;
         $this->getConfig($config);
+        $this->setEventManager($eventManager);
         if($logger instanceof Logger) {
             $this->logger = $logger;
         }
@@ -91,6 +93,10 @@ class TableGatewayAdapter extends AbstractAdapter
                     }
                 }
                 $this->table->insert($data);
+                $module = $this->module;
+                $baseName = $this->baseName;
+                $params = compact('module', 'baseName');
+                $this->getEventManager()->trigger(__FUNCTION__, $this, $params);
             } catch (\Throwable $th) {
                 $this->logger->log(Logger::ERR, $th->getMessage());
             }

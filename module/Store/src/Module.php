@@ -4,11 +4,13 @@ use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\ModuleManager\Feature\ServiceProviderInterface;
 use Laminas\ModuleManager\Feature\ControllerProviderInterface;
 use Laminas\ModuleManager\Feature\FormElementProviderInterface;
+use Laminas\Mvc\MvcEvent;
 use Store\Model\Cart;
 use Store\Model\Order;
 use Store\Model\Category;
 use Store\Model\Product;
 use Store\Model\ProductByCategory;
+use Store\Listener\UploadListener;
 
 class Module implements 
 ConfigProviderInterface, 
@@ -19,6 +21,12 @@ FormElementProviderInterface
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
+    }
+    public function onBootstrap(MvcEvent $e)
+    {
+        $app = $e->getApplication();
+        $uploadListener = new UploadListener();
+        $uploadListener->attach($app->getEventManager(), 10);
     }
     public function getServiceConfig()
     {

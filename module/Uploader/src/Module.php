@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
-
 namespace Uploader;
+
 use Laminas\ModuleManager\Feature\FormElementProviderInterface;
 use Laminas\ModuleManager\Feature\ControllerProviderInterface;
 use Laminas\ModuleManager\Feature\ServiceProviderInterface;
+use Laminas\Mvc\MvcEvent;
 use Uploader\Adapter\Factory\TableGatewayAdapterFactory;
 use Uploader\Adapter\TableGatewayAdapter;
 use Uploader\AdapterPluginManager;
@@ -15,6 +16,7 @@ use Uploader\Fieldset\Factory\UploaderAwareFieldsetFactory;
 use Uploader\Fieldset\UploaderAwareMultiFile;
 use Uploader\Uploader;
 use Uploader\UploaderFactory;
+use Store\Listener\UploadListener;
 
 class Module implements 
 ControllerProviderInterface,
