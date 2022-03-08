@@ -90,7 +90,7 @@ class UserTable extends TableGateway
                         'userName',
                         'email',
                         'role',
-                        'sessionLength',
+                        //'sessionLength',
                         'companyName',
                         'regDate',
                         'active',
