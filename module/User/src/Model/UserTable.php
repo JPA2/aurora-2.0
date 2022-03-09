@@ -82,6 +82,9 @@ class UserTable extends TableGateway
     public function fetchUserContext($userName)
     {
         $userName = (string) $userName;
+        /**
+         * @var \Laminas\Db\ResultSet $rowset
+         */
         $rowset = $this->select(function (Select $select) use ($userName) {
             $select->where(['user.userName' => $userName])
                 ->columns(

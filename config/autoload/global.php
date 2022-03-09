@@ -11,19 +11,16 @@ use Laminas\Session;
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-
 return [
-    'session' => [
-        'validators' => [
-        ],
+    'session_manager' => [
+        'enable_default_container_manager' => true,
     ],
     'session_config' => [
         'use_cookies' => true,
-        'gc_maxlifetime' => 86400,
-        'remember_me_seconds' => 86400,
+        'gc_maxlifetime' => 86400 * 14,
+        'remember_me_seconds' => 86400 * 14,
         'cookie_httponly' => true,
         'cookie_samesite' => 'Strict',
-        //'cookie_secure' => true,
     ],
     'session_storage' => [
         'type' => \Laminas\Session\Storage\SessionArrayStorage::class,

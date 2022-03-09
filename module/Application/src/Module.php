@@ -14,8 +14,14 @@ use Laminas\Session;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
+use Laminas\Session\Config\SessionConfig;
+use Laminas\Session\Service\SessionConfigFactory;
 use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
+use Laminas\Session\SessionManager;
+use Laminas\Session\Service\SessionManagerFactory;
+use Laminas\Session\Validator\RemoteAddr;
+use Laminas\Session\Validator\HttpUserAgent;
 use Laminas\Log\Logger;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Writer\Db as Dbwriter;
@@ -47,9 +53,32 @@ ViewHelperProviderInterface
         $sm = $e->getApplication()->getServiceManager();
         \Laminas\Db\TableGateway\Feature\GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->bootstrapSettings($e);
+        $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
         $this->boostrapTranslation($e);
-
+        
+    }
+    public function boostrapSessions($e)
+    {
+        $dbOptions = [
+            'idColumn'       => 'id', 
+            'nameColumn'     => 'name',
+            'modifiedColumn' => 'modified',
+            'lifetimeColumn' => 'lifetime',
+            'dataColumn'     => 'data',
+        ];
+        $sm = $e->getApplication()->getServiceManager();
+        /**
+         * @var \Laminas\Session\SessionManager $sessionManager
+         */
+        $sessionManager = $sm->get(SessionManager::class);
+        $saveHandler = new DbTableGateway(
+                                            new TableGateway(
+                                                            'session', 
+                                                            $sm->get(AdapterInterface::class)), 
+                                                            new DbTableGatewayOptions($dbOptions)
+                                                            );
+        $sessionManager->setSaveHandler($saveHandler);
     }
     public function bootstrapListeners($e)
     {
@@ -146,13 +175,10 @@ ViewHelperProviderInterface
     {
         return [
             'factories' => [
+                Laminas\Session\SessionManager::class => Laminas\Session\Service\SessionManagerFactory::class,
+                Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
                 Model\SettingsTableGateway::class => function ($container) {
-                    //$dbAdapter = $container->get(AdapterInterface::class);
                     return new Setting($container->get(Db\TableGateway\SettingsTable::class), $container);
-                },
-                Model\ModuleSettings::class => function ($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    return new ModuleSettings(new TableGateway('modulesettings', $dbAdapter, new RowGatewayFeature('id')));
                 },
                 Db\TableGateway\SettingsTable::class => Db\TableGateway\Service\SettingsTableFactory::class,
                 Utils\Mailer::class => function($container) {

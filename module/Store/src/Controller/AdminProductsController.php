@@ -5,6 +5,7 @@ namespace Store\Controller;
 use Application\Controller\AbstractAdminController;
 use Laminas\Permissions\Acl\Acl;
 use Store\Db\TableGateway\CategoriesTable;
+use Laminas\Session\Container;
 use Store\Db\TableGateway\ProductsByCategoryTable;
 use Store\Db\TableGateway\ProductsTable;
 use Store\Model\Product;
@@ -66,7 +67,8 @@ class AdminProductsController extends AbstractAdminController
 
     }
     public function manageAction()
-    {   
+    {
+        $sessionContainer = new Container();
         if($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
@@ -121,10 +123,12 @@ class AdminProductsController extends AbstractAdminController
                     $product->userId = $this->user->id;
                     $product->categoryId = null;
                     $product = $product->save($product);
+                    $sessionContainer->product = $product;
                     $data['upload-config']['module'] = 'store';
                     $data['upload-config']['type'] = 'products';
                     $data['product-info']['id'] = $product->id;
                     $data['product-info']['userId'] = $this->user->id;
+                    $test = $sessionContainer->product ?? null;
                     $this->form->setData($data);
                 }
                 
