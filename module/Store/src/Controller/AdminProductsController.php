@@ -74,6 +74,10 @@ class AdminProductsController extends AbstractAdminController
         }
         $step = $this->params('step', 'create');
         $data = [];
+        $config['upload-config']['module'] = 'store';
+        $config['upload-config']['type'] = 'products';
+        $data['product-info']['userId'] = $this->user->id;
+
         $product = $this->sm->get(Product::class);
         $id = $this->params('id', null);
         
@@ -82,8 +86,8 @@ class AdminProductsController extends AbstractAdminController
             case 'create':
                 if($this->request->isPost())
                 {
-                    $data = $this->request->getPost();
-                    $this->form->setData($data->toArray());
+                    $postData = $this->request->getPost();
+                    $this->form->setData($postData->toArray());
                     /**
                      * @var \Application\Form\Fieldset\FieldsetTrait $fieldset
                      */
@@ -123,25 +127,41 @@ class AdminProductsController extends AbstractAdminController
                     $product->userId = $this->user->id;
                     $product->categoryId = null;
                     $product = $product->save($product);
-                    $sessionContainer->product = $product;
-                    $data['upload-config']['module'] = 'store';
-                    $data['upload-config']['type'] = 'products';
+                    $sessionContainer->product = $product->toArray();
+                    
                     $data['product-info']['id'] = $product->id;
-                    $data['product-info']['userId'] = $this->user->id;
-                    $test = $sessionContainer->product ?? null;
-                    $this->form->setData($data);
+                    
+                    $this->form->setAttribute(
+                        'action',
+                        $this->url()->fromRoute(
+                            'manage.product',
+                            ['action' => 'edit', 'id' => $product->id]
+                        )
+                    );
+                    $this->form->setData(array_merge_recursive($config,$data));
                 }
-                
                 break;
             case 'edit':
                 $product = $product->fetchByColumn('id', $id);
                 if(!$this->request->isPost()) 
                 {
-                    $this->form->setData(['product-info' => $product->toArray()]);
+                    $this->form->setAttribute(
+                        'action', 
+                        $this->url()->fromRoute(
+                            'manage.product', 
+                            ['step' => 'edit', 'id' => $id]
+                        )
+                    );
+                    $this->form->setData([
+                        'upload-config' => $data['upload-config'],
+                        'product-info' => $product->toArray()
+                    ]);
                 }
             case 'upload-files':
-                // set correct step, listener is intercepting in the javascript file, need to check that in the morning...
-                // finish model save() method to handle updates
+                    $postedData = $this->request->getPost();
+
+                    $this->form->setData();
+                }
                 break;
             case 'delete':
                 // delete the product by id
