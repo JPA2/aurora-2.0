@@ -1,5 +1,7 @@
 <?php
-namespace Store\Controller\Service;
+declare(strict_types=1);
+namespace Store\Controller\Factory;
+
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Store\Controller\AdminController;

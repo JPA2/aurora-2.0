@@ -43,19 +43,27 @@ return [
                             ],
                         ],
                     ],
-                    'manage.product' => [
-                        'type' => Segment::class,
+                    'products' => [
+                        'type' => Placeholder::class,
                         'may_terminate' => true,
                         'options' => [
-                            'route' => '/admin/store/products[/:action[/:step[/:id]]]',
-                            'constraints' => [
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'step' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                            'defaults' => [
-                                'controller' => Controller\AdminProductsController::class,
-                                'action' => 'manage',
+                            'route' => '/admin/store/products',
+                        ],
+                        'child_routes' => [
+                            'manager' => [
+                                'type' => Segment::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/admin/store/products[/:action[/:id]]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => Controller\AdminProductsController::class,
+                                        'action'     => 'manager',
+                                    ],
+                                ],
                             ],
                         ],
                     ],
@@ -114,9 +122,9 @@ return [
                         'privilege' => 'admin.access'
                     ],
                     [
-                        'label' => 'Add Product',
-                        'route' => 'admin.store/manage.product',
-                        'action' => 'manage',
+                        'label' => 'Product Manager',
+                        'route' => 'admin.store/products/manager',
+                        'action' => 'manager',
                         'resource' => 'admin',
                         'privilege' => 'admin.access'
                     ],

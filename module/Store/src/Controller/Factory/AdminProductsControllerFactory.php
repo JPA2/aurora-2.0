@@ -1,9 +1,15 @@
 <?php
-namespace Store\Controller\Service;
+declare(strict_types=1);
+namespace Store\Controller\Factory;
+
 use Interop\Container\ContainerInterface;
+use Laminas\Permissions\Acl\Acl;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Store\Controller\AdminProductsController;
+use Store\Db\TableGateway\CategoriesTable;
 use Store\Form\ProductForm;
+use Store\Model\Product;
+use Store\Db\TableGateway\ProductsTable;
 
 class AdminProductsControllerFactory implements FactoryInterface
 {
@@ -11,10 +17,11 @@ class AdminProductsControllerFactory implements FactoryInterface
     {
         $formManager = $container->get('FormElementManager');
         return new AdminProductsController(
-            $container->get('Acl'),
-            $container->get('Store\Db\TableGateway\CategoriesTable'),
-            $container->get('Store\Db\TableGateway\ProductsTable'),
-            $formManager->get('Store\Form\ProductForm')
+            $container->get(Acl::class),
+            $container->get(CategoriesTable::class),
+            $container->get(ProductsTable::class),
+            $container->get(Product::class),
+            $formManager->get(ProductForm::class)
         );
     }
 }

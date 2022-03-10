@@ -58,10 +58,10 @@ FormElementProviderInterface
     {
         return [
             'factories' => [
-                Controller\ShippingController::class => Controller\Service\ShippingControllerFactory::class,
-                Controller\IndexController::class => Controller\Service\IndexControllerFactory::class,
-                Controller\AdminController::class => Controller\Service\AdminControllerFactory::class,
-                Controller\AdminProductsController::class => Controller\Service\AdminProductsControllerFactory::class,
+                Controller\ShippingController::class => Controller\Factory\ShippingControllerFactory::class,
+                Controller\IndexController::class => Controller\Factory\IndexControllerFactory::class,
+                Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
+                Controller\AdminProductsController::class => Controller\Factory\AdminProductsControllerFactory::class,
             ],
         ];
     }
