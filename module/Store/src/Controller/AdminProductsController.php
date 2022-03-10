@@ -12,6 +12,8 @@ use Store\Model\Product;
 use Store\Form\ProductForm;
 use Uploader\Fieldset\UploaderAwareMultiFile;
 
+use function array_merge_recursive;
+
 class AdminProductsController extends AbstractAdminController
 {
     /**
@@ -163,10 +165,7 @@ class AdminProductsController extends AbstractAdminController
                     ['action' => 'edit', 'id' => $id]
                 )
             );
-            $this->form->setData([
-                'upload-config' => $data['upload-config'],
-                'product-info' => $product->toArray()
-            ]);
+            $this->form->setdata(array_merge_recursive($this->uploadConfig, $this->product->toArray()));
         }
         return $this->view;
     }
