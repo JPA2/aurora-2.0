@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 namespace Application\Db\TableGateway;
 
 use RuntimeException;
-use Application\Db\TableGateway\AbstractDbTableGateway;
+use Application\Db\TableGateway\TableGateway;
 use Application\Db\TableGateway\TableGatewayTrait;
 use Application\Model\Setting;
 use Laminas\EventManager\EventManager;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
-class SettingsTable extends AbstractDbTableGateway
+class SettingsTable extends TableGateway
 {
     use TableGatewayTrait;
     const RESOURCE_ID = 'settings';

@@ -3,7 +3,7 @@ namespace User\Controller;
 
 use \RuntimeException;
 use Application\Controller\AbstractController;
-use User\Model\UserTable;
+use User\Model\Users;
 use User\Model\User;
 use User\Form\LoginForm;
 use User\Form\EditUserForm;
@@ -22,7 +22,7 @@ class UserController extends AbstractController
      */
     public $table;
     
-    public function __construct(UserTable $table)
+    public function __construct(Users $table)
     {
         $this->table = $table;
     }
@@ -189,7 +189,7 @@ class UserController extends AbstractController
          */
         $user->password = $validData['password'];
         $loginResult = $this->table->login($user);
-        if($loginResult instanceof RowGatewayInterface) {
+        if($loginResult instanceof Users) {
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             $this->redirect()->toRoute('profile', ['userName' => $loginResult->userName]);
         }

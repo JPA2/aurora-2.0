@@ -4,10 +4,11 @@ namespace User;
 use Laminas\Router\Http\Segment;
 use Laminas\Router\Http\Literal;
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use User\Controller\PasswordController;
-use User\Controller\Service\PasswordControllerFactory;
-
 return [
+    'db' => [
+        'users_table_name' => 'users',
+        'user_roles_table_name' => 'user_roles',
+    ],
     'router' => [
         'routes' => [
             'user' => [
@@ -112,20 +113,13 @@ return [
             ],
         ],
     ],
-    'controllers' => [
-        'factories' => [
-            Controller\ErrorController::class => InvokableFactory::class,
-            Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class,
-            Controller\WidgetController::class => Controller\Service\WidgetControllerFactory::class,
-        ]
-    ],
     'navigation' => [
         'static' => [
             [
                 'label' => 'Users',
                 'route' => 'user',
                 'class' => 'nav-link',
-                'resource' => 'user',
+                'resource' => 'users',
                 'privilege' => 'user.view.list'
             ],
             [
@@ -133,7 +127,7 @@ return [
                 'route' => 'profile',
                 'class' => 'nav-link',
                 'action' => 'view',
-                'resource' => 'user',
+                'resource' => 'users',
                 'privilege' => 'view'
             ],
             [
@@ -141,7 +135,7 @@ return [
                 'route' => 'user',
                 'class' => 'nav-link',
                 'action' => 'login',
-                'resource' => 'user',
+                'resource' => 'users',
                 'privilege' => 'login.view'
             ],
             [
@@ -149,7 +143,7 @@ return [
                 'route' => 'user',
                 'class' => 'nav-link',
                 'action' => 'logout',
-                'resource' => 'user',
+                'resource' => 'users',
                 'privilege' => 'logout'
             ],
             [
@@ -157,7 +151,7 @@ return [
                 'route' => 'user.register',
                 'class' => 'nav-link',
                 'action' => 'index',
-                'resource' => 'user',
+                'resource' => 'users',
                 'privilege' => 'register.view'
             ]
         ],
@@ -181,6 +175,26 @@ return [
                 'order' => 100
             ]
         ]
+    ],
+    'controllers' => [
+        Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
+        Controller\ErrorController::class => InvokableFactory::class,
+        Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class,
+        Controller\WidgetController::class => Controller\Factory\WidgetControllerFactory::class,
+    ],
+    'service_manager' => [
+        'aliases' => [
+            //TODO: remove these ASAP
+            'Model\UserTable'       => Model\Users::class,
+            'User\Model\UserTable'  => Model\Users::class,
+            'User\Model\RolesTable' => Model\Roles::class,
+            'Acl'                   => Permissions\PermissionsManager::class,
+        ],
+        'factories' => [
+            Model\Users::class => Model\Factory\UsersFactory::class,
+            Model\Roles::class => Model\Factory\RolesFactory::class,
+            Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
+        ],
     ],
     'view_manager' => [
         'template_path_stack' => [

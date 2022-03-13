@@ -7,23 +7,21 @@ use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Form\Form;
 use \RuntimeException;
 use \DateTime;
-use PhpParser\Node\Stmt\TryCatch;
 use User\Form\ResetPassword;
-use User\Model\User;
+use User\Model\Users;
 use User\Filter\RegistrationHash;
 
 class PasswordController extends AbstractController
 {
     /**
      *
-     * @var User\Model\UserTable $userTable
+     * @var User\Model\Users $usrModel
      */
-    protected $userTable;
+    protected $usrModel;
 
-    public function __construct(TableGatewayInterface $table)
+    public function __construct(Users $model)
     {
-        $this->userTable = $table;
-        // Debug::dump($this->userTable, __CLASS__.'::'.__LINE__);
+        $this->usrModel = $model;
     }
 
     public function resetAction()
@@ -32,7 +30,7 @@ class PasswordController extends AbstractController
             $step = $this->params('step', 'zero');
             $this->logger->log(6, "$step");
             $dateTime = new DateTime('NOW');
-            $options = ['db' => $this->userTable, 'enableCaptcha' => $this->appSettings->enableCaptcha];
+            $options = ['db' => $this->usrModel, 'enableCaptcha' => $this->appSettings->enableCaptcha];
             $form = new ResetPassword(null, $options);
             $this->view->setVariable('showForm', true);
             switch ($step)
@@ -55,15 +53,15 @@ class PasswordController extends AbstractController
                         if($form->isValid()) {
                             $data = $form->getData();
                         }
-                        $user = $this->userTable->fetchByColumn('email', $post['email']);
+                        $user = $this->usrModel->fetchByColumn('email', $post['email']);
 
-                        if ($user instanceof User)
+                        if ($user instanceof Users)
                         {
                             $filter = new RegistrationHash();
                             $hash = $filter->filter(['email' => $post['email'], 'timestamp' => $post['resetTimeStamp']]);
                             $user->resetTimeStamp = $post['resetTimeStamp'];
                             $user->resetHash = $hash;
-                            if($user->save())
+                            if($user->update($user))
                             {
                                 // send reset email 
                                 /**
@@ -91,7 +89,7 @@ class PasswordController extends AbstractController
                 case 'reset-password':
                     $token = $this->request->getQuery('token');
                     try {
-                        $user = $this->userTable->fetchByColumn('resetHash', $token);
+                        $user = $this->usrModel->fetchByColumn('resetHash', $token);
                     } catch (\Throwable $th) {
                         $this->logger->log(
                             5,

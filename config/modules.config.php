@@ -33,5 +33,5 @@ return [
     'Application',
     'Uploader',
     'User',
-    "Store",
+    //"Store",
 ];

@@ -1,7 +1,7 @@
 <?php
 namespace User\View\Helper;
 use Laminas\View\Helper\AbstractHelper;
-use Laminas\Permissions\Acl\Acl;
+use Laminas\Permissions\Acl\AclInterface;
 use User\Model\User;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Helper\TranslatorAwareTrait;
@@ -35,7 +35,7 @@ class UserAwareControl extends AbstractHelper
 	 * @param User\Model\User|User\Model\Guest $user
 	 * @param Acl $acl
 	 */
-	public function __construct($user, Acl $acl, PhpRenderer $view)
+	public function __construct($user, AclInterface $acl, PhpRenderer $view)
 	{
 		$this->user = $user;
 		$this->acl = $acl;

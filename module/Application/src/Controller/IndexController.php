@@ -6,13 +6,22 @@ namespace Application\Controller;
 
 use Application\Controller\AbstractController;
 use Application\Form\ContactForm;
+use Laminas\Mail\Storage;
 use Laminas\View\Model\ViewModel;
+use Laminas\Authentication\Storage\Session;
+use Laminas\Session\SessionManager;
 
 class IndexController extends AbstractController
 {
 
     public function indexAction()
     {
+        if($this->authService->hasIdentity()) {
+            $storage = new Session(Session::NAMESPACE_DEFAULT, $this->authService->getIdentity(), $this->sm->get(SessionManager::class));
+            $userName = $this->authService->getIdentity();
+            $user = $storage->getMember();
+
+        }
         return $this->view;
     }
     public function contactAction()

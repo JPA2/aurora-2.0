@@ -2,27 +2,24 @@
 namespace User\Controller;
 
 use Application\Controller\AbstractController;
-use User\Model\UserTable;
+use User\Model\Users;
 use User\Form\EditProfileForm;
 use \RuntimeException;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Form\FormInterface;
 use User\Form\LoginForm;
 use Laminas\Filter\BaseName;
-use Laminas\Db\RowGateway\RowGatewayInterface;
 
 class ProfileController extends AbstractController
 {
-    protected $profileTable;
-    public function __construct(UserTable $table)
+    protected $usrModel;
+    public function __construct(Users $usrModel)
     {
-        $this->table = $table;
+        $this->usrModel = $usrModel;
     }
     public function _init()
     {
-       // var_dump($this->getEvent()->getApplication()->getServiceManager());
         $sm = $this->getEvent()->getApplication()->getServiceManager();
-        $this->profileTable = $sm->get('User\Model\ProfileTable');
         
         if(!$this->authenticated) {
             $this->redirect()->toUrl('/user/login');
@@ -32,7 +29,7 @@ class ProfileController extends AbstractController
     {
         try {
             $userName = $this->params()->fromRoute('userName');
-            $requestedUser = $this->table->fetchByColumn('userName', !empty($userName) ? $userName : $this->user->userName);
+            $requestedUser = $this->usrModel->fetchByColumn('userName', !empty($userName) ? $userName : $this->user->userName);
             $profileData = $this->profileTable->fetchByColumn('userId', $requestedUser->id);
             $profileData->userName = $requestedUser->userName;
             $previous = substr($this->referringUrl, -5);

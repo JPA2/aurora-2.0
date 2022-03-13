@@ -4,8 +4,7 @@ namespace Application;
 
 use Application\Controller\AdminController;
 use Application\Controller\Factory\AdminControllerFactory;
-use Application\Listener\AjaxListener;
-use Application\Model\Setting;
+use Application\Model\Settings;
 use Application\Model\ModuleSettings;
 use Application\Utils\Mailer;
 use Laminas\Db\Adapter\AdapterInterface;
@@ -60,6 +59,8 @@ ViewHelperProviderInterface
     }
     public function boostrapSessions($e)
     {
+        $sm = $e->getApplication()->getServiceManager();
+        $config = $sm->get('Config');
         $dbOptions = [
             'idColumn'       => 'id', 
             'nameColumn'     => 'name',
@@ -67,14 +68,14 @@ ViewHelperProviderInterface
             'lifetimeColumn' => 'lifetime',
             'dataColumn'     => 'data',
         ];
-        $sm = $e->getApplication()->getServiceManager();
+        
         /**
          * @var \Laminas\Session\SessionManager $sessionManager
          */
         $sessionManager = $sm->get(SessionManager::class);
         $saveHandler = new DbTableGateway(
                                             new TableGateway(
-                                                            'session', 
+                                                            $config['db']['sessions_table_name'], 
                                                             $sm->get(AdapterInterface::class)), 
                                                             new DbTableGatewayOptions($dbOptions)
                                                             );
@@ -89,7 +90,7 @@ ViewHelperProviderInterface
     public function bootstrapSettings($e)
     {
         $sm = $e->getApplication()->getServiceManager();
-        $settings = $sm->get('Application\Model\SettingsTableGateway');
+        $settings = $sm->get(Settings::class);
         $handler = new Config($settings->fetchall());
         $sm->setService('AuroraSettings', $handler);
         date_default_timezone_set($handler->timeZone);
@@ -177,10 +178,7 @@ ViewHelperProviderInterface
             'factories' => [
                 Laminas\Session\SessionManager::class => Laminas\Session\Service\SessionManagerFactory::class,
                 Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
-                Model\SettingsTableGateway::class => function ($container) {
-                    return new Setting($container->get(Db\TableGateway\SettingsTable::class), $container);
-                },
-                Db\TableGateway\SettingsTable::class => Db\TableGateway\Service\SettingsTableFactory::class,
+                Model\Settings::class => Model\Factory\SettingsFactory::class,
                 Utils\Mailer::class => function($container) {
                     $settings = $container->get('AuroraSettings');
                     $request = $container->get('request');

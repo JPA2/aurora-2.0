@@ -29,22 +29,11 @@ class WidgetController extends AbstractController
             $select
             ->from('user_roles')
             ->join(
-                'user',
-                'user.role = user_roles.role',
+                'users',
+                'users.role = user_roles.role',
                 [
                     'userName',
                     'email',
-                    //'sessionLength',
-                    'companyName',
-                    'regDate',
-                    'active',
-                    'verified',
-                ]
-                )
-            ->join(
-                'user_profile',
-                'user_profile.userId = user.id',
-                [
                     'firstName',
                     'lastName',
                     'profileImage',
@@ -53,9 +42,13 @@ class WidgetController extends AbstractController
                     'gender',
                     'race',
                     'bio',
+                    'companyName',
+                    'regDate',
+                    'active',
+                    'verified',
                 ]
             )
-            ->order(['user_profile.userId DSC']);
+            ->order(['users.id DSC']);
             if($group === 'all') {
                 $select->where->greaterThan('user_roles.id', 0);
             }

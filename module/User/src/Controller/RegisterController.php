@@ -1,17 +1,15 @@
 <?php
-
+declare(strict_types=1);
 namespace User\Controller;
 
 use Application\Controller\AbstractController;
-use Application\Event\LogEvents;
 use Application\Utils\Mailer;
 use Laminas\Validator\Db\NoRecordExists as Validator;
 use Laminas\Mail\Message;
 use User\Form\UserForm;
 use User\Form\LoginForm;
 use User\Form\RegistrationForm;
-use User\Model\User;
-use User\Model\UserTable;
+use User\Model\Users;
 use User\Filter\RegistrationHash as Filter;
 use User\Filter\FormFilters;
 
@@ -19,21 +17,21 @@ class RegisterController extends AbstractController
 {
     /**
      * 
-     * @var \User\Model\UserTable $table
+     * @var \User\Model\Users
      */
-    public $table;
-    public function __construct(UserTable $table)
+    public $usrModel;
+    public function __construct(Users $usrModel)
     {
-        $this->table = $table;
+        $this->usrModel = $usrModel;
     }
 	/**
 	 * The default action - show the action
 	 */
     public function indexAction()
     {
-        $formFilters = new FormFilters(null, $this->table);
+        $formFilters = new FormFilters(null, $this->usrModel);
         $sm = $this->getEvent()->getApplication()->getServiceManager();
-        $mailer = $sm->get('Application\Utils\Mailer');        
+        $mailer = $sm->get(Mailer::class);        
         if($this->appSettings->disableRegistration) {
            return $this->view; 
         }
@@ -72,19 +70,10 @@ class RegisterController extends AbstractController
         unset($formData['captcha']);
         unset($formData['submit']);
         // save the new user, $result should be the new users Id
-        $result = $this->table->insert($formData);
+        $this->usrModel->exchangeArray($formData);
+        $result = $this->usrModel->insert($this->usrModel);
         $sendEmail = false;
         if($result > 0) {
-            /**
-             * 
-             * @var \User\Model\ProfileTable $profileTable
-             */
-            $profileTable = $this->sm->get('User\Model\ProfileTable');
-            $data['userId'] = $result;
-            $profileInsertResult = $profileTable->insert($data);
-            if(!$profileInsertResult > 0) {
-                throw new \RuntimeException('Default Profile data was not saved!!');
-            }
             $sendEmail = true;
         }
         if($sendEmail) {
@@ -96,20 +85,18 @@ class RegisterController extends AbstractController
     public function verifyAction()
     {
         $token = $this->request->getQuery('token');
-        //$token = $this->params('token');
-        $this->debug::dump($token, '$token');
+
         if(!empty($token)) {
         	$position = strpos($token, '$');
         	$email = substr($token, 0, $position);
-        	$this->debug::dump($email, '$email');
-        	$user = $this->table->fetchByColumn('email', $email);
-        	if($user instanceof User) {
+        	$user = $this->usrModel->fetchByColumn('email', $email);
+        	if($user instanceof Users) {
         		$check = password_verify($email.$user->regDate, $user->regHash);
         		if($check) {
         			$user->active = 1;
         			$user->verified = 1;
         			$user->regHash = null;
-        			$result = $user->save();
+        			$result = $user->update($user, ['id' => $user->id]);
         			if($result) {
         				$this->view->setVariable('verified', true);
         			}

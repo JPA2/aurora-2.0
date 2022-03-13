@@ -14,8 +14,7 @@ class UserForm extends Form
             parent::setOptions($options);
             //var_dump($options);
         }
-        // We will ignore the name provided to the constructor
-        parent::__construct('RegistrationForm');
+
         $this->add([
             'name' => 'id',
             'type' => 'hidden'

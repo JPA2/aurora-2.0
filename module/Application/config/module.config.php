@@ -12,6 +12,12 @@ use Application\Controller\Plugin\CreateHttpForbiddenFactory;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 
 return [
+    'db' => [
+        'sessions_table_name' => 'sessions',
+        'log_table_name' => 'log',
+        'settings_table_name' => 'settings',
+        'modulesettings_table_name' => 'modulesettings',
+    ],
     'base_dir' => dirname(__DIR__, 3),
     'router' => [
         'router_class' => TranslatorAwareTreeRouteStack::class,

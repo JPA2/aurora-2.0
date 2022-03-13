@@ -12,6 +12,9 @@ use Laminas\Session;
  * file.
  */
 return [
+    'db' => [
+        'sessions_table_name' => 'sessions',
+    ],
     'session_manager' => [
         'enable_default_container_manager' => true,
     ],

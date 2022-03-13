@@ -1,18 +1,23 @@
 <?php
 namespace User\Controller;
-use User\Model\UserTable;
+use User\Model\Users as UsrModel;
 use Application\Form\SettingsForm;
 use \RuntimeException;
-use Laminas\Json\Json;
-use Laminas\View\Model\JsonModel;
 use Application\Controller\AbstractAdminController;
 
 class AdminController extends AbstractAdminController
 {
-    
-    public function __construct(UserTable $table)
+    /**
+     * @var User\Model\Users $usrModel
+     */
+    /**
+     * 
+     * @param UsrModel $usrModel 
+     * @return void 
+     */
+    public function __construct(UsrModel $usrModel)
     {
-        $this->table = $table;
+        $this->usrModel = $usrModel;
     }
 
     public function indexAction()
@@ -31,7 +36,7 @@ class AdminController extends AbstractAdminController
                 $hasMessage = true;
             }
            /// $this->view->setVariable('hasMessage', $hasMessage);
-            $this->view->setVariable('users', $this->table->loadMemberContext());
+            $this->view->setVariable('users', $this->usrModel->loadMemberContext());
 
             return $this->view;
         } catch (RuntimeException $e) {

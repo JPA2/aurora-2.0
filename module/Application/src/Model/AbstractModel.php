@@ -1,8 +1,11 @@
 <?php
 namespace Application\Model;
+use Application\Db\TableGateway\TableGateway;
 use Application\Model\ModelInterface;
 use Interop\Container\ContainerInterface;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Laminas\Config\Config;
+use Laminas\Db\ResultSet\ResultSet;
+use Laminas\EventManager\EventManager;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
@@ -21,23 +24,18 @@ ModelInterface
      * @var \Laminas\Db\TableGateway\AbstractTableGateway $db;
      */
     protected $db;
-    /**
-     * @var \Interop\Container\ContainerInterface $container 
-     */
-    protected $container;
     protected $role;
+    protected $config;
     /**
      * Constructor
      * @param \Laminas\Db\TableGateway\AbstractTableGateway;
-     * @param Interop\Container\ContainerInterface $container
      */
-    public function __construct(
-        AbstractTableGateway $tableGateway,
-        ContainerInterface $container
-        )
+    public function __construct($table, EventManager $eventManager, Config $config)
     {
-        $this->db = $tableGateway;
-        $this->container = $container;
+        $resultSetPrototype = new ResultSet();
+        $resultSetPrototype->setArrayObjectPrototype($this);
+        $this->db = new TableGateway($table, $eventManager, $resultSetPrototype);
+        $this->config = $config;
         parent::__construct([], ArrayObject::ARRAY_AS_PROPS);
     }
     public function getRoleId()
@@ -50,11 +48,14 @@ ModelInterface
     }
     public function getOwnerId()
     {
-        if($this->offsetExists('userId'))
+        /**
+         * userId is always the foriegn key that points to
+         * users.id
+         */
+        if(isset($this->userId))
         {
-            return $this->offsetGet('userId');
+            return $this->userId;
         }
-        return null;
     }
     public function getResourceId()
     {
@@ -62,6 +63,14 @@ ModelInterface
     }
     public function toArray()
     {
-        return $this->storage;
+        return $this->getArrayCopy();
+    }
+    public function getSql()
+    {
+        return $this->db->getSql();
+    }
+    public function getResultSetPrototype()
+    {
+        return $this->db->getResultSetPrototype();
     }
 }

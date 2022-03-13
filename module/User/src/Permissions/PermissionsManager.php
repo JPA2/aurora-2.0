@@ -1,12 +1,18 @@
 <?php
 namespace User\Permissions;
+use Laminas\Config\Config;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Role\GenericRole as Role;
 use Laminas\Permissions\Acl\Assertion\OwnershipAssertion as Owner;
-use User\Model\RolesTable;
+use Laminas\Permissions\Acl\AclInterface;
+use User\Model\Roles;
 
-class PermissionsManager
+class PermissionsManager implements AclInterface
 {
+    /**
+     * @var Laminas\Config\Config $config
+     */
+    protected $config;
     /**
      * 
      * @var $acl \Laminas\Permissions\Acl\Acl
@@ -14,9 +20,9 @@ class PermissionsManager
     public $acl;
     /**
      * 
-     * @var $table \User\Model\RolesTable
+     * @var $table \User\Model\Roles
      */
-    protected $table;
+    protected $model;
     /**
      * 
      * @var $roles \Laminas\Db\ResultSet\ResultSet
@@ -24,16 +30,27 @@ class PermissionsManager
     private $roles;
     /**
      * 
-     * @var $role \User\Model\User
+     * @var $role \User\Model\Roles
      */
     private $role;
     
-    public function __construct(Acl $acl, RolesTable $rolesTable) {
-        $this->table = $rolesTable ?? null;
-        $this->roles = $this->table->select();
+    public function __construct(Acl $acl, Roles $model, Config $config) {
+        $this->config = $config;
+        $this->model = $model;
+        $this->roles = $this->model->select();
         $this->acl = $acl;
         $this->build();
         return $this;
+    }
+    public function isAllowed($role = null, $resource = null, $privilege = null)
+    {
+        $acl = $this->getAcl();
+        return $acl->isAllowed($role, $resource, $privilege);
+    }
+    public function hasResource($resource, $parent = null)
+    {
+        $acl = $this->getAcl();
+        return $acl->hasResource($resource, $parent);
     }
     /**
      * 
@@ -45,36 +62,33 @@ class PermissionsManager
         // create the guest role and register it
         $guest = new Role('guest');
         $this->acl->addRole($guest);
-        
+        $this->acl->addRole(new Role('users'));
         foreach($this->roles as $role) {
             $this->acl->addRole($role->role, $role->inheritsFrom);
         }
         $this->acl->addRole(new Role('superAdmin', 'admin'));
         
-        $this->acl->addResource('user');
+        $this->acl->addResource('users');
         $this->acl->addResource('user_profile');
-        $this->acl->addResource('project');
-        $this->acl->addResource('album');
         $this->acl->addResource('admin');
         $this->acl->addResource('settings');
         $this->acl->addResource('mailService');
         
         $this->acl->allow('guest', null, 'view');
         $this->acl->allow('user', null, 'view');
-        $this->acl->allow('guest', 'user', ['register.view', 'login.view']);
-        $this->acl->allow('user', 'user', 'logout');
-        $this->acl->allow('user', 'user', 'user.view.list');
+        $this->acl->allow('guest', 'users', ['register.view', 'login.view']);
+        $this->acl->allow('user', 'users', 'logout');
+        $this->acl->allow('user', 'users', 'user.view.list');
 
         
-        $this->acl->deny('user', 'user', ['register', 'login', 'user.create.new']);
+        $this->acl->deny('user', 'users', ['register', 'login', 'user.create.new']);
         
-        $this->acl->deny(['guest', 'user'], 'admin', 'admin.access');
+        $this->acl->deny(['guest', 'users'], 'admin', 'admin.access');
         
         $this->acl->allow('user', null, ['edit', 'delete'], new Owner());
-        $this->acl->allow('user', 'album', 'album.create');
         //$this->acl->allow('user', 'user', 'edit', new Owner());
         $this->acl->allow('user', 'user_profile', 'edit', new Owner());
-        $this->acl->allow('user', 'project', 'edit', new Owner());
+        //$this->acl->allow('user', 'project', 'edit', new Owner());
         $this->acl->allow('admin', 'admin', ['admin.access', 'admin.settings', 'admin.user']);
         $this->acl->allow('admin');
         

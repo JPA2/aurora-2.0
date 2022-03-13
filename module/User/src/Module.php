@@ -21,17 +21,6 @@ class Module implements ConfigProviderInterface, ViewHelperProviderInterface
     {
         return include __DIR__ . '/../config/module.config.php';
     }
-    public function onBootstrap($e) {
-        $this->bootstrapAcl($e);
-    }
-    public function bootstrapAcl($e)
-    {
-        $sm = $e->getApplication()->getServiceManager();
-        $acl = new PermissionsManager(new Acl(), $sm->get('User\Model\RolesTable'));
-        $acl = $acl->getAcl();
-        
-        $sm->setService('Acl', $acl);
-    }
     public function getViewHelperConfig()
     {
     	return [
@@ -45,32 +34,6 @@ class Module implements ConfigProviderInterface, ViewHelperProviderInterface
     					View\Helper\UserAwareControl::class => View\Helper\Service\UserAwareControlFactory::class,
     			],
     	];
-    }
-    public function getServiceConfig()
-    {
-       
-        return [
-            'factories' => [
-                Model\UserTable::class => function($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new User('id','user', $dbAdapter));
-                    return new Model\UserTable('user', $dbAdapter, null, $resultSetPrototype);
-                },
-                Model\ProfileTable::class => function($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Profile('id', 'user_profile', $dbAdapter));
-                    return new Model\ProfileTable('user_profile', $dbAdapter, null, $resultSetPrototype);
-                },
-                Model\RolesTable::class => function($container) {
-                  $dbAdapter = $container->get(AdapterInterface::class);
-                  $resultSetPrototype = new ResultSet();
-                  $resultSetPrototype->setArrayObjectPrototype(new RowGateway('id', 'user_roles', $dbAdapter));
-                  return new Model\RolesTable('user_roles', $dbAdapter, null, $resultSetPrototype);
-                },
-                ],
-                ];
     }
     public function getControllerConfig()
     {
@@ -88,11 +51,6 @@ class Module implements ConfigProviderInterface, ViewHelperProviderInterface
                 },
                 Controller\RegisterController::class => function($container) {
                     return new Controller\RegisterController(
-                        $container->get(Model\UserTable::class)
-                        );
-                },
-                Controller\AdminController::class => function($container) {
-                    return new Controller\AdminController(
                         $container->get(Model\UserTable::class)
                         );
                 },
