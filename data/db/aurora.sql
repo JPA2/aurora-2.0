@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
+<<<<<<< HEAD
 -- Generation Time: Mar 13, 2022 at 03:46 PM
+=======
+-- Generation Time: Mar 14, 2022 at 02:10 PM
+>>>>>>> 1.0.0-Alpha
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -20,6 +24,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `aurora`
 --
+<<<<<<< HEAD
+=======
+CREATE DATABASE IF NOT EXISTS `aurora` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `aurora`;
+>>>>>>> 1.0.0-Alpha
 
 -- --------------------------------------------------------
 
@@ -47,7 +56,11 @@ CREATE TABLE IF NOT EXISTS `log` (
   `fileId` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`logId`),
   KEY `userId` (`extra_userId`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+>>>>>>> 1.0.0-Alpha
 
 --
 -- Dumping data for table `log`
@@ -59,7 +72,13 @@ INSERT INTO `log` (`logId`, `extra_userId`, `extra_userName`, `extra_role`, `ext
 (3, NULL, NULL, NULL, NULL, NULL, 'NOTICE', 'Undefined property: Laminas\\Authentication\\Storage\\Session::$jsmith', '03-12-2022 4:25:25', 5, NULL, '8', 'C:\\htdocs\\aurora-2.0\\module\\Application\\src\\Controller\\IndexController.php', '21', NULL, 0),
 (4, NULL, NULL, NULL, NULL, NULL, 'NOTICE', 'Undefined property: Laminas\\Authentication\\Storage\\Session::$jsmith', '03-12-2022 4:29:49', 5, NULL, '8', 'C:\\htdocs\\aurora-2.0\\module\\Application\\src\\Controller\\IndexController.php', '22', NULL, 0),
 (5, NULL, NULL, NULL, NULL, NULL, 'NOTICE', 'Undefined property: User\\Controller\\ProfileController::$profileTable', '03-13-2022 10:34:42', 5, NULL, '8', 'C:\\htdocs\\aurora-2.0\\module\\User\\src\\Controller\\ProfileController.php', '33', NULL, 0),
+<<<<<<< HEAD
 (6, NULL, NULL, NULL, NULL, NULL, 'NOTICE', 'Undefined property: User\\Controller\\ProfileController::$profileTable', '03-13-2022 10:35:10', 5, NULL, '8', 'C:\\htdocs\\aurora-2.0\\module\\User\\src\\Controller\\ProfileController.php', '33', NULL, 0);
+=======
+(6, NULL, NULL, NULL, NULL, NULL, 'NOTICE', 'Undefined property: User\\Controller\\ProfileController::$profileTable', '03-13-2022 10:35:10', 5, NULL, '8', 'C:\\htdocs\\aurora-2.0\\module\\User\\src\\Controller\\ProfileController.php', '33', NULL, 0),
+(7, NULL, NULL, NULL, NULL, NULL, 'INFO', 'submit-email', '03-13-2022 11:36:59', 6, NULL, NULL, NULL, NULL, NULL, 0),
+(8, NULL, NULL, NULL, NULL, NULL, 'INFO', 'submit-email', '03-13-2022 11:38:58', 6, NULL, NULL, NULL, NULL, NULL, 0);
+>>>>>>> 1.0.0-Alpha
 
 -- --------------------------------------------------------
 
@@ -82,6 +101,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `name`, `modified`, `lifetime`, `data`) VALUES
+<<<<<<< HEAD
 ('t9pt03p2l62cunnpv6n4e3ntl5', 'PHPSESSID', 1647185750, 1209600, '__Laminas|a:3:{s:20:\"_REQUEST_ACCESS_TIME\";d:1647185750.470541;s:6:\"_VALID\";a:1:{s:28:\"Laminas\\Session\\Validator\\Id\";s:26:\"t9pt03p2l62cunnpv6n4e3ntl5\";}s:14:\"FlashMessenger\";a:1:{s:11:\"EXPIRE_HOPS\";a:2:{s:4:\"hops\";i:0;s:2:\"ts\";d:1647185710.504811;}}}Laminas_Auth|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:7:\"storage\";s:6:\"jsmith\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}FlashMessenger|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:0:{}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}');
 
 -- --------------------------------------------------------
@@ -136,6 +156,10 @@ INSERT INTO `settings` (`id`, `variable`, `value`, `settingType`, `label`) VALUE
 (28, 'firebugDebug', '1', 'checkbox', 'Enable Firebug Debug Logger?'),
 (29, 'enableTranslation', '0', 'checkbox', 'Enable Translation'),
 (30, 'enableContactUs', '1', 'checkbox', 'Enable Contact Form');
+=======
+('hclkrhfbn8q23l5eaojcvb3hbu', 'PHPSESSID', 1647232825, 1209600, '__Laminas|a:2:{s:20:\"_REQUEST_ACCESS_TIME\";d:1647232825.442909;s:6:\"_VALID\";a:1:{s:28:\"Laminas\\Session\\Validator\\Id\";s:26:\"hclkrhfbn8q23l5eaojcvb3hbu\";}}'),
+('t9pt03p2l62cunnpv6n4e3ntl5', 'PHPSESSID', 1647235407, 1209600, '__Laminas|a:3:{s:20:\"_REQUEST_ACCESS_TIME\";d:1647235407.529436;s:6:\"_VALID\";a:1:{s:28:\"Laminas\\Session\\Validator\\Id\";s:26:\"t9pt03p2l62cunnpv6n4e3ntl5\";}s:14:\"FlashMessenger\";a:1:{s:11:\"EXPIRE_HOPS\";a:2:{s:4:\"hops\";i:0;s:2:\"ts\";d:1647185710.504811;}}}Laminas_Auth|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:1:{s:7:\"storage\";s:6:\"jsmith\";}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}FlashMessenger|O:26:\"Laminas\\Stdlib\\ArrayObject\":4:{s:7:\"storage\";a:0:{}s:4:\"flag\";i:2;s:13:\"iteratorClass\";s:13:\"ArrayIterator\";s:19:\"protectedProperties\";a:4:{i:0;s:7:\"storage\";i:1;s:4:\"flag\";i:2;s:13:\"iteratorClass\";i:3;s:19:\"protectedProperties\";}}');
+>>>>>>> 1.0.0-Alpha
 
 -- --------------------------------------------------------
 
