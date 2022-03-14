@@ -6,6 +6,7 @@ use Application\Model\Settings;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
+use Laminas\Db\TableGateway\Feature\EventFeature\TableGatewayEvent;
 use Laminas\Log\Logger;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Writer\Db as Dbwriter;
@@ -15,6 +16,7 @@ use Laminas\Log\Formatter\FirePhp as FireBugformatter;
 use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Laminas\Session\SessionManager;
+use Laminas\EventManager\SharedEventManager;
 
 class Module
 {
@@ -31,7 +33,6 @@ class Module
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
-        //$this->boostrapTranslation($e);
     }
     public function boostrapSessions($e)
     {
@@ -56,12 +57,6 @@ class Module
                                                             new DbTableGatewayOptions($dbOptions)
                                                             );
         $sessionManager->setSaveHandler($saveHandler);
-    }
-    public function bootstrapListeners($e)
-    {
-        // $app = $e->getApplication();
-        // $ajaxListener = new AjaxListener();
-        // $ajaxListener->attach($app->getEventManager(), -99);
     }
     // this needs moved to a listener
     public function boostrapTranslation($e)
@@ -117,7 +112,7 @@ class Module
         $standardLogFilter = new Priority(Logger::DEBUG);
         $writer->addFilter($standardLogFilter);
 
-        if($settings->enable_firebug_debug)
+        if($settings->server->enable_firebug_debug)
         {
             $firePhpWriter = new FirePhp();
             $debugFilter = new Priority(Logger::DEBUG);

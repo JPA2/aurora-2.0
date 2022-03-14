@@ -84,7 +84,6 @@ class BootstrapFormRow extends \Laminas\Form\View\Helper\FormRow
                 $classString .= ' mb-2 mr-sm-2';
             }
             $element->setAttribute('class', $classString);
-            
         }
 
         $elementString = $elementHelper->render($element, $labelPosition);

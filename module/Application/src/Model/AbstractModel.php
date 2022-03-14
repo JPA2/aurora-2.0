@@ -21,7 +21,7 @@ ModelInterface
 {
     /**
      * 
-     * @var \Laminas\Db\TableGateway\AbstractTableGateway $db;
+     * @var TableGateway $db;
      */
     protected $db;
     protected $role;
@@ -37,6 +37,10 @@ ModelInterface
         $this->db = new TableGateway($table, $eventManager, $resultSetPrototype);
         $this->config = $config;
         parent::__construct([], ArrayObject::ARRAY_AS_PROPS);
+    }
+    public function getTablegateway()
+    {
+        return $this->db;
     }
     public function getRoleId()
     {

@@ -30,13 +30,13 @@ return [
                     ],
                 ],
             ],
-            'forbidden' => [
-                'type'    => Literal::class,
+            'test' => [
+                'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/forbidden',
+                    'route'    => '/test',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'forbidden',
+                        'controller' => Controller\TestController::class,
+                        'action'     => 'index',
                     ],
                 ],
             ],
@@ -118,6 +118,7 @@ return [
         'factories' => [
             Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
             Controller\IndexController::class => Controller\Factory\IndexControllerFactory::class,
+            Controller\TestController::class  => Controller\Factory\TestControllerFactory::class,
         ],
     ],
     'form_elements' => [
