@@ -6,7 +6,6 @@ use Application\Model\Settings;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
-use Laminas\Db\TableGateway\Feature\EventFeature\TableGatewayEvent;
 use Laminas\Log\Logger;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Writer\Db as Dbwriter;
