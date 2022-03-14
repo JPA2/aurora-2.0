@@ -3,7 +3,7 @@ $title = 'Profile';
 $this->headTitle($title);
 ?>
 <?php
-if(isset($data) && !empty($data)) :
+if(isset($this->data) && !empty($this->data)) :
 ?>
 <h3><?= $data->firstName . '&nbsp;' . $data->lastName .'\'s&nbsp;';?><?= $this->escapeHtml($title); ?></h3>
 <p>

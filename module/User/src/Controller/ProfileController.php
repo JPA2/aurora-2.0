@@ -30,7 +30,7 @@ class ProfileController extends AbstractController
         try {
             $userName = $this->params()->fromRoute('userName');
             $requestedUser = $this->usrModel->fetchByColumn('userName', !empty($userName) ? $userName : $this->user->userName);
-            $profileData = $this->profileTable->fetchByColumn('userId', $requestedUser->id);
+            $profileData = $this->usrModel->fetchByColumn('userName', $requestedUser->userName);
             $profileData->userName = $requestedUser->userName;
             $previous = substr($this->referringUrl, -5);
             if($previous === 'login') {
@@ -42,7 +42,8 @@ class ProfileController extends AbstractController
                 ]);
             }
             //var_dump($profileData);
-            return $this->view->setVariable('data', $profileData);
+            $this->view->setVariable('data', $profileData);
+            return $this->view;
 
         } catch (RuntimeException $e) {
             //$this->logger->err($e->getMessage());
