@@ -3,11 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
-<<<<<<< HEAD
--- Generation Time: Mar 13, 2022 at 03:46 PM
-=======
 -- Generation Time: Mar 14, 2022 at 02:10 PM
->>>>>>> 1.0.0-Alpha
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -24,11 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `aurora`
 --
-<<<<<<< HEAD
-=======
 CREATE DATABASE IF NOT EXISTS `aurora` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `aurora`;
->>>>>>> 1.0.0-Alpha
 
 -- --------------------------------------------------------
 
