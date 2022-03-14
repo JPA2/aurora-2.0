@@ -112,7 +112,8 @@ class Module
         $settings = $sm->get(Settings::class);
         $config = $sm->get('config');
         $logger = $sm->get(Logger::class);
-        $writer = new Dbwriter($sm->get(AdapterInterface::class), 'log');
+        //$writer = new Dbwriter(new Adapter($config['db']), 'log');
+        $writer = new Dbwriter($sm->get(AdapterInterface::class), $config['db']['log_table_name']);
         $standardLogFilter = new Priority(Logger::DEBUG);
         $writer->addFilter($standardLogFilter);
 
