@@ -1,16 +1,15 @@
 <?php
 declare(strict_types=1);
-namespace User\Controller\Factory;
+namespace User\Filter\Factory;
 
 use Interop\Container\ContainerInterface;
+use Laminas\Form\Element\Password;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use User\Controller\ProfileController;
-use User\Model\Users;
-
-class ProfileControllerFactory implements FactoryInterface
+use User\Filter\PasswordFilter;
+class PasswordFilterFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        return new ProfileController($container->get(Users::class));
+        return new PasswordFilter();
     }
 }

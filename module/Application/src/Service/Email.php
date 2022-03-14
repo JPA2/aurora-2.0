@@ -1,5 +1,6 @@
 <?php
-namespace Application\Utils;
+declare(strict_types=1);
+namespace Application\Service;
 
 use Laminas\Config\Config;
 use Laminas\Http\PhpEnvironment\Request;
@@ -9,6 +10,7 @@ use Laminas\Mail\Transport\TransportInterface;
 use Laminas\Mail\Transport\Smtp as SmtpTransport;
 use Laminas\Mail\Transport\SmtpOptions;
 use Laminas\Mail\Message;
+use Laminas\Mail\Header\ContentType;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Mime;
 use Laminas\Mime\Part as MimePart;
@@ -16,12 +18,10 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mail\Exception\DomainException;
 use Laminas\Mail\Exception\InvalidArgumentException;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Container\ContainerExceptionInterface;
 use User\Model\User as User;
 use \RuntimeException;
 
-class Mailer implements ResourceInterface
+class Email implements ResourceInterface
 {
     use TranslatorAwareTrait;
     const RESOURCE_ID = 'mailService';
@@ -91,22 +91,11 @@ class Mailer implements ResourceInterface
      * @throws NotFoundExceptionInterface 
      * @throws ContainerExceptionInterface 
      */
-    public function __construct(Config $settings = null, Request $request = null, ServiceLocatorInterface $sm)
+    public function __construct(array $config)
     {
-        if($sm instanceof ServiceLocatorInterface) 
-        {
-            $this->sm = $sm;
-            //$this->setTranslator($this->sm->get('Translator'));
-        }
-        $this->config = $this->sm->get('config');
-        if (! empty($settings)) {
-            $this->appSettings = $settings;
-        }
-        if (! empty($request)) {
-            $this->request = $request;
-            $this->hostName = $this->request->getServer('HTTP_HOST');
-            $this->requestScheme = $this->request->getServer('REQUEST_SCHEME');
-        }
+
+        $this->config = $config;
+
         $this->setMessage(new Message());
         $transport = new SmtpTransport();
         /** this removes the connection info from the db since we are tracking the
@@ -142,20 +131,20 @@ class Mailer implements ResourceInterface
             $message = $this->getMessage();
             $message->addTo($address);
             // This email must match the connection_config key in the options above
-            $userName = $this->appSettings->smtpSenderAddress ?? 
+            $userName = $this->appSettings->email->smtp_sender_address ?? 
                         $this->config['smpt_options']['connection_config']['username'];
             $message->addFrom($userName);
             
             switch ($type) {
                 case self::VERIFICATION:
-                    $message->setSubject($this->appSettings->appName . ' account verification');
+                    $message->setSubject($this->appSettings->view->site_name . ' account verification');
                     $this->verificationMessage($address, $message, $token);
                     break;
                 case self::WELCOME:
 
                     break;
                 case self::RESET_PASSWORD:
-                    $message->setSubject($this->appSettings->appName . ' Password Reset Requested');
+                    $message->setSubject($this->appSettings->view->site_name . ' Password Reset Requested');
                     $this->passwordResetMessage($address, $message, $token);
                     break;
                 default:
@@ -192,8 +181,11 @@ class Mailer implements ResourceInterface
         ]);
         $this->message->setBody($body);
         $this->message->setFrom($fromAddress, $fromName);
-        $this->message->addTo($this->appSettings->appContactEmail);
-        $this->message->setSubject($this->appSettings->appName . ' Contact Page Submission');
+        $this->message->addTo($this->appSettings->email->contact_form_email);
+        $this->message->setSubject($this->appSettings->view->site_name . ' Contact Page Submission');
+        /**
+         * @var ContentType;
+         */
         $contentTypeHeader = $this->message->getHeaders()->get('Content-Type');
         $contentTypeHeader->setType('multipart/alternative');
 

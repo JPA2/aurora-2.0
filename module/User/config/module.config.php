@@ -6,7 +6,7 @@ use Laminas\Router\Http\Literal;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'db' => [
-        'users_table_name' => 'users',
+        'users_table_name'      => 'users',
         'user_roles_table_name' => 'user_roles',
     ],
     'router' => [
@@ -177,10 +177,14 @@ return [
         ]
     ],
     'controllers' => [
-        Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
-        Controller\ErrorController::class => InvokableFactory::class,
-        Controller\PasswordController::class => Controller\Service\PasswordControllerFactory::class,
-        Controller\WidgetController::class => Controller\Factory\WidgetControllerFactory::class,
+        'factories' => [
+            Controller\AdminController::class    => Controller\Factory\AdminControllerFactory::class,
+            Controller\PasswordController::class => Controller\Factory\PasswordControllerFactory::class,
+            Controller\ProfileController::class  => Controller\Factory\ProfileControllerFactory::class,
+            Controller\RegisterController::class => Controller\Factory\RegisterControllerFactory::class,
+            Controller\UserController::class     => Controller\Factory\UserControllerFactory::class,
+            Controller\WidgetController::class   => Controller\Factory\WidgetControllerFactory::class,
+        ],
     ],
     'service_manager' => [
         'aliases' => [
@@ -191,9 +195,24 @@ return [
             'Acl'                   => Permissions\PermissionsManager::class,
         ],
         'factories' => [
-            Model\Users::class => Model\Factory\UsersFactory::class,
-            Model\Roles::class => Model\Factory\RolesFactory::class,
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
+            Model\Roles::class                    => Model\Factory\RolesFactory::class,
+            Model\Users::class                    => Model\Factory\UsersFactory::class,
+        ],
+    ],
+    'filters' => [
+        'factories' => [
+            Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
+        ],
+    ],
+    'view_helpers' => [
+        'aliases' => [
+            'userawarecontrol' => View\Helper\UserAwareControl::class,
+    		'userAwareControl' => View\Helper\UserAwareControl::class,
+    		'userControl'      => View\Helper\UserAwareControl::class,
+        ],
+        'factories' => [
+            View\Helper\UserAwareControl::class => View\Helper\Service\UserAwareControlFactory::class,
         ],
     ],
     'view_manager' => [
@@ -205,12 +224,12 @@ return [
         'member_list' => [
             'items_per_page' => 2,
             'display_groups' => 'all',
-            'widget_name' => 'Member List',
+            'widget_name'    => 'Member List',
         ],
         'admin_member_list' => [
             'items_per_page' => 5,
             'display_groups' => 'admin',
-            'widget_name' => 'Administrators',
+            'widget_name'    => 'Administrators',
         ],
     ],
 ];

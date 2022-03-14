@@ -3,8 +3,7 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use Application\Controller\AbstractController;
-use Application\Utils\Mailer;
-use Laminas\Validator\Db\NoRecordExists as Validator;
+use Application\Service\Email;
 use Laminas\Mail\Message;
 use User\Form\UserForm;
 use User\Form\LoginForm;
@@ -19,8 +18,13 @@ class RegisterController extends AbstractController
      * 
      * @var \User\Model\Users
      */
-    public $usrModel;
-    public function __construct(Users $usrModel)
+    protected $usrModel;
+    /**
+     * 
+     * @param Users $usrModel 
+     * @return void 
+     */
+    public function __construct(Users $usrModel, $config = null)
     {
         $this->usrModel = $usrModel;
     }
@@ -31,8 +35,8 @@ class RegisterController extends AbstractController
     {
         $formFilters = new FormFilters(null, $this->usrModel);
         $sm = $this->getEvent()->getApplication()->getServiceManager();
-        $mailer = $sm->get(Mailer::class);        
-        if($this->appSettings->disableRegistration) {
+        $mailService = $sm->get(Email::class);        
+        if(!$this->appSettings->security->enable_registration) {
            return $this->view; 
         }
         $form = new UserForm('RegistrationForm', $this->appSettings->toArray());
@@ -56,7 +60,7 @@ class RegisterController extends AbstractController
         // at this point the form has posted and were ready to kick this off
         $now = new \DateTime();
         // time format is 02/13/1975
-        $timeStamp = $now->format($this->appSettings->timeFormat);
+        $timeStamp = $now->format($this->appSettings->server->time_format);
         
         // get  the valid data from the form, we need to add to it before user is saved
         $formData = $form->getData();
@@ -79,7 +83,7 @@ class RegisterController extends AbstractController
         if($sendEmail) {
             $this->hostName = $this->request->getServer('HTTP_HOST');
             $this->requestScheme = $this->request->getServer('REQUEST_SCHEME');
-            $mailer->sendMessage($formData['email'], Mailer::VERIFICATION, $token);
+            $mailService->sendMessage($formData['email'], Email::VERIFICATION, $token);
         }
     }
     public function verifyAction()

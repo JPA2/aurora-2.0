@@ -1,18 +1,16 @@
 <?php
 declare(strict_types=1);
-namespace Application\Model\Factory;
+namespace Application\Service\Factory;
 
-use Application\Model\Settings;
+use Application\Service\Email;
 use Interop\Container\ContainerInterface;
 use Laminas\Config\Config;
-use Laminas\EventManager\EventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class SettingsFactory implements FactoryInterface
+class EmailFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        $config = $container->get('config');
-        return new Settings($config['app_settings']);
+        return new Email($container->get('config'));
     }
 }

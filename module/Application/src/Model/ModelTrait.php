@@ -1,5 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Application\Model;
+
 use Application\Model\AbstractModel;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;

@@ -7,10 +7,10 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle($this->appSettings->appName ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($this->appSettings->view->site_name ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
-        ->prependName('keywords', $this->appSettings->seoKeyWords ?? '')
+        ->prependName('keywords', $this->appSettings->seo->key_words ?? '')
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
             
@@ -44,7 +44,7 @@
                     >
                      <span class="navbar-toggler-icon"></span>
                     </button>
-                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate(($this->appSettings->appName ?? 'Home')); ?></a>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate(($this->appSettings->view->site_name ?? 'Home')); ?></a>
                 </div>
                 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -90,10 +90,10 @@
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="<?= isset($this->appSettings->copyRightLink) ? $this->appSettings->copyRightLink : '#'; ?>">
-                    <?= isset($this->appSettings->copyRightText) ? $this->appSettings->copyRightText : 'Default text'; ?></a> 
+                    <a href="<?= isset($this->appSettings->view->copyright_link) ? $this->appSettings->view->copyright_link : '#'; ?>">
+                    <?= isset($this->appSettings->view->copyright_text) ? $this->appSettings->view->copyright_text : 'Default text'; ?></a> 
                     | 
-                    <?= isset($this->appSettings->footerText) ? $this->appSettings->footerText : 'Default Text'; ?>
+                    <?= isset($this->appSettings->view->footer_text) ? $this->appSettings->view->footer_text : 'Default Text'; ?>
                 </p>
             </footer>
         </div>

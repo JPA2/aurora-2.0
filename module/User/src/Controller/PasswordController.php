@@ -1,15 +1,14 @@
 <?php
+declare(strict_types=1);
 namespace User\Controller;
 
 use Application\Controller\AbstractController;
-use Application\Utils\Mailer;
-use Laminas\Db\TableGateway\TableGatewayInterface;
-use Laminas\Form\Form;
-use \RuntimeException;
-use \DateTime;
+use Application\Service\Email;
 use User\Form\ResetPassword;
 use User\Model\Users;
 use User\Filter\RegistrationHash;
+use \RuntimeException;
+use \DateTime;
 
 class PasswordController extends AbstractController
 {
@@ -30,13 +29,13 @@ class PasswordController extends AbstractController
             $step = $this->params('step', 'zero');
             $this->logger->log(6, "$step");
             $dateTime = new DateTime('NOW');
-            $options = ['db' => $this->usrModel, 'enableCaptcha' => $this->appSettings->enableCaptcha];
+            $options = ['db' => $this->usrModel, 'enableCaptcha' => $this->appSettings->security->enable_captcha];
             $form = new ResetPassword(null, $options);
             $this->view->setVariable('showForm', true);
             switch ($step)
             {
                 case 'submit-email':
-                    $startTime = $dateTime->format($this->appSettings->timeFormat);
+                    $startTime = $dateTime->format($this->appSettings->server->time_format);
                     $formData = ['resetTimeStamp' => $startTime, 'step' => 'two'];
                     $form->remove('password');
                     $form->remove('conf_password');
@@ -64,13 +63,11 @@ class PasswordController extends AbstractController
                             if($user->update($user))
                             {
                                 // send reset email 
-                                /**
-                                 * @var Application\Utils\Mailer $mailer
-                                 */
-                                $mailer = $this->sm->get('Application\Utils\Mailer');
+
+                                $mailService = $this->sm->get(Email::class);
                                 try {
                                     //code...
-                                    $mailer->sendMessage($post['email'], Mailer::RESET_PASSWORD, $hash);
+                                    $mailService->sendMessage($post['email'], Email::RESET_PASSWORD, $hash);
                                 } catch (\Throwable $th) {
                                     $this->logger->log(2, $th->getMessage());
                                 }
@@ -110,10 +107,10 @@ class PasswordController extends AbstractController
                             'action',
                             '/user/password/reset/reset-password?token='.$token
                         );
-                        $startTime = DateTime::createFromFormat($this->appSettings->timeFormat, $user->resetTimeStamp);
+                        $startTime = DateTime::createFromFormat($this->appSettings->server->time_format, $user->resetTimeStamp);
                         $limit = DateTime::createFromFormat(
-                                            $this->appSettings->timeFormat, 
-                                            $dateTime->format($this->appSettings->timeFormat)
+                                            $this->appSettings->server->time_format, 
+                                            $dateTime->format($this->appSettings->server->time_format)
                                         );
                         $interval = $startTime->diff($limit);
                         if($interval->d > 0)
