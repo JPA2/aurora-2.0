@@ -91,7 +91,7 @@ class BootstrapFormRow extends \Laminas\Form\View\Helper\FormRow
         // hidden elements does not need <label> tag
         $type = $element->getAttribute('type');
 
-        if (isset($label) && '' !== $label && $type !== 'hidden') {
+        if (isset($label) && '' !== $label && $type !== 'hidden' && !empty($type)) {
             $labelAttributes = ['class' => 'control-label'];
             
             if ($element instanceof LabelAwareInterface) {

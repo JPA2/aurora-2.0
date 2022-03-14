@@ -5,7 +5,7 @@
 if(isset($form) && $this->appSettings->email->enable_contact_form):
     $form->prepare();
     echo $this->form()->openTag($form);
-    echo $this->form($form);
+    echo $this->bootstrapForm($form);
     echo $this->form()->closeTag($form);
 endif;
 ?>

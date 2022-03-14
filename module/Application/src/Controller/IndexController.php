@@ -36,8 +36,7 @@ class IndexController extends AbstractController
     public function contactAction()
     {
         //todo:: start with this form on the refactoring to fieldsets and delegators
-        $form = new ContactForm('contact-us', $this->appSettings->toArray());
-        $form->setInputFilter($form->addInputFilter());
+
         if($this->request->isPost())
         {
             $validationGroup = ['fullName', 'email', 'message'];
@@ -45,11 +44,11 @@ class IndexController extends AbstractController
             {
                $validationGroup[] = 'captcha';
             }
-            $form->setValidationGroup($validationGroup);
-            $form->setData($this->request->getPost()->toArray());
-            if($form->isValid())
+            $this->form->setValidationGroup($validationGroup);
+            $this->form->setData($this->request->getPost()->toArray());
+            if($this->form->isValid())
             {
-                $data = $form->getData();
+                $data = $this->form->getData();
                 $mailer = $this->sm->get('Application\Service\Email');
                 $mailer->contactUsMessage($data['email'], $data['fullName'], $data['message']);
                 $this->flashMessenger()->addSuccessMessage('Thank you for contacting us, your message was sent');
@@ -58,7 +57,7 @@ class IndexController extends AbstractController
         } else {
             
         }
-        $this->view->setVariable('form', $form);
+        $this->view->setVariable('form', $this->form);
         return $this->view;
     }
     public function forbiddenAction()

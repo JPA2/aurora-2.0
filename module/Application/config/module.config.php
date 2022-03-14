@@ -120,50 +120,9 @@ return [
             Controller\IndexController::class => Controller\Factory\IndexControllerFactory::class,
         ],
     ],
-    'translator' => [
-        'locale' => [
-            //'en_US'
-        ],
-        'translation_file_patterns' => [
-            [
-                'type'     => Laminas\I18n\Translator\Loader\PhpArray::class,
-                'filename' => 'en-US.php', 
-                'base_dir' => __DIR__ . '/languages',
-                'pattern'  => '%s.php',
-            ],
-//             [
-//                 'type'        => Laminas\I18n\Translator\Loader\PhpArray::class,
-//                 'base_dir'    => __DIR__ . '/languages',
-//                 'pattern'     => 'user-%s.php',
-//                 'text_domain' => 'user',
-//             ],
-            
-        ],
-        'translation_files' => [
-            [
-                'type' => 'PhpArray',
-                'filename' => dirname(__DIR__, 3) . '/languages/en-US.php',
-                'locale' => 'en-US',
-                'text_domain' => 'default',
-            ],
-//             [
-//                 'type' => 'PhpArray',
-//                 'filename' => dirname(__DIR__, 3) . '/languages/user-en-US.php',
-//                 'text_domain' => 'user',
-//                 'locale' => 'en-US',
-//             ],
-            [
-                'type' => 'PhpArray',
-                'filename' => dirname(__DIR__, 3) . '/languages/es-MX.php',
-                'text_domain' => 'default',
-                'locale' => 'es-MX',
-            ],
-//             [
-//                 'type' => 'PhpArray',
-//                 'filename' => dirname(__DIR__, 3) . '/languages/user-es-MX.php',
-//                 'text_domain' => 'user',
-//                 'locale' => 'es-MX',
-//             ],
+    'form_elements' => [
+        'factories' => [
+            Form\ContactForm::class => Form\Factory\ContactFormFactory::class
         ],
     ],
     'navigation' => [
@@ -248,6 +207,52 @@ return [
     'upload_manager' => [
         'application' => [
             'upload_path' => '/images',
+        ],
+    ],
+    'translator' => [
+        'locale' => [
+            //'en_US'
+        ],
+        'translation_file_patterns' => [
+            [
+                'type'     => Laminas\I18n\Translator\Loader\PhpArray::class,
+                'filename' => 'en-US.php', 
+                'base_dir' => __DIR__ . '/languages',
+                'pattern'  => '%s.php',
+            ],
+//             [
+//                 'type'        => Laminas\I18n\Translator\Loader\PhpArray::class,
+//                 'base_dir'    => __DIR__ . '/languages',
+//                 'pattern'     => 'user-%s.php',
+//                 'text_domain' => 'user',
+//             ],
+            
+        ],
+        'translation_files' => [
+            [
+                'type' => 'PhpArray',
+                'filename' => dirname(__DIR__, 3) . '/languages/en-US.php',
+                'locale' => 'en-US',
+                'text_domain' => 'default',
+            ],
+//             [
+//                 'type' => 'PhpArray',
+//                 'filename' => dirname(__DIR__, 3) . '/languages/user-en-US.php',
+//                 'text_domain' => 'user',
+//                 'locale' => 'en-US',
+//             ],
+            [
+                'type' => 'PhpArray',
+                'filename' => dirname(__DIR__, 3) . '/languages/es-MX.php',
+                'text_domain' => 'default',
+                'locale' => 'es-MX',
+            ],
+//             [
+//                 'type' => 'PhpArray',
+//                 'filename' => dirname(__DIR__, 3) . '/languages/user-es-MX.php',
+//                 'text_domain' => 'user',
+//                 'locale' => 'es-MX',
+//             ],
         ],
     ],
 ];

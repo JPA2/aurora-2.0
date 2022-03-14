@@ -1,8 +1,10 @@
 <?php
-
+declare(strict_types=1);
 namespace Application\Form;
 
+use Application\Model\Settings;
 use Laminas\Form\Element\Email;
+use Laminas\Form\Element\Submit;
 use Laminas\Form\Element\Captcha;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
@@ -11,42 +13,44 @@ use Laminas\InputFilter\InputFilter;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\StringToLower;
-
+use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Form\Form;
 
-
-class ContactForm extends Form
+class ContactForm extends Form implements InputFilterProviderInterface
 {
-    public function __construct($name = null, $options = [])
+    public function __construct(Settings $settings, $name = null, $options = [])
     {
-        parent::__construct($name);
+        $this->appSettings = $settings;
+        parent::__construct('contact');
         parent::setOptions($options);
-
+    }
+    public function init()
+    {
         $this->add([
             'name' => 'fullName',
-            'type' => 'text',
+            'type' => Text::class,
             'options' => [
                 'label' => 'Full Name',
             ]
         ]);
         $this->add([
             'name' => 'email',
-            'type' => 'email',
+            'type' => Email::class,
             'options' => [
                 'label' => 'Email',
             ]
         ]);
         $this->add([
             'name' => 'message',
-            'type' => 'textarea',
+            'type' => Textarea::class,
             'options' => [
                 'label' => 'Message',
             ]
         ]);
-        if ($this->options['enableCaptcha']) {
+        if ($this->appSettings->security->enable_captcha) {
             $this->add([
                 'name' => 'captcha',
-                'type' => 'captcha',
+                'type' => Captcha::class,
                 'options' => [
                     'label' => 'Rewrite Captcha text:',
                     'captcha' => new \Laminas\Captcha\Image([
@@ -68,70 +72,70 @@ class ContactForm extends Form
         }
         $this->add([
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => Submit::class,
             'attributes' => [
                 'value' => 'Go',
                 'id' => 'submitbutton'
             ]
         ]);
     }
-    public function addInputFilter()
+    public function getInputFilterSpecification()
     {
-        $filter = new InputFilter();
-        $filter->add([
-            'name' => 'fullName',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
+        return [
+            [
+                'name' => 'fullName',
+                'required' => true,
+                'filters' => [
+                    ['name' => StripTags::class],
+                    ['name' => StringTrim::class],
+                ],
+                'validators' => [
+                    [
+                        'name' => StringLength::class,
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 100,
+                        ],
                     ],
                 ],
             ],
-        ]);
-        $filter->add([
-            'name' => 'email',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
+            [
+                'name' => 'email',
+                'required' => true,
+                'filters' => [
+                    ['name' => StripTags::class],
+                    ['name' => StringTrim::class],
+                ],
+                'validators' => [
+                    [
+                        'name' => StringLength::class,
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 100,
+                        ],
                     ],
                 ],
             ],
-        ]);
-        $filter->add([
-            'name' => 'message',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 2000,
+            [
+                'name' => 'message',
+                'required' => true,
+                'filters' => [
+                    ['name' => StripTags::class],
+                    ['name' => StringTrim::class],
+                ],
+                'validators' => [
+                    [
+                        'name' => StringLength::class,
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 2000,
+                        ],
                     ],
                 ],
             ],
-        ]);
-        return $filter;
+        ];
     }
 }
