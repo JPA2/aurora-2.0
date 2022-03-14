@@ -15,8 +15,6 @@ return [
     'db' => [
         'sessions_table_name' => 'sessions',
         'log_table_name' => 'log',
-        'settings_table_name' => 'settings',
-        'modulesettings_table_name' => 'modulesettings',
     ],
     'base_dir' => dirname(__DIR__, 3),
     'router' => [
@@ -108,9 +106,18 @@ return [
             ],
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            Service\Email::class                        => Service\Factory\EmailFactory::class,
+            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
+            Laminas\Session\SessionManager::class       => Laminas\Session\Service\SessionManagerFactory::class,
+            Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
+        ],
+    ],
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
+            Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
+            Controller\IndexController::class => Controller\Factory\IndexControllerFactory::class,
         ],
     ],
     'translator' => [
@@ -201,6 +208,24 @@ return [
                 'resource' => 'admin',
                 'privilege' => 'admin.access',
             ],
+        ],
+    ],
+    'view_helpers' => [
+        'aliases' => [
+            'bootstrapform'           => View\Helper\BootstrapForm::class,
+            'bootstrapForm'           => View\Helper\BootstrapForm::class,
+            'bootstrapformcollection' => View\Helper\BootstrapFormCollection::class,
+            'bootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
+            'bootstrapformrow'        => View\Helper\BootstrapFormRow::class,
+            'bootstrapFormRow'        => View\Helper\BootstrapFormRow::class,
+            'iconifiedcontrol'        => View\Helper\IconifiedControl::class,
+            'iconifiedControl'        => View\Helper\IconifiedControl::class,
+        ],
+        'factories' => [
+            View\Helper\BootstrapForm::class           => InvokableFactory::class,
+            View\Helper\BootstrapFormCollection::class => InvokableFactory::class,
+            View\Helper\BootstrapFormRow::class        => InvokableFactory::class,
+            View\Helper\IconifiedControl::class        => View\Helper\Service\IconifiedControlFactory::class,
         ],
     ],
     'view_manager' => [

@@ -61,7 +61,7 @@ class UserController extends AbstractController
                 $options = [];
                 $options['acl'] = $this->acl;
                 $options['settings'] = $this->appSettings;
-                $options['rolesTable'] = $this->sm->get('User\Model\RolesTable');
+                $options['rolesTable'] = $this->sm->get('User\Model\Roles');
                 $options['user'] = $this->user;
                 $form = new EditUserForm(null, $options);
                 $form->get('submit')->setAttribute('value', 'Edit');

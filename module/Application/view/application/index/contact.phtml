@@ -2,7 +2,7 @@
 /**
  * @var \Laminas\View\Renderer\PhpRenderer $this
  */
-if(isset($form) && $this->appSettings->enableContactUs):
+if(isset($form) && $this->appSettings->email->enable_contact_form):
     $form->prepare();
     echo $this->form()->openTag($form);
     echo $this->form($form);

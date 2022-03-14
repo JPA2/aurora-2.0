@@ -1,6 +1,8 @@
 <?php
 namespace Uploader;
 
+use Uploader\Fieldset\UploaderAwareFieldset;
+
 return [
     'router' => [
         'routes' => [
@@ -17,6 +19,23 @@ return [
                     ],
                 ],
             ],
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
+            Uploader\Uploader::class             => Uploader\UploaderFactory::class,
+            Uploader\AdapterPluginManager::class => Uploader\AdapterPluginManagerFactory::class,
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            Controller\UploadController::class => Controller\Factory\UploadControllerFactory::class,
+        ],
+    ],
+    'form_elements' => [
+        'factories' => [
+            Fieldset\UploaderAwareFieldset::class  => Fieldset\Factory\UploaderAwareFieldsetFactory::class,
+            Fieldset\UploaderAwareMultiFile::class => Fieldset\Factory\UploaderAwareMultiFileFactory::class,
         ],
     ],
     'upload_manager' => [

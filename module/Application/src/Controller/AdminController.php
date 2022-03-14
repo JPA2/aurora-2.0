@@ -4,7 +4,6 @@ namespace Application\Controller;
 //use Application\Model\ApplicationTable;
 use Application\Controller\AbstractAdminController;
 use Application\Form\SettingsForm;
-use Application\Utils\ImageUploader as UtilsImageUploader;
 use Laminas\Form\FormInterface;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Text;
@@ -37,6 +36,7 @@ class AdminController extends AbstractAdminController
     }
     public function manageSettingsAction()
     {
+        //todo:: Fix the settings handling
         // get an instance of the service manager
         $sm = $this->getEvent()->getApplication()->getServiceManager();
         // get the settings table from the service manager

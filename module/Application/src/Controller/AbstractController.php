@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller;
 
+use Application\Model\Settings;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
@@ -79,6 +80,7 @@ abstract class AbstractController extends AbstractActionController
     {
         // Get an instance of the Service Manager
         $this->sm = $e->getApplication()->getServiceManager();
+        $config = $this->sm->get('config');
         // Request Object
         $request = $this->sm->get('Request');
         // The Referring Url for the current request ie the previous page
@@ -91,7 +93,7 @@ abstract class AbstractController extends AbstractActionController
         // The authentication Object
         $this->authService = $this->sm->get(AuthenticationService::class);
         // This removes the need for more than one db query to make settings available to Aurora
-        $this->appSettings = $this->sm->get('AuroraSettings');
+        $this->appSettings = $this->sm->get(Settings::class);
         // This may be removed in next branch
         $pluginManager = $this->sm->get('ControllerPluginManager');
         $this->config = $this->sm->get('config');
