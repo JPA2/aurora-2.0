@@ -131,49 +131,11 @@ class FormFilters
         ]);
         
         $inputFilter->add([
-            'name' => 'password',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-                ['name' => PasswordFilter::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                ],
-            ],
+
         ]);
         
         $inputFilter->add([
-            'name' => 'conf_password',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                    'name' => Identical::class,
-                    'options' => [
-                        'token' => 'password',
-                        'messages' => [
-                            \Laminas\Validator\Identical::NOT_SAME => 'Passwords are not the same',
-                        ],
-                    ],
-                ],
-            ],
+
         ]);
         
         $this->inputFilter = $inputFilter;

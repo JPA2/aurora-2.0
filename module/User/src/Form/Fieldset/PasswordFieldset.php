@@ -2,40 +2,48 @@
 declare(strict_types=1);
 namespace User\Form\Fieldset;
 
+use Laminas\Captcha\Image;
 use Laminas\Config\Config;
+use Laminas\Form\Element\Captcha;
+use Laminas\Form\Element\Password;
 use Laminas\Form\Fieldset;
-class PasswordFieldset extends Fieldset
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\Identical;
+use User\Filter\PasswordFilter;
+
+class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
 {
     protected $config;
-    public function __construct(Config $config, $name = null, $options = null)
+    public function __construct(Config $appSettings, $name = null, $options = null)
     {
-        $this->config = $config;
-        parent::__construct('acct-psswd', $options);
+        $this->appSettings = $appSettings;
+        parent::__construct('reg-pwd', $options);
     }
     public function init()
     {
         $this->add([
             'name' => 'password',
-            'type' => \Laminas\Form\Element\Password::class,
+            'type' => Password::class,
             'options' => [
                 'label' => 'Password'
-            ]
+            ],
         ]);
         $this->add([
             'name' => 'conf_password',
-            'type' => \Laminas\Form\Element\Password::class,
+            'type' => Password::class,
             'options' => [
                 'label' => 'Confirm Password'
-            ]
+            ],
         ]);
-
-        if ($this->config['enableCaptcha']) {
+        if ($this->appSettings->server->enable_captcha) {
             $this->add([
                 'name' => 'captcha',
-                'type' => \Laminas\Form\Element\Captcha::class,
+                'type' => Captcha::class,
                 'options' => [
                     'label' => 'Rewrite Captcha text:',
-                    'captcha' => new \Laminas\Captcha\Image([
+                    'captcha' => new Image([
                         'name' => 'myCaptcha',
                         'messages' => [
                             'badCaptcha' => 'incorrectly rewritten image text'
@@ -49,9 +57,57 @@ class PasswordFieldset extends Fieldset
                         'width' => 200,
                         'height' => 70
                     ]),
-                ]
+                ],
             ]);
         }
     }
-
+    public function getInputFilterSpecification()
+    {
+        return [
+            [
+                'name' => 'password',
+                'required' => true,
+                'filters' => [
+                    ['name' => StripTags::class],
+                    ['name' => StringTrim::class],
+                    ['name' => PasswordFilter::class],
+                ],
+                'validators' => [
+                    [
+                        'name' => StringLength::class,
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 100,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'name' => 'conf_password',
+                'required' => true,
+                'filters' => [
+                    ['name' => StripTags::class],
+                    ['name' => StringTrim::class],
+                ],
+                'validators' => [
+                    [
+                        'name' => StringLength::class,
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 100,
+                        ],
+                        'name' => Identical::class,
+                        'options' => [
+                            'token' => 'password',
+                            'messages' => [
+                                Identical::NOT_SAME => 'Passwords are not the same',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
 }

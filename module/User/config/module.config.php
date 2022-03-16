@@ -205,6 +205,13 @@ return [
             Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
         ],
     ],
+    'form_elements' => [
+        'factories' => [
+            Form\Fieldset\AcctDataFieldset::class => Form\Fieldset\Factory\AcctDataFieldsetFactory::class,
+            Form\Fieldset\PasswordFieldset::class => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
+            Form\Fieldset\ProfileFieldset::class => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
+        ],
+    ],
     'view_helpers' => [
         'aliases' => [
             'userawarecontrol' => View\Helper\UserAwareControl::class,

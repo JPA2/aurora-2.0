@@ -1,18 +1,16 @@
-<?Php 
+<?php
 declare(strict_types=1);
 namespace User\Form\Fieldset\Factory;
 
-use Application\Model\Settings;
 use Interop\Container\ContainerInterface;
-use Laminas\Form\Fieldset;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use User\Form\Fieldset\PasswordFieldset;
+use User\Form\Fieldset\AcctDataFieldset;
+use User\Model\Users;
 
-class PasswordFieldsetFactory implements FactoryInterface
+class AcctDataFieldsetFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        $settings = $container->get(Settings::class);
-        return new PasswordFieldset($settings);
+        return new AcctDataFieldset($container->get(Users::class));
     }
 }
