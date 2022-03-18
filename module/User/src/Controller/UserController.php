@@ -1,18 +1,15 @@
 <?php
+declare(strict_types=1);
 namespace User\Controller;
 
-use \RuntimeException;
 use Application\Controller\AbstractController;
 use User\Model\Users;
-use User\Model\User;
 use User\Form\LoginForm;
 use User\Form\EditUserForm;
 use User\Filter\FormFilters;
-use Laminas\Db\RowGateway\RowGatewayInterface;
-use Laminas\Db\TableGateway\TableGateway as Table;
-//use Application\Model\RowGateway\RowGateway as Prototype;
 use Laminas\Authentication\Result;
-//use Laminas\Validator\Db\NoRecordExists;
+use Laminas\Form\FormElementManager;
+use \RuntimeException;
 
 class UserController extends AbstractController
 {
@@ -113,7 +110,6 @@ class UserController extends AbstractController
             
         }
     }
-    
     public function deleteAction()
     {
         try {
@@ -165,24 +161,24 @@ class UserController extends AbstractController
     }
     public function loginAction()
     {
-        //var_dump($this->sm);
-        $form = new LoginForm();
-        $form->get('submit')->setValue('Login');
+        $form = ($this->sm->get(FormElementManager::class))->get(LoginForm::class);
+        
+        //$form->get('submit')->setValue('Login');
         if (! $this->request->isPost()) {
             return ['form' => $form];
         }
         // get the post data
-        $post = $this->request->getPost();
-        $filters = new FormFilters();
+        //$post = $this->request->getPost()['login-data'];
+        //$filters = new FormFilters();
         // set the input filters on the form object
-        $form->setInputFilter($filters->getLoginFilter());
+        //$form->setInputFilter($filters->getLoginFilter());
         // set the posted data in the form objects context
-        $form->setData($this->request->getPost());
+        $form->setData($this->request->getPost()->toArray());
         // check with the form object to verify data is valid
         if (! $form->isValid()) {
             return ['form' => $form];
         }
-        $validData = $form->getData();
+        $validData = $form->getData()['login-data'];
         $user = $this->table->fetchByColumn('userName', $validData['userName']);
         /** DO NOT change the following line as the password property must be set to the posted password!!!!
          * if changed login fails
@@ -209,7 +205,7 @@ class UserController extends AbstractController
             
         }
         $this->view->setVariable('form', $form);
-            return $this->view;
+        return $this->view;
     }
     public function loginFailureAction() {}
 }

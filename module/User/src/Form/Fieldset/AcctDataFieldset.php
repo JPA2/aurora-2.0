@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace User\Form\Fieldset;
 
 use Laminas\Filter\StringTrim;
@@ -11,6 +13,7 @@ use Laminas\Form\Fieldset;
 use User\Model\Users;
 use Laminas\Hydrator\ArraySerializableHydrator;
 use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\EmailAddress;
 
 class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -25,10 +28,9 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
      * @return void 
      * @throws InvalidArgumentException 
      */
-    public function __construct(Users $usrModel, $name = null, $options = null)
+    public function __construct()
     {
-        $this->usrModel = $usrModel;
-        parent::__construct('acct-data', $options);
+        parent::__construct('acct-data');
         $this->setAttribute('id', 'acct-data');
     }
     public function init()
@@ -39,17 +41,17 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
             'name' => 'id',
             'type' => \Laminas\Form\Element\Hidden::class,
         ]);
-        $this->add([
-            'name' => 'regDate',
-            'type' => \Laminas\Form\Element\Hidden::class,
-        ]);
-        $this->add([
-            'name' => 'userName',
-            'type' => \Laminas\Form\Element\Text::class,
-            'options' => [
-                'label' => 'User Name'
-            ]
-        ]);
+        // $this->add([
+        //     'name' => 'regDate',
+        //     'type' => \Laminas\Form\Element\Hidden::class,
+        // ]);
+        // $this->add([
+        //     'name' => 'userName',
+        //     'type' => \Laminas\Form\Element\Text::class,
+        //     'options' => [
+        //         'label' => 'User Name'
+        //     ]
+        // ]);
         $this->add([
             'name' => 'email',
             'type' => \Laminas\Form\Element\Text::class,
@@ -61,16 +63,13 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return [
-            [
-                'name' => 'id',
-                'required' => true,
+            'id' => [
                 'filters' => [
                     ['name' => ToInt::class],
                 ],
             ],
-            [
-                'name' => 'email',
-                'required' => false,
+            'email' => [
+                'required' => true,
                 'filters' => [
                     ['name' => StripTags::class],
                     ['name' => StringTrim::class],
@@ -80,10 +79,12 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
                         'name' => StringLength::class,
                         'options' => [
                             'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 100,
+                            'min'      => 1,
+                            'max'      => 320, // true, we may never see an email this length, but they are still valid
                         ],
                     ],
+                    // @see EmailAddress for $options
+                    ['name' => EmailAddress::class,],
                 ],
             ],
         ];

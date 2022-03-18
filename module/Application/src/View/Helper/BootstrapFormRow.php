@@ -201,6 +201,6 @@ class BootstrapFormRow extends \Laminas\Form\View\Helper\FormRow
     }
 
     public function getInputErrorClass() {
-        return 'has-error';
+        return 'has-error text-danger';
     }
 }

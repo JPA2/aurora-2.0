@@ -9,6 +9,8 @@ use Laminas\Authentication\AuthenticationService;
 use User\Model\UserTable as Table;
 use User\Model\User as User;
 use User\Model\Guest;
+use Laminas\Form\FormElementManager;
+use User\Form\LoginForm;
 use Laminas\Log\Logger as Logger;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 
@@ -128,6 +130,10 @@ abstract class AbstractController extends AbstractActionController
         		'user' => $this->user,
         		'acl' => $this->acl
         ]);
+        $rootViewModel = $this->layout();
+        $inlineLogin = new ViewModel(['form' => ($this->sm->get(FormElementManager::class))->get(LoginForm::class)]);
+        $inlineLogin->setTemplate('user/partials/inline-login');
+        $rootViewModel->addChild($inlineLogin, 'inlineLogin');
         //$this->layout()->appSettings = $this->appSettings;
         $this->action = $this->params()->fromRoute('action');
         //$this->layout()->acl = $this->acl;
@@ -136,7 +142,8 @@ abstract class AbstractController extends AbstractActionController
                 'user' => $this->user,
                 'acl'  => $this->acl,
                 'appSettings' => $this->appSettings,
-                'authenticated' => $this->authenticated,
+                'authenticated' => $this->authenticated
+                
             ]);
         $this->_init();
         

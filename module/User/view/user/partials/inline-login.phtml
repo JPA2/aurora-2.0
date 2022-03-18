@@ -1,0 +1,9 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ */
+if(isset($form)) {
+    $form->setAttribute('action', $this->url('user/account', ['action' => 'login']));
+    $form->addSubmit();
+    echo $this->bootstrapForm($form, 'inline');
+}

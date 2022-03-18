@@ -5,8 +5,11 @@ namespace Uploader\Fieldset;
 use Laminas\Form\Element\File;
 use Laminas\Filter\File as FileFilter;
 use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\File\IsImage;
+use Laminas\Validator\File\ImageSize;
 
-class UploaderAwareMultiFile extends Fieldset
+class UploaderAwareMultiFile extends Fieldset implements InputFilterProviderInterface
 {
     public function __construct($name = null,  $options = null)
     {
@@ -16,7 +19,7 @@ class UploaderAwareMultiFile extends Fieldset
     {
         $this->add([
             'name' => 'file-upload',
-            'type' => \Laminas\Form\Element\File::class,
+            'type' => File::class,
             'attributes' => [
                 'multiple' => true,
             ],
@@ -27,5 +30,25 @@ class UploaderAwareMultiFile extends Fieldset
                 'order' => 1,
             ],
         ]);
+    }
+    public function getInputFilterSpecification()
+    {
+        return [
+            'file-upload' => [
+                'required' => false,
+                'validators' => [
+                    ['name' => IsImage::class,],
+                    [
+                        'name' => ImageSize::class,
+                        'options' => [
+                            'minWidth'  => 100, // Minimum image width
+                            'maxWidth'  => 1000, // Maximum image width
+                            'minHeight' => 100, // Minimum image height
+                            'maxHeight' => 1000, // Maximum image height
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }

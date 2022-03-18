@@ -36,7 +36,7 @@ class ResetPassword extends Form
         ]);
         $this->add([
             'name' => 'email',
-            'type' => Laminas\Form\Element\Email::class,
+            'type' => Email::class,
             'attributes' => 'form-control',
             'options' => [
                 'label' => 'Email'
@@ -44,7 +44,7 @@ class ResetPassword extends Form
         ]);
         $this->add([
             'name' => 'password',
-            'type' => Laminas\Form\Element\Password::class,
+            'type' => Password::class,
             'attributes' => 'form-control',
             'options' => [
                 'label' => 'Password'
@@ -52,7 +52,7 @@ class ResetPassword extends Form
         ]);
         $this->add([
             'name' => 'conf_password',
-            'type' => Laminas\Form\Element\Password::class,
+            'type' => Password::class,
             'attributes' => [
                 'class' => 'form-control'
             ],
@@ -63,7 +63,7 @@ class ResetPassword extends Form
         if ($this->options['enableCaptcha']) {
             $this->add([
                 'name' => 'captcha',
-                'type' => \Laminas\Form\Element\Captcha::class,
+                'type' => Captcha::class,
                 'attributes' => [
                     'class' => 'form-control',
                 ],

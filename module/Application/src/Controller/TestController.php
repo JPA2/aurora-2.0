@@ -5,7 +5,6 @@ namespace Application\Controller;
 use Application\Controller\AbstractController;
 use Application\Model\Settings;
 use User\Model\Users;
-use Application\Form\WorkspaceForm;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Psr\Container\NotFoundExceptionInterface;

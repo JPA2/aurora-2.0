@@ -3,20 +3,22 @@ declare(strict_types=1);
 namespace User\Form;
 
 use Application\Form\BaseForm;
-use Laminas\Form\Element;
-use Laminas\Form\Element\Captcha;
+use Application\Form\Fieldset\SecurityFieldset;
 use User\Form\Fieldset\AcctDataFieldset;
 use User\Form\Fieldset\ProfileFieldset;
-
 
 class UserForm extends BaseForm
 {
     public function init()
     {
-        $this->add([
+        $this
+        ->add([
+            'type' => SecurityFieldset::class,
+        ])
+        ->add([
             'type' => AcctDataFieldset::class,
-        ]);
-        $this->add([
+        ])
+        ->add([
             'type' => ProfileFieldset::class,
         ]);
     }

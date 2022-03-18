@@ -1,6 +1,8 @@
 <?php
+declare(strict_types=1);
 namespace User;
 
+use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 use Laminas\Router\Http\Literal;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -12,18 +14,28 @@ return [
     'router' => [
         'routes' => [
             'user' => [
-                'type' => Segment::class,
+                'type' => Placeholder::class,
+                'may_terminate' => true,
                 'options' => [
-                    'route' => '/user[/:action[/:userName]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    'route' => '/user'
+                ],
+                'child_routes' => [
+                    'account' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/user/account[/:action[/:userName]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\UserController::class,
+                                'action' => 'index',
+                            ],
+                        ],
                     ],
-                    'defaults' => [
-                        'controller' => Controller\UserController::class,
-                        'action' => 'index'
-                    ]
-                ]
+                ],
             ],
             'profile' => [
                 'type' => Segment::class,
@@ -132,7 +144,7 @@ return [
             ],
             [
                 'label' => 'Login',
-                'route' => 'user',
+                'route' => 'user/account',
                 'class' => 'nav-link',
                 'action' => 'login',
                 'resource' => 'users',
@@ -140,7 +152,7 @@ return [
             ],
             [
                 'label' => 'Logout',
-                'route' => 'user',
+                'route' => 'user/account',
                 'class' => 'nav-link',
                 'action' => 'logout',
                 'resource' => 'users',
@@ -208,8 +220,9 @@ return [
     'form_elements' => [
         'factories' => [
             Form\Fieldset\AcctDataFieldset::class => Form\Fieldset\Factory\AcctDataFieldsetFactory::class,
+            Form\Fieldset\LoginFieldset::class    => Form\Fieldset\Factory\LoginFormFactory::class,
             Form\Fieldset\PasswordFieldset::class => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
-            Form\Fieldset\ProfileFieldset::class => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
+            Form\Fieldset\ProfileFieldset::class  => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
         ],
     ],
     'view_helpers' => [

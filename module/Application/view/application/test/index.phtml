@@ -3,9 +3,7 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  */
 if(isset($form)) :
-    echo $this->form()->openTag($form);
     echo $this->bootstrapForm($form);
-    echo $this->form()->closeTag($form);
 ?>
 
 <?php

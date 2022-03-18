@@ -123,7 +123,8 @@ return [
     ],
     'form_elements' => [
         'factories' => [
-            Form\ContactForm::class => Form\Factory\ContactFormFactory::class
+            Form\ContactForm::class => Form\Factory\ContactFormFactory::class,
+            Form\Fieldset\SecurityFieldset::class => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
         ],
     ],
     'navigation' => [

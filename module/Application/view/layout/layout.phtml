@@ -56,8 +56,10 @@
                 $this->navigation()->menu()->setUlClass('navbar-nav');
                 echo $this->navigation('Laminas\Navigation\Static')->menu();
                 ?>
+                
                 </div>
             </div>
+
         </nav>
         <div class="container">
             <?php
@@ -95,6 +97,9 @@
                     | 
                     <?= isset($this->appSettings->view->footer_text) ? $this->appSettings->view->footer_text : 'Default Text'; ?>
                 </p>
+                <?php
+                    echo $this->renderChildModel('inlineLogin');
+                ?>
             </footer>
         </div>
         <?= $this->inlineScript()

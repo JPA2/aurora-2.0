@@ -56,8 +56,9 @@ class Users extends AbstractModel
                     /** do stuff for successful authentication **/
                     $omitColumns = ['password'];
                     $user = $authAdapter->getResultRowObject(null, $omitColumns);
-
-                    return $this->fetchByColumn('userName', $result->getIdentity());
+                    $this->exchangeArray((array)$user);
+                    //return $this->fetchByColumn('userName', $result->getIdentity());
+                    return $this;
                     break;
 
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
@@ -97,18 +98,6 @@ class Users extends AbstractModel
                 $this->config->db->user_roles_table_name . '.label ASC', $this->config->db->users_table_name . '.regDate DSC'
             ]);
         return $this->db->selectWith($select)->current();
-
-
-        // try {
-        //     if (!$row) {
-        //         throw new RuntimeException(sprintf(
-        //             'Could not find row with identifier %d',
-        //             $userName
-        //         ));
-        //     }
-        // } catch (\Throwable $th) {
-        // }
-        // return $row;
     }
     public function fetchAllUsers()
     {
