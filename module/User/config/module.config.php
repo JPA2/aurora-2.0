@@ -220,9 +220,10 @@ return [
     'form_elements' => [
         'factories' => [
             Form\Fieldset\AcctDataFieldset::class => Form\Fieldset\Factory\AcctDataFieldsetFactory::class,
-            Form\Fieldset\LoginFieldset::class    => Form\Fieldset\Factory\LoginFormFactory::class,
+            Form\Fieldset\LoginFieldset::class    => Form\Fieldset\Factory\LoginFieldsetFactory::class,
             Form\Fieldset\PasswordFieldset::class => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
             Form\Fieldset\ProfileFieldset::class  => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
+            Form\UserForm::class                  => Form\UserFormFactory::class,
         ],
     ],
     'view_helpers' => [

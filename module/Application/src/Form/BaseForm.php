@@ -8,7 +8,6 @@ use Laminas\Form\Element\Submit;
 
 class BaseForm extends Form
 {
-
     public function addSubmit()
     {
         $this->add([
