@@ -167,11 +167,6 @@ class UserController extends AbstractController
         if (! $this->request->isPost()) {
             return ['form' => $form];
         }
-        // get the post data
-        //$post = $this->request->getPost()['login-data'];
-        //$filters = new FormFilters();
-        // set the input filters on the form object
-        //$form->setInputFilter($filters->getLoginFilter());
         // set the posted data in the form objects context
         $form->setData($this->request->getPost()->toArray());
         // check with the form object to verify data is valid
@@ -202,7 +197,6 @@ class UserController extends AbstractController
                     $element->setMessages($messages);
                     break;
             }
-            
         }
         $this->view->setVariable('form', $form);
         return $this->view;
