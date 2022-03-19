@@ -10,8 +10,6 @@ use Laminas\Filter\ToInt;
 //use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
 use Laminas\Form\Fieldset;
-use User\Model\Users;
-use Laminas\Hydrator\ArraySerializableHydrator;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\EmailAddress;
 
@@ -28,7 +26,7 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
      * @return void 
      * @throws InvalidArgumentException 
      */
-    public function __construct()
+    public function __construct($options = [])
     {
         parent::__construct('acct-data');
         $this->setAttribute('id', 'acct-data');
