@@ -30,6 +30,7 @@ return [
     'Laminas\Validator',
     'Laminas\Diactoros',
     'Laminas\DeveloperTools',
+    'Laminas\ZendFrameworkBridge',
     'Application',
     'Uploader',
     'User',
