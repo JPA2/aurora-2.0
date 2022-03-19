@@ -1,15 +1,16 @@
-<?Php 
+<?php
 declare(strict_types=1);
-namespace Application\Form\Factory;
+namespace User\Form\Fieldset\Factory;
 
-use Application\Form\BaseForm;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use User\Form\Fieldset\RoleFieldset;
+use User\Model\Roles;
 
-class BaseFormFactory implements FactoryInterface
+class RoleFieldsetFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        return new BaseForm();
+        return new RoleFieldset($container->get(Roles::class));
     }
 }

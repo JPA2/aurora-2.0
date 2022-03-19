@@ -4,7 +4,7 @@ namespace User\Model;
 
 use Application\Model\AbstractModel;
 use Application\Model\ModelTrait;
-use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
+use Application\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
 use Laminas\Db\Sql\Select;

@@ -34,7 +34,8 @@ class PermissionsManager implements AclInterface
      */
     private $role;
     
-    public function __construct(Acl $acl, Roles $model, Config $config) {
+    public function __construct(Acl $acl, Roles $model, Config $config) 
+    {
         $this->config = $config;
         $this->model = $model;
         $this->roles = $this->model->select();
@@ -42,12 +43,14 @@ class PermissionsManager implements AclInterface
         $this->build();
         return $this;
     }
-    public function isAllowed($role = null, $resource = null, $privilege = null)
+    #[\ReturnTypeWillChange]
+    public function isAllowed($role = null, $resource = null, $privilege = null) : bool
     {
         $acl = $this->getAcl();
         return $acl->isAllowed($role, $resource, $privilege);
     }
-    public function hasResource($resource, $parent = null)
+    #[\ReturnTypeWillChange]
+    public function hasResource($resource, $parent = null) : bool
     {
         $acl = $this->getAcl();
         return $acl->hasResource($resource, $parent);
@@ -57,7 +60,8 @@ class PermissionsManager implements AclInterface
      * @return \Application\Permissions\PermissionsManager
      * Provides fluent interface
      */
-    public function build()
+    #[\ReturnTypeWillChange]
+    public function build() : self
     {
         // create the guest role and register it
         $guest = new Role('guest');
@@ -99,14 +103,16 @@ class PermissionsManager implements AclInterface
         
         return $this;
     }
-    public function getRoles()
+    #[\ReturnTypeWillChange]
+    public function getRoles() : Object
     {
         return $this->roles;
     }
     /**
      * @return $acl \Laminas\Permissions\Acl\Acl
      */
-    public function getAcl()
+    #[\ReturnTypeWillChange]
+    public function getAcl() : Object
     {
         return $this->acl;
     }

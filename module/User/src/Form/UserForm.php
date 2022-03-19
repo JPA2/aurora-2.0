@@ -5,17 +5,26 @@ namespace User\Form;
 use Application\Form\BaseForm;
 use Application\Form\Fieldset\SecurityFieldset;
 use Application\Model\Settings;
+use Laminas\Authentication\AuthenticationServiceInterface;
 use User\Form\Fieldset\AcctDataFieldset;
 use User\Form\Fieldset\ProfileFieldset;
+use User\Model\Users;
 use User\Permissions\PermissionsManager;
 
 class UserForm extends BaseForm
 {
-
+    /**
+     * @var \Laminas\Authentication\AuthenticationService $auth
+     */
+    protected $auth;
     /**
      * @var PermissionsManager $pm
      */
     protected $pm;
+    /**
+     * @var User\Model\Users $usrModel
+     */
+    protected $usrModel;
     /**
      * @var Settings $appSettings
      */
@@ -27,10 +36,16 @@ class UserForm extends BaseForm
      * @param Settings $appSettings 
      * @return void 
      */
-    #[\ReturnTypeWillChange]
-    public function __construct(PermissionsManager $pm, Settings $appSettings, $mode = 'create')
+    public function __construct(
+        AuthenticationServiceInterface $auth,
+        PermissionsManager $pm,
+        Users $usrModel,
+        Settings $appSettings
+    )
     {
+        $this->auth = $auth;
         $this->pm = $pm;
+        $this->usrModel = $usrModel;
         $this->appSettings = $appSettings;
     }
     #[\ReturnTypeWillChange]
@@ -42,8 +57,14 @@ class UserForm extends BaseForm
         ])
         ->add([
             'type' => AcctDataFieldset::class,
-        ])
-        ->add([
+        ]);
+
+        if($this->auth->hasIdentity())
+        {
+            
+        }
+
+        $this->add([
             'type' => ProfileFieldset::class,
         ]);
     }
