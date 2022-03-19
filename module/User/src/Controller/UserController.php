@@ -188,9 +188,9 @@ class UserController extends AbstractController
             $messages = $loginResult->getMessages();
             switch($loginResult->getCode()) {
                 case Result::FAILURE_IDENTITY_NOT_FOUND :
-                    $element = $form->get('userName');
-                    $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
-                    $element->setMessages($messages);
+                    //$element = $form->get('userName');
+                   // $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
+                    //$element->setMessages($messages);
                     break;
                 case Result::FAILURE_CREDENTIAL_INVALID :
                     $element = $form->get('password');
