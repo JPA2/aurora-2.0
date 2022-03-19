@@ -28,7 +28,7 @@ class UserForm extends BaseForm
      * @return void 
      */
     #[\ReturnTypeWillChange]
-    public function __construct(PermissionsManager $pm, Settings $appSettings, $mode = 'create') :void
+    public function __construct(PermissionsManager $pm, Settings $appSettings, $mode = 'create')
     {
         $this->pm = $pm;
         $this->appSettings = $appSettings;
