@@ -21,6 +21,7 @@ class UserController extends AbstractController
     
     public function __construct(Users $table)
     {
+        // comment for test commit
         $this->table = $table;
     }
     public function _init() {}
