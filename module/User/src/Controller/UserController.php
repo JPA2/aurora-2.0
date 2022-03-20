@@ -15,14 +15,14 @@ class UserController extends AbstractController
 {
     /**
      * 
-     * @var $table UserTable
+     * @var Users $usrModel
      */
-    public $table;
+    public $usrModel;
     
-    public function __construct(Users $table)
+    public function __construct(Users $usrModel)
     {
         // comment for test commit
-        $this->table = $table;
+        $this->usrModel = $usrModel;
     }
     public function _init() {}
     public function indexAction()
@@ -36,7 +36,7 @@ class UserController extends AbstractController
                 $hasMessage = true;
             }
             $this->view->setVariable('hasMessage', $hasMessage);
-            $this->view->setVariable('users', $this->table->fetchAll());
+            $this->view->setVariable('users', $this->usrModel->fetchAll());
             return $this->view;
         } catch (RuntimeException $e) {
             
@@ -49,7 +49,7 @@ class UserController extends AbstractController
             // get the user by userName that is to be edited
             $userName = $this->params()->fromRoute('userName');
             // this is the proper fetch for a user, all other calls are to be removed
-            $user = $this->table->fetchByColumn('userName', $userName);
+            $user = $this->usrModel->fetchByColumn('userName', $userName);
             // if they can not edit the user there is no point in preceeding
             if( ! $this->acl->isAllowed($this->user, $user, $this->action) ) {
                 $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit users');
@@ -75,7 +75,7 @@ class UserController extends AbstractController
                 }
                 $filters = new FormFilters();
                 // Set the input filters in the form object
-                $form->setInputFilter($filters->getEditUserFilter($this->table, $user->id));
+                $form->setInputFilter($filters->getEditUserFilter($this->usrModel, $user->id));
                 // get the posted data
                 $post = $this->request->getPost();
                 
@@ -98,7 +98,7 @@ class UserController extends AbstractController
                      */
                     unset($validatedData['password']);
                 }
-                $result = $this->table->save($validatedData, true);
+                $result = $this->usrModel->save($validatedData, true);
                 if($result) {
                     // Redirect to User list
                     return $this->redirect()->toRoute('user', ['action' => 'index']);
@@ -115,7 +115,7 @@ class UserController extends AbstractController
     {
         try {
             $userName = $this->params()->fromRoute('userName');
-            $user = $this->table->fetchByColumn('userName', $userName);
+            $user = $this->usrModel->fetchByColumn('userName', $userName);
             $deletedUser = $user->toArray();
             if($this->acl->isAllowed($this->user, $user, $this->action)) {
                 $result = $user->delete();
@@ -174,16 +174,15 @@ class UserController extends AbstractController
         if (! $form->isValid()) {
             return ['form' => $form];
         }
-        $validData = $form->getData()['login-data'];
-        $user = $this->table->fetchByColumn('userName', $validData['userName']);
-        /** DO NOT change the following line as the password property must be set to the posted password!!!!
-         * if changed login fails
-         */
-        $user->password = $validData['password'];
-        $loginResult = $this->table->login($user);
-        if($loginResult instanceof Users) {
+        // we should have valid data that is filtered and validated by this point
+        $this->usrModel->exchangeArray($form->getData()['login-data']);
+
+        $loginResult = $this->usrModel->login($this->usrModel);
+
+        if($loginResult->isValid()) {
+            $this->usrModel->exchangeArray($loginResult->getIdentity());
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
-            $this->redirect()->toRoute('profile', ['userName' => $loginResult->userName]);
+            return $this->redirect()->toRoute('user/profile', ['userName' => $this->usrModel->userName]);
         }
         else {
             $messages = $loginResult->getMessages();

@@ -18,11 +18,9 @@ class ProfileController extends AbstractController
         $this->usrModel = $usrModel;
     }
     public function _init()
-    {
-        $sm = $this->getEvent()->getApplication()->getServiceManager();
-        
-        if(!$this->authenticated) {
-            $this->redirect()->toUrl('/user/login');
+    {        
+        if(!$this->authService->hasIdentity()) {
+            $this->redirect()->toRoute('user/account', ['action' => 'login']);
         }
     }
     public function viewAction()
@@ -34,14 +32,8 @@ class ProfileController extends AbstractController
             $profileData->userName = $requestedUser->userName;
             $previous = substr($this->referringUrl, -5);
             if($previous === 'login') {
-                $this->logger->info('User ' . $this->user->userName . ' logged in.', [
-                    'userId' => $this->user->id,
-                    'userName' => $this->user->userName,
-                    'firstName' => ! empty($profileData->firstName) ? $profileData->firstName : null,
-                    'lastName' => ! empty($profileData->lastName) ? $profileData->lastName : null
-                ]);
+                $this->logger->info('User ' . $this->user->userName . ' logged in.', $this->user->getLogData());
             }
-            //var_dump($profileData);
             $this->view->setVariable('data', $profileData);
             return $this->view;
 
@@ -57,7 +49,6 @@ class ProfileController extends AbstractController
         $userName = $this->params()->fromRoute('userName');
         $user = $this->table->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         $profile = $this->profileTable->fetchByColumn('userId', $user->id);
-        $form->bind($profile);
         if (! $this->request->isPost()) {
             return [
                 'form' => $form

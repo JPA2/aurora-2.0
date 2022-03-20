@@ -4,25 +4,26 @@ namespace User\Model;
 
 use Application\Model\AbstractModel;
 use Application\Model\ModelTrait;
-use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
-use \RuntimeException;
+use Laminas\Log\Logger;
+use User\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
+use \Throwable;
 
 class Users extends AbstractModel
 {
     use ModelTrait;
     protected $column;
-    protected $userContext = [
-        'id', 'userName', 'email', 'role', 'firstName', 'lastName', 'profileImage', 'age',
-        'birthday', 'gender', 'race', 'bio', 'sessionLength', 'companyName', 'regDate',
-        'active', 'verified',
-    ];
-    protected $loginContext = [
-        'id', 'userName', 'email', 'role', 'firstName', 'lastName', 'profileImage', 'regDate', 'gender',
-    ];
-    public function login($user)
+    /**
+     * 
+     * @param Users $user 
+     * @return Result|bool 
+     * @throws InvalidArgumentException 
+     */
+    #[\ReturnTypeWillChange]
+    public function login(Self $user) : Result
     {
         try {
             $callback = function ($hash, $password) {
@@ -30,18 +31,21 @@ class Users extends AbstractModel
             };
 
             $authAdapter = new AuthAdapter(
+                $user,
                 $this->db->getAdapter(),
                 $this->config->db->users_table_name,
-                'userName',
-                'password',
+                $this->config->db->auth_identity_column,
+                $this->config->db->auth_credential_column,
                 $callback
             );
 
             $authAdapter->setIdentity($user->userName)
-                ->setCredential($user->password);
+                        ->setCredential($user->password);
 
             $select = $authAdapter->getDbSelect();
-            $select->where('active = 1')->where('verified = 1');
+
+            $select->where('active = 1')
+                   ->where('verified = 1');
 
             // Perform the authentication query, saving the result
             $authService = new AuthService();
@@ -54,11 +58,9 @@ class Users extends AbstractModel
 
                 case Result::SUCCESS:
                     /** do stuff for successful authentication **/
-                    $omitColumns = ['password'];
-                    $user = $authAdapter->getResultRowObject(null, $omitColumns);
-                    $this->exchangeArray((array)$user);
-                    //return $this->fetchByColumn('userName', $result->getIdentity());
-                    return $this;
+                    //$omitColumns = ['password'];
+                    //$user = $authAdapter->getResultRowObject(null, $omitColumns);
+                    return $result;
                     break;
 
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
@@ -76,10 +78,19 @@ class Users extends AbstractModel
                     return false;
                     break;
             }
-        } catch (RuntimeException $e) {
+        } catch (Throwable $th) {
+            $this->logger->log(Logger::ERR, $th->getMessage());
         }
     }
-    public function fetchUserContext($userName)
+    /**
+     * 
+     * @param string $userName 
+     * @return self 
+     * @throws InvalidArgumentException 
+     * @throws ExceptionRuntimeException 
+     */
+    #[\ReturnTypeWillChange]
+    public function fetchUserContext($userName) : Object
     {
         $userName = (string) $userName;
 
@@ -99,7 +110,14 @@ class Users extends AbstractModel
             ]);
         return $this->db->selectWith($select)->current();
     }
-    public function fetchAllUsers()
+    /**
+     * 
+     * @return ResultSet 
+     * @throws InvalidArgumentException 
+     * @throws ExceptionRuntimeException 
+     */
+    #[\ReturnTypeWillChange]
+    public function fetchAllUsers() : Object
     {
         $select = new Select();
         $select
@@ -116,17 +134,34 @@ class Users extends AbstractModel
     }
     /**
      * 
-     * @return array $logData 
+     * @return array 
      */
-    public function getLogData()
+    #[\ReturnTypeWillChange]
+    public function getLogData() : array
     {
         return [
-            'userId' => $this->offsetGet('id'),
-            'userName' => $this->offsetGet('userName'),
+            'userId'    => $this->offsetGet('id'),
+            'userName'  => $this->offsetGet('userName'),
+            'firstName' => $this->offsetExists('firstName') ? $this->offsetGet('firstName') : null,
+            'lastName'  => $this->offsetExists('lastName') ? $this->offsetGet('lastName') : null,
         ];
     }
     public function update(AbstractModel $model, $where = null, ?array $joins = null)
     {
         return $this->db->update($model->getArrayCopy(), $where, $joins);
+    }
+    public function getOwnerId()
+    {
+        if(!$this->offsetExists('userId') && $this->offsetExists('userName')) {
+            return $this->offsetGet('id');
+        }
+    }
+    public function fetchGuestContext()
+    {
+        return [
+            'id' => null,
+            'userName' => 'Guest',
+            'role' => 'guest',
+        ];
     }
 }

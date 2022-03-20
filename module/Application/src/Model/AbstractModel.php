@@ -2,10 +2,10 @@
 namespace Application\Model;
 use Application\Db\TableGateway\TableGateway;
 use Application\Model\ModelInterface;
-use Interop\Container\ContainerInterface;
 use Laminas\Config\Config;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\EventManager\EventManager;
+use Laminas\Log\Logger;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
@@ -30,7 +30,12 @@ ModelInterface
      * Constructor
      * @param \Laminas\Db\TableGateway\AbstractTableGateway;
      */
-    public function __construct($table, EventManager $eventManager, Config $config)
+    public function __construct(
+        $table, 
+        EventManager $eventManager, 
+        Config $config,
+        Logger $logger = null
+        )
     {
         $resultSetPrototype = new ResultSet();
         $resultSetPrototype->setArrayObjectPrototype($this);

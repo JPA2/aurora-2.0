@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 namespace User\View\Helper;
+
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\Permissions\Acl\AclInterface;
-use User\Model\User;
-use Laminas\View\Renderer\PhpRenderer;
+use User\Model\Users;
 use Laminas\View\Helper\TranslatorAwareTrait;
 
 class UserAwareControl extends AbstractHelper
@@ -32,14 +33,13 @@ class UserAwareControl extends AbstractHelper
 	protected $user;
 	/**
 	 * 
-	 * @param User\Model\User|User\Model\Guest $user
+	 * @param User\Model\Users
 	 * @param Acl $acl
 	 */
-	public function __construct($user, AclInterface $acl, PhpRenderer $view)
+	public function __construct(Users $user, AclInterface $acl)
 	{
 		$this->user = $user;
 		$this->acl = $acl;
-		$this->view = $view;
 
 		//Debug::dump($user);
 	}

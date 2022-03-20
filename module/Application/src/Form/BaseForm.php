@@ -9,33 +9,15 @@ use Laminas\Form\Exception\InvalidArgumentException;
 
 class BaseForm extends Form
 {    
-    const CREATE = 'create';
-    const EDIT   = 'edit';
-    /**
-     * Which mode is the form in? there is two valid options, create and edit
-     * @var string $mode
-     */
-    protected $mode;
     /**
      * 
      * @param string $mode 
      * @return void 
      * @throws InvalidArgumentException 
      */
-    public function __construct($mode = self::CREATE)
+    public function __construct()
     {
-        $this->mode = $mode;
         parent::__construct();
-    }
-    #[\ReturnTypeWillChange]
-    public function setMode($mode) : void
-    {
-        $this->mode = $mode;
-    }
-    #[\ReturnTypeWillChange]
-    public function getMode() : string
-    {
-        return $this->mode;
     }
     public function addSubmit()
     {

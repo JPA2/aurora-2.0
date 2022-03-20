@@ -11,7 +11,7 @@ if(isset($this->data) && !empty($this->data)) :
 	<?php
 	if($this->acl->isAllowed($this->user, $data, 'edit')) {
 	?>
-    <a class="btn btn-primary" href="<?= $this->url('profile', ['action' => 'edit-profile', 'userName' => $data->userName]) ?>" role="button">Edit Profile</a>
+    <a class="btn btn-primary" href="<?= $this->url('user/profile', ['action' => 'edit-profile', 'userName' => $data->userName]) ?>" role="button">Edit Profile</a>
 	<?php 
 	}
 	?>

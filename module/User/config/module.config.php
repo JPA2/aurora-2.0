@@ -8,6 +8,8 @@ use Laminas\Router\Http\Literal;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'db' => [
+        'auth_identity_column' => 'userName',
+        'auth_credential_column' => 'password',
         'users_table_name'      => 'users',
         'user_roles_table_name' => 'user_roles',
     ],
@@ -35,21 +37,22 @@ return [
                             ],
                         ],
                     ],
-                ],
-            ],
-            'profile' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/user/profile[/:action[/:userName]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    'profile' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/user/profile[/:action[/:userName]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'userName' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ProfileController::class,
+                                'action' => 'view'
+                            ]
+                        ]
                     ],
-                    'defaults' => [
-                        'controller' => Controller\ProfileController::class,
-                        'action' => 'view'
-                    ]
-                ]
+                ],
             ],
             'password' => [
                 'type' => Segment::class,
@@ -136,7 +139,7 @@ return [
             ],
             [
                 'label' => 'Profile',
-                'route' => 'profile',
+                'route' => 'user/profile',
                 'class' => 'nav-link',
                 'action' => 'view',
                 'resource' => 'users',
@@ -223,7 +226,8 @@ return [
             Form\Fieldset\LoginFieldset::class    => Form\Fieldset\Factory\LoginFieldsetFactory::class,
             Form\Fieldset\PasswordFieldset::class => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
             Form\Fieldset\ProfileFieldset::class  => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
-            Form\UserForm::class                  => Form\UserFormFactory::class,
+            Form\Fieldset\RoleFieldset::class     => Form\Fieldset\Factory\RoleFieldsetFactory::class,
+            Form\UserForm::class                  => Form\Factory\UserFormFactory::class,
         ],
     ],
     'view_helpers' => [
@@ -233,7 +237,7 @@ return [
     		'userControl'      => View\Helper\UserAwareControl::class,
         ],
         'factories' => [
-            View\Helper\UserAwareControl::class => View\Helper\Service\UserAwareControlFactory::class,
+            View\Helper\UserAwareControl::class => View\Helper\Factory\UserAwareControlFactory::class,
         ],
     ],
     'view_manager' => [
