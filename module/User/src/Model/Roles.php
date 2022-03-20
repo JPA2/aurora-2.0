@@ -5,13 +5,23 @@ namespace User\Model;
 use Application\Model\AbstractModel;
 use Application\Model\ModelTrait;
 use Laminas\Db\ResultSet\ResultSetInterface;
+use Laminas\Db\Sql\Exception\InvalidArgumentException;
 use Laminas\Db\Sql\Select;
+use Laminas\Db\TableGateway\Exception\RuntimeException as ExceptionRuntimeException;
 use \RuntimeException;
 
 class Roles extends AbstractModel
 {
     use ModelTrait;
-    public function fetchSelectData()
+    /**
+     * 
+     * @return array 
+     * @throws ExceptionRuntimeException 
+     * @throws InvalidArgumentException 
+     * @throws RuntimeException 
+     */
+    #[\ReturnTypeWillChange]
+    public function fetchSelectData() : array
     {
         $data = [];
         $result = $this->db->select(function(Select $select){

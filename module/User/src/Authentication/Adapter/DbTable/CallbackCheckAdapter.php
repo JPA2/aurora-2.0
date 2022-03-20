@@ -57,7 +57,8 @@ class CallbackCheckAdapter extends CallbackCheck
 
         $this->resultRow = $resultIdentity;
         //$this->authenticateResultInfo['identity']  = $resultIdentity;
-        $this->authenticateResultInfo['identity']  = new ArrayObject(($this->getResultRowObject())->getArrayCopy(), ArrayObject::ARRAY_AS_PROPS);
+        unset($resultIdentity[$this->credentialColumn]);
+        $this->authenticateResultInfo['identity']  = new ArrayObject($resultIdentity, ArrayObject::ARRAY_AS_PROPS);
         $this->authenticateResultInfo['code']       = AuthenticationResult::SUCCESS;
         $this->authenticateResultInfo['messages'][] = 'Authentication successful.';
         return $this->authenticateCreateAuthResult();
@@ -67,9 +68,10 @@ class CallbackCheckAdapter extends CallbackCheck
      *
      * @param  string|array $returnColumns
      * @param  string|array $omitColumns
-     * @return User|bool
+     * @return User
      */
-    public function getResultRowObject($returnColumns = null, $omitColumns = null)
+    #[\ReturnTypeWillChange]
+    public function getResultRowObject($returnColumns = null, $omitColumns = null) : User
     {
         if (! $this->resultRow) {
             return false;

@@ -6,15 +6,24 @@ use Application\Model\AbstractModel;
 use Application\Model\ModelTrait;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
+use Laminas\Log\Logger;
 use User\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
-use \RuntimeException;
+use \Throwable;
 
 class Users extends AbstractModel
 {
     use ModelTrait;
     protected $column;
-    public function login($user)
+    /**
+     * 
+     * @param Users $user 
+     * @return Result|bool 
+     * @throws InvalidArgumentException 
+     */
+    #[\ReturnTypeWillChange]
+    public function login(Self $user) : Result
     {
         try {
             $callback = function ($hash, $password) {
@@ -31,16 +40,17 @@ class Users extends AbstractModel
             );
 
             $authAdapter->setIdentity($user->userName)
-                ->setCredential($user->password);
+                        ->setCredential($user->password);
 
             $select = $authAdapter->getDbSelect();
-            $select->where('active = 1')->where('verified = 1');
+
+            $select->where('active = 1')
+                   ->where('verified = 1');
 
             // Perform the authentication query, saving the result
             $authService = new AuthService();
             $authService->setAdapter($authAdapter);
             $result = $authService->authenticate();
-            $ident = $result->getIdentity();
             /**
              * Handle the authentication query result
              */
@@ -48,11 +58,9 @@ class Users extends AbstractModel
 
                 case Result::SUCCESS:
                     /** do stuff for successful authentication **/
-                    $omitColumns = ['password'];
-                    $user = $authAdapter->getResultRowObject(null, $omitColumns);
-                   // $this->exchangeArray((array)$user);
-                    //return $this->fetchByColumn('userName', $result->getIdentity());
-                    return $user;
+                    //$omitColumns = ['password'];
+                    //$user = $authAdapter->getResultRowObject(null, $omitColumns);
+                    return $result;
                     break;
 
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
@@ -70,10 +78,19 @@ class Users extends AbstractModel
                     return false;
                     break;
             }
-        } catch (RuntimeException $e) {
+        } catch (Throwable $th) {
+            $this->logger->log(Logger::ERR, $th->getMessage());
         }
     }
-    public function fetchUserContext($userName)
+    /**
+     * 
+     * @param string $userName 
+     * @return self 
+     * @throws InvalidArgumentException 
+     * @throws ExceptionRuntimeException 
+     */
+    #[\ReturnTypeWillChange]
+    public function fetchUserContext($userName) : Object
     {
         $userName = (string) $userName;
 
@@ -93,7 +110,14 @@ class Users extends AbstractModel
             ]);
         return $this->db->selectWith($select)->current();
     }
-    public function fetchAllUsers()
+    /**
+     * 
+     * @return ResultSet 
+     * @throws InvalidArgumentException 
+     * @throws ExceptionRuntimeException 
+     */
+    #[\ReturnTypeWillChange]
+    public function fetchAllUsers() : Object
     {
         $select = new Select();
         $select
@@ -110,13 +134,16 @@ class Users extends AbstractModel
     }
     /**
      * 
-     * @return array $logData 
+     * @return array 
      */
-    public function getLogData()
+    #[\ReturnTypeWillChange]
+    public function getLogData() : array
     {
         return [
-            'userId' => $this->offsetGet('id'),
-            'userName' => $this->offsetGet('userName'),
+            'userId'    => $this->offsetGet('id'),
+            'userName'  => $this->offsetGet('userName'),
+            'firstName' => $this->offsetExists('firstName') ? $this->offsetGet('firstName') : null,
+            'lastName'  => $this->offsetExists('lastName') ? $this->offsetGet('lastName') : null,
         ];
     }
     public function update(AbstractModel $model, $where = null, ?array $joins = null)

@@ -37,21 +37,22 @@ return [
                             ],
                         ],
                     ],
-                ],
-            ],
-            'profile' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/user/profile[/:action[/:userName]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    'profile' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/user/profile[/:action[/:userName]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'userName' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ProfileController::class,
+                                'action' => 'view'
+                            ]
+                        ]
                     ],
-                    'defaults' => [
-                        'controller' => Controller\ProfileController::class,
-                        'action' => 'view'
-                    ]
-                ]
+                ],
             ],
             'password' => [
                 'type' => Segment::class,
@@ -138,7 +139,7 @@ return [
             ],
             [
                 'label' => 'Profile',
-                'route' => 'profile',
+                'route' => 'user/profile',
                 'class' => 'nav-link',
                 'action' => 'view',
                 'resource' => 'users',
