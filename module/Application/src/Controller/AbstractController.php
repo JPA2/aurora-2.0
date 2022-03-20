@@ -88,8 +88,7 @@ abstract class AbstractController extends AbstractActionController
         // The Referring Url for the current request ie the previous page
         $this->referringUrl = $request->getServer()->get('HTTP_REFERER');
         // The Logger Service
-        $this->logger = $this->sm->get('Laminas\Log\Logger');
-        // Not sure why we need this....
+        $this->logger = $this->sm->get(Logger::class);
         $this->baseUrl = $this->request->getBasePath();
         $this->basePath = dirname(__DIR__, 4);
         // The authentication Object
