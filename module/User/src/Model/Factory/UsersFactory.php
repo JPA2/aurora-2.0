@@ -13,7 +13,6 @@ class UsersFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $config = new Config($container->get('Config'));
-        $pause = '';
         return new Users($config->db->users_table_name, $container->get(EventManager::class), $config);
     }
 }

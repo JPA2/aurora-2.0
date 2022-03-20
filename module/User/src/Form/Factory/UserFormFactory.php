@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace User\Form\Fieldset\Factory;
+namespace User\Form\Factory;
 
 use Application\Model\Settings;
 use Interop\Container\ContainerInterface;

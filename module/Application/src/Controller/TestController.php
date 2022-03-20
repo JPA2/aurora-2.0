@@ -7,8 +7,8 @@ use Application\Model\Settings;
 use User\Model\Users;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Container\ContainerExceptionInterface;
+use Laminas\Session\SessionManager;
+use Laminas\Session\Container;
 
 class TestController extends AbstractController
 {
@@ -31,9 +31,13 @@ class TestController extends AbstractController
         $fm = $sm->get(FormElementManager::class);
         $this->form = $fm->get(\User\Form\UserForm::class);
         $this->config = $sm->get('config');
+        $this->sessionManager = $sm->get(SessionManager::class);
+        
     }
     public function indexAction()
     {
+        $ident = $this->authService->getIdentity();
+
         if($this->request->isPost()) {
             $this->form->setData($this->request->getPost()->toArray());
             if ($this->form->isValid()) {

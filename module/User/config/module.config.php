@@ -8,6 +8,8 @@ use Laminas\Router\Http\Literal;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'db' => [
+        'auth_identity_column' => 'userName',
+        'auth_credential_column' => 'password',
         'users_table_name'      => 'users',
         'user_roles_table_name' => 'user_roles',
     ],
@@ -224,7 +226,7 @@ return [
             Form\Fieldset\PasswordFieldset::class => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
             Form\Fieldset\ProfileFieldset::class  => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
             Form\Fieldset\RoleFieldset::class     => Form\Fieldset\Factory\RoleFieldsetFactory::class,
-            Form\UserForm::class                  => Form\UserFormFactory::class,
+            Form\UserForm::class                  => Form\Factory\UserFormFactory::class,
         ],
     ],
     'view_helpers' => [
@@ -234,7 +236,7 @@ return [
     		'userControl'      => View\Helper\UserAwareControl::class,
         ],
         'factories' => [
-            View\Helper\UserAwareControl::class => View\Helper\Service\UserAwareControlFactory::class,
+            View\Helper\UserAwareControl::class => View\Helper\Factory\UserAwareControlFactory::class,
         ],
     ],
     'view_manager' => [

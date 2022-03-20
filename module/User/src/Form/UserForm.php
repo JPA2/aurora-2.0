@@ -47,6 +47,7 @@ class UserForm extends BaseForm
         $this->pm = $pm;
         $this->usrModel = $usrModel;
         $this->appSettings = $appSettings;
+        parent::__construct();
     }
     #[\ReturnTypeWillChange]
     public function init() : void

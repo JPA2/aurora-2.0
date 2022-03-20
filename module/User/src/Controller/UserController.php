@@ -174,13 +174,11 @@ class UserController extends AbstractController
         if (! $form->isValid()) {
             return ['form' => $form];
         }
-        $validData = $form->getData()['login-data'];
-        $user = $this->table->fetchByColumn('userName', $validData['userName']);
-        /** DO NOT change the following line as the password property must be set to the posted password!!!!
-         * if changed login fails
-         */
-        $user->password = $validData['password'];
-        $loginResult = $this->table->login($user);
+        // we should have valid data that is filtered and validated by this point
+        $this->table->exchangeArray($form->getData()['login-data']);
+
+        $loginResult = $this->table->login($this->table);
+
         if($loginResult instanceof Users) {
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             $this->redirect()->toRoute('profile', ['userName' => $loginResult->userName]);

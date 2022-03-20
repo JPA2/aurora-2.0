@@ -6,8 +6,7 @@ use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use Laminas\Authentication\AuthenticationService;
-use User\Model\UserTable as Table;
-use User\Model\User as User;
+use User\Model\Users as User;
 use User\Model\Guest;
 use Laminas\Form\FormElementManager;
 use User\Form\LoginForm;
@@ -51,11 +50,7 @@ abstract class AbstractController extends AbstractActionController
      * @var \Laminas\View\ViewModel $view
      */
     public $view;
-    /**
-     *
-     * @var User\Model\UserTable $table
-     */
-    public $table;
+
     /**
      *
      * @var \Laminas\Permission\Acl $acl
@@ -80,15 +75,17 @@ abstract class AbstractController extends AbstractActionController
 
     public function onDispatch(MvcEvent $e)
     {
+
         // Get an instance of the Service Manager
         $this->sm = $e->getApplication()->getServiceManager();
         $config = $this->sm->get('config');
+        $this->user = $this->sm->get(User::class);
         // Request Object
         $request = $this->sm->get('Request');
         // The Referring Url for the current request ie the previous page
         $this->referringUrl = $request->getServer()->get('HTTP_REFERER');
         // The Logger Service
-        $this->logger = $this->sm->get('Laminas\Log\Logger');
+        $this->logger = $this->sm->get(Logger::class);
         // Not sure why we need this....
         $this->baseUrl = $this->request->getBasePath();
         $this->basePath = dirname(__DIR__, 4);
@@ -99,8 +96,6 @@ abstract class AbstractController extends AbstractActionController
         // This may be removed in next branch
         $pluginManager = $this->sm->get('ControllerPluginManager');
         $this->config = $this->sm->get('config');
-        // An instance of User\Model\User
-        $table = $this->sm->get('User\Model\UserTable');
         // An instance of the Acl Service
         $this->acl = $this->sm->get('Acl');
 
@@ -115,14 +110,10 @@ abstract class AbstractController extends AbstractActionController
         // Is the User Authenticated?
         switch ($this->authService->hasIdentity()) {
             case true :
-                $this->authenticated = true;
-                $ident = $this->authService->getIdentity();
-                
-                $this->user = $table->fetchUserContext($this->authService->getIdentity());
+                $this->user->exchangeArray($this->authService->getIdentity());
                 break;
             default;
-                $user = new Guest();
-                $this->user = $user;
+                $this->user->exchangeArray($this->user->fetchGuestContext());
                 break;
         }
         $this->view->setVariables([
