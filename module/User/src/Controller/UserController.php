@@ -112,7 +112,7 @@ class UserController extends AbstractController
         }
     }
     public function deleteAction()
-    {
+    {// verify that the session cleared during user deletion
         try {
             $userName = $this->params()->fromRoute('userName');
             $user = $this->usrModel->fetchByColumn('userName', $userName);
@@ -166,13 +166,16 @@ class UserController extends AbstractController
         
         //$form->get('submit')->setValue('Login');
         if (! $this->request->isPost()) {
-            return ['form' => $form];
+           //'form' => $form];
+           $this->view->setVariable('form', $form);
+           return $this->view;
         }
         // set the posted data in the form objects context
         $form->setData($this->request->getPost()->toArray());
         // check with the form object to verify data is valid
         if (! $form->isValid()) {
-            return ['form' => $form];
+            $this->view->setVariable('form', $form);
+            return $this->view;
         }
         // we should have valid data that is filtered and validated by this point
         $this->usrModel->exchangeArray($form->getData()['login-data']);
@@ -180,7 +183,7 @@ class UserController extends AbstractController
         $loginResult = $this->usrModel->login($this->usrModel);
 
         if($loginResult->isValid()) {
-            $this->usrModel->exchangeArray($loginResult->getIdentity());
+            $this->usrModel->exchangeArray($this->usrModel->fetchByColumn('userName', $loginResult->getIdentity()));
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             return $this->redirect()->toRoute('user/profile', ['userName' => $this->usrModel->userName]);
         }
@@ -188,12 +191,15 @@ class UserController extends AbstractController
             $messages = $loginResult->getMessages();
             switch($loginResult->getCode()) {
                 case Result::FAILURE_IDENTITY_NOT_FOUND :
-                    //$element = $form->get('userName');
-                   // $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
-                    //$element->setMessages($messages);
+                    $fieldset = $form->get('login-data');
+                    $element = $fieldset->get('userName');
+                    $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
+                    $element->setMessages($messages);
                     break;
                 case Result::FAILURE_CREDENTIAL_INVALID :
-                    $element = $form->get('password');
+                    $fieldset = $form->get('login-data');
+                    $element = $fieldset->get('password');
+                    $element = $fieldset->get('password');
                     $element->setMessages($messages);
                     break;
             }

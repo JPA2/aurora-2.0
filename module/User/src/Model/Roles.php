@@ -20,7 +20,7 @@ class Roles extends AbstractModel
      * @throws InvalidArgumentException 
      * @throws RuntimeException 
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function fetchSelectData() : array
     {
         $data = [];

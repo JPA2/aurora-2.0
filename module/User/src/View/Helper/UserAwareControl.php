@@ -36,13 +36,13 @@ class UserAwareControl extends AbstractHelper
 	 * @param User\Model\Users
 	 * @param Acl $acl
 	 */
-	public function __construct(Users $user, AclInterface $acl)
-	{
-		$this->user = $user;
-		$this->acl = $acl;
+	// public function __construct(Users $user, AclInterface $acl)
+	// {
+	// 	$this->user = $user;
+	// 	$this->acl = $acl;
 
-		//Debug::dump($user);
-	}
+	// 	//Debug::dump($user);
+	// }
 	public function buildControl($resource, $type = 'button', $url, array $options = [])
 	{
 		$translator = $this->getTranslator();
@@ -78,8 +78,10 @@ class UserAwareControl extends AbstractHelper
 		$html .= '<svg class="'.$this->svgClass;
 		
 	}
-	public function __invoke($resource, $type, $url, $options = [])
+	public function __invoke(Users $user, AclInterface $acl, $resource, $type, $url, $options = [])
 	{
+		$this->user = $user;
+		$this->acl = $acl;
 		//Debug::dump($url, __CLASS__ . '::' . __LINE__);
 		return $this->buildControl($resource, $type, $url, $options);
 	}

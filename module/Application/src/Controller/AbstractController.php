@@ -7,7 +7,6 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use Laminas\Authentication\AuthenticationService;
 use User\Model\Users as User;
-use User\Model\Guest;
 use Laminas\Form\FormElementManager;
 use User\Form\LoginForm;
 use Laminas\Log\Logger as Logger;
@@ -79,7 +78,7 @@ abstract class AbstractController extends AbstractActionController
         // Get an instance of the Service Manager
         $this->sm = $e->getApplication()->getServiceManager();
         $config = $this->sm->get('config');
-        $this->user = $this->sm->get(User::class);
+        $this->user = $this->sm->build(User::class);
         // Request Object
         $request = $this->sm->get('Request');
         // The Referring Url for the current request ie the previous page
@@ -110,8 +109,9 @@ abstract class AbstractController extends AbstractActionController
         // Is the User Authenticated?
         switch ($this->authService->hasIdentity()) {
             case true :
-                $this->user->exchangeArray($this->authService->getIdentity());
+                $this->user = $this->user->fetchUserContext($this->authService->getIdentity());
                 break;
+                case false :
             default;
                 $this->user->exchangeArray($this->user->fetchGuestContext());
                 break;

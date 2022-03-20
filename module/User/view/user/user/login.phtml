@@ -13,7 +13,7 @@ $buttonOptions = [
         'link_text' => 'Reset Password'
     ]
 ];
-echo $this->userControl('user', 'button', $this->url('password', [
+echo $this->userControl($this->user, $this->acl, 'users', 'button', $this->url('password', [
     'action' => 'reset',
     'step' => 'submit-email'
 ]), $buttonOptions);

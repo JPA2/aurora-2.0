@@ -36,33 +36,7 @@ class CallbackCheckAdapter extends CallbackCheck
      * @param  array $resultIdentity
      * @return AuthenticationResult
      */
-    protected function authenticateValidateResult($resultIdentity)
-    {
-        try {
-            $callbackResult = call_user_func(
-                $this->credentialValidationCallback,
-                $resultIdentity[$this->credentialColumn],
-                $this->credential
-            );
-        } catch (\Exception $e) {
-            $this->authenticateResultInfo['code']       = AuthenticationResult::FAILURE_UNCATEGORIZED;
-            $this->authenticateResultInfo['messages'][] = $e->getMessage();
-            return $this->authenticateCreateAuthResult();
-        }
-        if ($callbackResult !== true) {
-            $this->authenticateResultInfo['code']       = AuthenticationResult::FAILURE_CREDENTIAL_INVALID;
-            $this->authenticateResultInfo['messages'][] = 'Supplied credential is invalid.';
-            return $this->authenticateCreateAuthResult();
-        }
 
-        $this->resultRow = $resultIdentity;
-        //$this->authenticateResultInfo['identity']  = $resultIdentity;
-        unset($resultIdentity[$this->credentialColumn]);
-        $this->authenticateResultInfo['identity']  = new ArrayObject($resultIdentity, ArrayObject::ARRAY_AS_PROPS);
-        $this->authenticateResultInfo['code']       = AuthenticationResult::SUCCESS;
-        $this->authenticateResultInfo['messages'][] = 'Authentication successful.';
-        return $this->authenticateCreateAuthResult();
-    }
     /**
      * getResultRowObject() - Returns the result row as a stdClass object
      *
@@ -70,8 +44,8 @@ class CallbackCheckAdapter extends CallbackCheck
      * @param  string|array $omitColumns
      * @return User
      */
-    #[\ReturnTypeWillChange]
-    public function getResultRowObject($returnColumns = null, $omitColumns = null) : User
+    #[ReturnTypeWillChange]
+    public function getResultRowObject($returnColumns = null, $omitColumns = null) : Object
     {
         if (! $this->resultRow) {
             return false;
