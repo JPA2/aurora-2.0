@@ -97,8 +97,8 @@
                     <?= isset($this->appSettings->view->footer_text) ? $this->appSettings->view->footer_text : 'Default Text'; ?>
                 </p>
                 <?php
-                if(!$this->auth->hasIdentity()) 
-                    echo $this->renderChildModel('inlineLogin');
+                //if(!$this->auth->hasIdentity()) 
+                    //echo $this->renderChildModel('inlineLogin');
                 ?>
             </footer>
         </div>
