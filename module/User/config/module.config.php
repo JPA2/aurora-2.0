@@ -55,7 +55,7 @@ return [
                         'type' => Literal::class,
                         'may_terminate' => false,
                         'options' => [
-                            'route' => '/user/login',
+                            'route' => '/user/logout',
                             'defaults' => [
                                 'controller' => Controller\UserController::class,
                                 'action' => 'logout',
@@ -273,9 +273,6 @@ return [
         'invokables' => [
             Filter\PasswordFilter::class => InvokableFactory::class
         ],
-        // 'factories' => [
-        //     Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
-        // ],
     ],
     'form_elements' => [
         'factories' => [
