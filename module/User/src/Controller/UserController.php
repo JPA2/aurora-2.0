@@ -9,6 +9,7 @@ use User\Form\EditUserForm;
 use User\Filter\FormFilters;
 use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
+use Laminas\View\Model\ViewModel;
 use \RuntimeException;
 
 class UserController extends AbstractController
@@ -25,7 +26,7 @@ class UserController extends AbstractController
         $this->usrModel = $usrModel;
     }
     public function _init() {}
-    public function indexAction()
+    public function listAction() : ViewModel
     {
         try {
             $userName = $this->params('userName');
@@ -42,7 +43,7 @@ class UserController extends AbstractController
             
         }
     }
-    public function editAction()
+    public function editAction() : ViewModel
     {
         try {
             $logout = false;
@@ -112,7 +113,7 @@ class UserController extends AbstractController
         }
     }
     public function deleteAction()
-    {
+    {// verify that the session cleared during user deletion
         try {
             $userName = $this->params()->fromRoute('userName');
             $user = $this->usrModel->fetchByColumn('userName', $userName);
@@ -126,7 +127,7 @@ class UserController extends AbstractController
                                             'userName' => $this->user->userName,
                                             'role' => $this->user->role,
                                         ]);
-                    $this->redirect()->toRoute('user', ['action' => 'index', 'userName' => $deletedUser['userName']]);
+                    return $this->redirect()->toRoute('user', ['action' => 'index', 'userName' => $deletedUser['userName']]);
                 }
                 else {
                     throw new RuntimeException('The requested action could not be completed');
@@ -134,7 +135,6 @@ class UserController extends AbstractController
             }
             else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
-                $this->redirect()->toRoute('forbidden');
             }
         } catch (RuntimeException $e) {
             
@@ -160,19 +160,22 @@ class UserController extends AbstractController
                 break;
         }
     }
-    public function loginAction()
+    public function loginAction() :ViewModel
     {
         $form = ($this->sm->get(FormElementManager::class))->get(LoginForm::class);
         
         //$form->get('submit')->setValue('Login');
         if (! $this->request->isPost()) {
-            return ['form' => $form];
+           //'form' => $form];
+           $this->view->setVariable('form', $form);
+           return $this->view;
         }
         // set the posted data in the form objects context
         $form->setData($this->request->getPost()->toArray());
         // check with the form object to verify data is valid
         if (! $form->isValid()) {
-            return ['form' => $form];
+            $this->view->setVariable('form', $form);
+            return $this->view;
         }
         // we should have valid data that is filtered and validated by this point
         $this->usrModel->exchangeArray($form->getData()['login-data']);
@@ -180,7 +183,7 @@ class UserController extends AbstractController
         $loginResult = $this->usrModel->login($this->usrModel);
 
         if($loginResult->isValid()) {
-            $this->usrModel->exchangeArray($loginResult->getIdentity());
+            $this->usrModel->exchangeArray($this->usrModel->fetchByColumn('userName', $loginResult->getIdentity()));
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             return $this->redirect()->toRoute('user/profile', ['userName' => $this->usrModel->userName]);
         }
@@ -188,12 +191,15 @@ class UserController extends AbstractController
             $messages = $loginResult->getMessages();
             switch($loginResult->getCode()) {
                 case Result::FAILURE_IDENTITY_NOT_FOUND :
-                    //$element = $form->get('userName');
-                   // $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
-                    //$element->setMessages($messages);
+                    $fieldset = $form->get('login-data');
+                    $element = $fieldset->get('userName');
+                    $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
+                    $element->setMessages($messages);
                     break;
                 case Result::FAILURE_CREDENTIAL_INVALID :
-                    $element = $form->get('password');
+                    $fieldset = $form->get('login-data');
+                    $element = $fieldset->get('password');
+                    $element = $fieldset->get('password');
                     $element->setMessages($messages);
                     break;
             }
@@ -201,5 +207,4 @@ class UserController extends AbstractController
         $this->view->setVariable('form', $form);
         return $this->view;
     }
-    public function loginFailureAction() {}
 }

@@ -22,7 +22,6 @@ class Users extends AbstractModel
      * @return Result|bool 
      * @throws InvalidArgumentException 
      */
-    #[\ReturnTypeWillChange]
     public function login(Self $user) : Result
     {
         try {
@@ -89,7 +88,6 @@ class Users extends AbstractModel
      * @throws InvalidArgumentException 
      * @throws ExceptionRuntimeException 
      */
-    #[\ReturnTypeWillChange]
     public function fetchUserContext($userName) : Object
     {
         $userName = (string) $userName;
@@ -104,7 +102,25 @@ class Users extends AbstractModel
                 $this->config->db->user_roles_table_name,
                 $this->config->db->users_table_name.'.role ='. $this->config->db->user_roles_table_name.'.role'
             )
-            ->columns($this->userContext)
+            ->columns([
+                'id',
+                'userName',
+                'email',
+                'role',
+                'firstName',
+                'lastName',
+                'profileImage',
+                'age',
+                'birthday',
+                'gender',
+                'race',
+                'bio',
+                'companyName',
+                'sessionLength',
+                'regDate',
+                'active',
+                'verified',
+            ])
             ->order([
                 $this->config->db->user_roles_table_name . '.label ASC', $this->config->db->users_table_name . '.regDate DSC'
             ]);
@@ -116,7 +132,6 @@ class Users extends AbstractModel
      * @throws InvalidArgumentException 
      * @throws ExceptionRuntimeException 
      */
-    #[\ReturnTypeWillChange]
     public function fetchAllUsers() : Object
     {
         $select = new Select();
@@ -136,7 +151,6 @@ class Users extends AbstractModel
      * 
      * @return array 
      */
-    #[\ReturnTypeWillChange]
     public function getLogData() : array
     {
         return [

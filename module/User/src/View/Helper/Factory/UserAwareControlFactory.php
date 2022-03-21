@@ -12,14 +12,15 @@ class UserAwareControlFactory implements FactoryInterface
 {
 	public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
 	{
-		$auth = $container->get(AuthenticationService::class);
-		$user = $container->get(Users::class);
-		if($auth->hasIdentity()) {
-			$user->exchangeArray($auth->getIdentity());
-		}
-		else {
-			$user->exchangeArray($user->fetchGuestContext());
-		}
-		return new UserAwareControl($user, $container->get(PermissionsManager::class));
+		// $auth = $container->get(AuthenticationService::class);
+		// $user = $container->get(Users::class);
+		// if($auth->hasIdentity()) {
+		// 	$user = $user
+		// 	$auth->getIdentity();
+		// }
+		// else {
+		// 	$user->exchangeArray($user->fetchGuestContext());
+		// }
+		return new UserAwareControl();
 	}
 }

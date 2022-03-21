@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace User;
 
+use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 use Laminas\Router\Http\Literal;
@@ -22,18 +23,63 @@ return [
                     'route' => '/user'
                 ],
                 'child_routes' => [
-                    'account' => [
+                    'list' => [
                         'type' => Segment::class,
                         'may_terminate' => true,
                         'options' => [
-                            'route' => '/user/account[/:action[/:userName]]',
+                            'route' => '/user/list[/:page[/:count]]',
                             'constraints' => [
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'page' => '[0-9]*',
+                                'count' => '[0-9]*',
                             ],
                             'defaults' => [
                                 'controller' => Controller\UserController::class,
-                                'action' => 'index',
+                                'action' => 'list',
+                                'page' => 1,
+                                'count' => 10,
+                            ],
+                        ],
+                    ],
+                    'login' => [
+                        'type' => Literal::class,
+                        'may_terminate' => false,
+                        'options' => [
+                            'route' => '/user/login',
+                            'defaults' => [
+                                'controller' => Controller\UserController::class,
+                                'action' => 'login',
+                            ],
+                        ],
+                    ],
+                    'logout' => [
+                        'type' => Literal::class,
+                        'may_terminate' => false,
+                        'options' => [
+                            'route' => '/user/login',
+                            'defaults' => [
+                                'controller' => Controller\UserController::class,
+                                'action' => 'logout',
+                            ],
+                        ],
+                    ],
+                    'register' => [
+                        'type' => Literal::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/user/register',
+                            'defaults' => [
+                                'controller' => Controller\RegisterController::class,
+                                'action' => 'index'
+                            ],
+                        ],
+                    ],
+                    'verify' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/user/register/verify',
+                            'defaults' => [
+                                'controller' => Controller\RegisterController::class,
+                                'action' => 'verify'
                             ],
                         ],
                     ],
@@ -49,64 +95,71 @@ return [
                             'defaults' => [
                                 'controller' => Controller\ProfileController::class,
                                 'action' => 'view'
-                            ]
-                        ]
+                            ],
+                        ],
+                    ],
+                    'account' => [
+                        'type' => Placeholder::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/user/account'
+                        ],
+                        'child_routes' => [
+                            'dashboard' => [
+                                'type' => Segment::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/user/account[/:action[/:userName]]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action' => 'dashboard',
+                                    ],
+                                ],
+                            ],
+                            'password' => [
+                                'type' => Segment::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/user/acount/password[/:action[/:step]]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'step' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                                    ],
+                                    'defaults' => [
+                                        'controller' => Controller\PasswordController::class,
+                                        'action' => 'index'
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
-            'password' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/user/password[/:action[/:step]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'step' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\PasswordController::class,
-                        'action' => 'index'
-                    ]
-                ]
-            ],
-            'user.register' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/user/register[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+'
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\RegisterController::class,
-                        'action' => 'index'
-                    ]
-                ]
-            ],
-            'user.verify' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/user/register/verify',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+'
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\RegisterController::class,
-                        'action' => 'verify'
-                    ]
-                ]
-            ],
             'admin.user' => [
-                'type' => Segment::class,
+                'type' => Placeholder::class,
+                'may_terminate' =>  true,
                 'options' => [
-                    'route' => '/admin/user[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+'
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\AdminController::class,
-                        'action' => 'index'
+                    'route' => '/admin/user'
+                ],
+                'child_routes' => [
+                    'overview' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/admin/user[/:action[/:id]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+'
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\AdminController::class,
+                                'action' => 'index'
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -132,7 +185,7 @@ return [
         'static' => [
             [
                 'label' => 'Users',
-                'route' => 'user',
+                'route' => 'user/list',
                 'class' => 'nav-link',
                 'resource' => 'users',
                 'privilege' => 'user.view.list'
@@ -147,7 +200,7 @@ return [
             ],
             [
                 'label' => 'Login',
-                'route' => 'user/account',
+                'route' => 'user/login',
                 'class' => 'nav-link',
                 'action' => 'login',
                 'resource' => 'users',
@@ -155,7 +208,7 @@ return [
             ],
             [
                 'label' => 'Logout',
-                'route' => 'user/account',
+                'route' => 'user/logout',
                 'class' => 'nav-link',
                 'action' => 'logout',
                 'resource' => 'users',
@@ -163,7 +216,7 @@ return [
             ],
             [
                 'label' => 'Register',
-                'route' => 'user.register',
+                'route' => 'user/register',
                 'class' => 'nav-link',
                 'action' => 'index',
                 'resource' => 'users',
@@ -193,6 +246,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
+            Controller\AccountController::class  => Controller\Factory\AccountControllerFactory::class,
             Controller\AdminController::class    => Controller\Factory\AdminControllerFactory::class,
             Controller\PasswordController::class => Controller\Factory\PasswordControllerFactory::class,
             Controller\ProfileController::class  => Controller\Factory\ProfileControllerFactory::class,
@@ -216,9 +270,12 @@ return [
         ],
     ],
     'filters' => [
-        'factories' => [
-            Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
+        'invokables' => [
+            Filter\PasswordFilter::class => InvokableFactory::class
         ],
+        // 'factories' => [
+        //     Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
+        // ],
     ],
     'form_elements' => [
         'factories' => [
@@ -243,7 +300,10 @@ return [
     'view_manager' => [
         'template_path_stack' => [
             'user' => __DIR__ . '/../view'
-        ]
+        ],
+        'template_map' => [
+            'layout/user' => __DIR__ . '/../view/layout/account-dashboard.phtml',
+        ],
     ],
     'widgets' => [
         'member_list' => [
