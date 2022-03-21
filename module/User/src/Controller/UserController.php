@@ -9,6 +9,7 @@ use User\Form\EditUserForm;
 use User\Filter\FormFilters;
 use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
+use Laminas\View\Model\ViewModel;
 use \RuntimeException;
 
 class UserController extends AbstractController
@@ -25,7 +26,7 @@ class UserController extends AbstractController
         $this->usrModel = $usrModel;
     }
     public function _init() {}
-    public function indexAction()
+    public function listAction() : ViewModel
     {
         try {
             $userName = $this->params('userName');
@@ -42,7 +43,7 @@ class UserController extends AbstractController
             
         }
     }
-    public function editAction()
+    public function editAction() : ViewModel
     {
         try {
             $logout = false;
@@ -126,7 +127,7 @@ class UserController extends AbstractController
                                             'userName' => $this->user->userName,
                                             'role' => $this->user->role,
                                         ]);
-                    $this->redirect()->toRoute('user', ['action' => 'index', 'userName' => $deletedUser['userName']]);
+                    return $this->redirect()->toRoute('user', ['action' => 'index', 'userName' => $deletedUser['userName']]);
                 }
                 else {
                     throw new RuntimeException('The requested action could not be completed');
@@ -134,7 +135,6 @@ class UserController extends AbstractController
             }
             else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
-                $this->redirect()->toRoute('forbidden');
             }
         } catch (RuntimeException $e) {
             
@@ -160,7 +160,7 @@ class UserController extends AbstractController
                 break;
         }
     }
-    public function loginAction()
+    public function loginAction() :ViewModel
     {
         $form = ($this->sm->get(FormElementManager::class))->get(LoginForm::class);
         
@@ -207,5 +207,4 @@ class UserController extends AbstractController
         $this->view->setVariable('form', $form);
         return $this->view;
     }
-    public function loginFailureAction() {}
 }

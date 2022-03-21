@@ -22,7 +22,6 @@ class Users extends AbstractModel
      * @return Result|bool 
      * @throws InvalidArgumentException 
      */
-    #[ReturnTypeWillChange]
     public function login(Self $user) : Result
     {
         try {
@@ -89,7 +88,6 @@ class Users extends AbstractModel
      * @throws InvalidArgumentException 
      * @throws ExceptionRuntimeException 
      */
-    #[ReturnTypeWillChange]
     public function fetchUserContext($userName) : Object
     {
         $userName = (string) $userName;
@@ -134,7 +132,6 @@ class Users extends AbstractModel
      * @throws InvalidArgumentException 
      * @throws ExceptionRuntimeException 
      */
-    #[ReturnTypeWillChange]
     public function fetchAllUsers() : Object
     {
         $select = new Select();
@@ -154,7 +151,6 @@ class Users extends AbstractModel
      * 
      * @return array 
      */
-    #[ReturnTypeWillChange]
     public function getLogData() : array
     {
         return [

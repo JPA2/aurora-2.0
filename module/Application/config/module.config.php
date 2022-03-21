@@ -127,6 +127,12 @@ return [
             Form\Fieldset\SecurityFieldset::class => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
         ],
     ],
+    'filters' => [
+        'invokables' => [
+            Filter\FqcnToControllerName::class => InvokableFactory::class,
+            Filter\FqcnToModuleName::class     => InvokableFactory::class,
+        ],
+    ],
     'navigation' => [
         'static' =>[
             [

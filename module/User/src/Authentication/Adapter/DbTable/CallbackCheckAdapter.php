@@ -44,7 +44,6 @@ class CallbackCheckAdapter extends CallbackCheck
      * @param  string|array $omitColumns
      * @return User
      */
-    #[ReturnTypeWillChange]
     public function getResultRowObject($returnColumns = null, $omitColumns = null) : Object
     {
         if (! $this->resultRow) {

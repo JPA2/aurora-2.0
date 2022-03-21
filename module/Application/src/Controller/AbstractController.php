@@ -46,7 +46,7 @@ abstract class AbstractController extends AbstractActionController
     public $logger;
     /**
      *
-     * @var \Laminas\View\ViewModel $view
+     * @var \Laminas\View\Model\ViewModel $view
      */
     public $view;
 
@@ -119,7 +119,8 @@ abstract class AbstractController extends AbstractActionController
         $this->view->setVariables([
         		'appSettings' => $this->appSettings,
         		'user' => $this->user,
-        		'acl' => $this->acl
+        		'acl' => $this->acl,
+                'auth' => $this->authService,
         ]);
         $rootViewModel = $this->layout();
         $inlineLogin = new ViewModel(['form' => ($this->sm->get(FormElementManager::class))->get(LoginForm::class)]);
@@ -133,8 +134,7 @@ abstract class AbstractController extends AbstractActionController
                 'user' => $this->user,
                 'acl'  => $this->acl,
                 'appSettings' => $this->appSettings,
-                'authenticated' => $this->authenticated
-                
+                'auth' => $this->authService,
             ]);
         $this->_init();
         
