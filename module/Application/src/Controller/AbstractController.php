@@ -110,6 +110,7 @@ abstract class AbstractController extends AbstractActionController
         switch ($this->authService->hasIdentity()) {
             case true :
                 $this->user = $this->user->fetchUserContext($this->authService->getIdentity());
+                
                 break;
                 case false :
             default;

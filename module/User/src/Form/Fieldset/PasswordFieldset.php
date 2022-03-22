@@ -11,6 +11,7 @@ use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\Identical;
+use Laminas\Validator\StringLength;
 use User\Filter\PasswordFilter;
 
 class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
@@ -37,7 +38,7 @@ class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Confirm Password'
             ],
         ]);
-        if ($this->appSettings->server->enable_captcha) {
+        if ($this->appSettings->security->enable_captcha) {
             $this->add([
                 'name' => 'captcha',
                 'type' => Captcha::class,

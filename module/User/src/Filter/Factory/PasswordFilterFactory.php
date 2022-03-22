@@ -1,16 +1,15 @@
 <?php
 declare(strict_types=1);
-namespace User\Form\Fieldset\Factory;
+namespace User\Filter\Factory;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use User\Form\Fieldset\AcctDataFieldset;
-use User\Model\Users;
+use User\Filter\PasswordFilter;
 
-class AcctDataFieldsetFactory implements FactoryInterface
+class PasswordFilterFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        return new AcctDataFieldset($options);
+        return new PasswordFilter();
     }
 }

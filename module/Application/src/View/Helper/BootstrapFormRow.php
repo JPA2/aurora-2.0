@@ -10,6 +10,7 @@ use Laminas\Form\Element\MultiCheckbox;
 use Laminas\Form\Element\Radio;
 use Laminas\Form\Element\MonthSelect;
 use Laminas\Form\Element\Captcha;
+use Laminas\Form\Element\CaptchaAdapter;
 use Laminas\Form\Element\Button;
 use Laminas\Form\ElementInterface;
 use Laminas\Form\LabelAwareInterface;
@@ -90,7 +91,11 @@ class BootstrapFormRow extends \Laminas\Form\View\Helper\FormRow
         // hidden elements does not need <label> tag
         $type = $element->getAttribute('type');
 
-        if (isset($label) && '' !== $label && $type !== 'hidden' && !empty($type)) {
+        if($element instanceof Captcha) {////////////////////////////////////
+           // $type = 'captcha';
+        }///////////////////////////////////////////////////////////////////////
+
+        if (isset($label) && '' !== $label && $type !== 'hidden' && isset($type)) {
             $labelAttributes = ['class' => 'control-label'];
             
             if ($element instanceof LabelAwareInterface) {
@@ -134,7 +139,7 @@ class BootstrapFormRow extends \Laminas\Form\View\Helper\FormRow
                     $extraMainLabelClassLabel,
                     $label,
                     $nestedDivClass,
-                    $classMapping[$type],
+                    isset($classMapping[$type]) ? $classMapping[$type] : '',
                     $extraMultiClassInput,
                     $elementString
                 );

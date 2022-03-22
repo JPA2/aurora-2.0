@@ -23,13 +23,14 @@ class Roles extends AbstractModel
     public function fetchSelectData() : array
     {
         $data = [];
-        $result = $this->db->select(function(Select $select){
-            $select->columns(['id', 'label'])->order('id ASC');
-        });
-        if($result instanceof ResultSetInterface) {
-            foreach($result as $row) {
-                $data[$row->id] = $row->label;
-            }
+        $result = $this->db->select();
+        foreach($result as $row) {
+            $data[]= [
+                'value' => $row->role,
+                'label' => $row->label,
+            ];
+            // $data[$row->id]['value'] = $row->role;
+            // $data[$row->id]['label'] = $row->label;
         }
         if(count($data) > 0) {
             return $data;

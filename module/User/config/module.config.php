@@ -270,8 +270,8 @@ return [
         ],
     ],
     'filters' => [
-        'invokables' => [
-            Filter\PasswordFilter::class => InvokableFactory::class
+        'factories' => [
+            Filter\PasswordFilter::class => Filter\factory\PasswordFilterFactory::class,
         ],
     ],
     'form_elements' => [

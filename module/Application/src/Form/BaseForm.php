@@ -15,9 +15,10 @@ class BaseForm extends Form
      * @return void 
      * @throws InvalidArgumentException 
      */
-    public function __construct()
+    public function __construct($name = null, $options = [])
     {
-        parent::__construct();
+        parent::__construct($name);
+        parent::setOptions($options);
     }
     public function addSubmit()
     {
