@@ -29,7 +29,7 @@ return [
     'Laminas\Router',
     'Laminas\Validator',
     'Laminas\Diactoros',
-    'Laminas\DeveloperTools',
+    //'Laminas\DeveloperTools',
     'Application',
     'Uploader',
     'User',

@@ -18,11 +18,16 @@ class AdminController extends AbstractAdminController
     public function __construct(UsrModel $usrModel)
     {
         $this->usrModel = $usrModel;
+
     }
 
     public function indexAction()
     {
         //var_dump($this->user);
+        if($this->request->isXmlHttpRequest()) {
+            $this->view->setTerminal(true);
+        }
+        return $this->view;
     }
     public function widgetAction()
     {
