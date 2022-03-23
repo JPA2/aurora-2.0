@@ -11,6 +11,6 @@ class AcctDataFieldsetFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        return new AcctDataFieldset();
+        return new AcctDataFieldset($options);
     }
 }

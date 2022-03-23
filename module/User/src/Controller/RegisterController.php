@@ -3,14 +3,13 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use Application\Controller\AbstractController;
+use Application\Model\Settings;
 use Application\Service\Email;
 use Laminas\Mail\Message;
 use User\Form\UserForm;
 use User\Form\LoginForm;
-use User\Form\RegistrationForm;
 use User\Model\Users;
 use User\Filter\RegistrationHash as Filter;
-use User\Filter\FormFilters;
 
 class RegisterController extends AbstractController
 {
@@ -20,41 +19,44 @@ class RegisterController extends AbstractController
      */
     protected $usrModel;
     /**
+     * @var 
+     */
+    /**
      * 
      * @param Users $usrModel 
      * @return void 
      */
-    public function __construct(Users $usrModel, $config = null)
+    public function __construct(Users $usrModel, UserForm $form, Settings $appSettings)
     {
         $this->usrModel = $usrModel;
+        $this->form = $form;
+        $this->appSettings = $appSettings;
     }
 	/**
 	 * The default action - show the action
 	 */
     public function indexAction()
     {
-        $formFilters = new FormFilters(null, $this->usrModel);
-        $sm = $this->getEvent()->getApplication()->getServiceManager();
-        $mailService = $sm->get(Email::class);        
+        $mailService = $this->sm->get(Email::class);        
         if(!$this->appSettings->security->enable_registration) {
            return $this->view; 
         }
-        $form = new UserForm('RegistrationForm', $this->appSettings->toArray());
-        $form->get('submit')->setValue('Register');
+        //$form = new UserForm('RegistrationForm', $this->appSettings->toArray());
+        //$this->form->get('submit')->setValue('Register');
 
         if (! $this->request->isPost()) {
             // Initial page load, send them the form
-            return $this->view->setVariable('form', $form);
+            return $this->view->setVariable('form', $this->form);
         }
         // if weve made it to here then its a post request
         $post = $this->request->getPost();
 
-        $form->setInputFilter($formFilters->getInputFilter());
-        $form->setData($this->request->getPost());
+       //$this->form->setInputFilter($this->formFilters->getInputFilter());
+        $this->form->setData($this->request->getPost());
         // Is the posted form data valid? if not send them the form back and the problems 
         // reported by the filters and validators
-        if (! $form->isValid()) {
-            $this->view->setVariable('form', $form);
+        if (! $this->form->isValid()) {
+            $this->view->setVariable('form', $this->form);
             return $this->view;
         }
         // at this point the form has posted and were ready to kick this off
@@ -63,16 +65,14 @@ class RegisterController extends AbstractController
         $timeStamp = $now->format($this->appSettings->server->time_format);
         
         // get  the valid data from the form, we need to add to it before user is saved
-        $formData = $form->getData();
+        $formData = $this->form->getData();
         $value = ['email' => $formData['email'], 'timestamp' => $timeStamp];
         $filter = new Filter();
         $hash = $filter->filter($value);
         $token = $formData['email'] . $hash;
         $formData['regDate'] = $timeStamp;
         $formData['regHash'] = $hash;
-        unset($formData['conf_password']);
-        unset($formData['captcha']);
-        unset($formData['submit']);
+
         // save the new user, $result should be the new users Id
         $this->usrModel->exchangeArray($formData);
         $result = $this->usrModel->insert($this->usrModel);

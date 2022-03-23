@@ -7,11 +7,11 @@ namespace User\Form\Fieldset;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
-//use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\EmailAddress;
+use User\Form\UserForm;
 
 class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -30,26 +30,28 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
     {
         parent::__construct('acct-data');
         $this->setAttribute('id', 'acct-data');
+        if (!empty($options))
+            $this->setOptions($options);
     }
     public function init()
     {
-        //$this->setHydrator(new ArraySerializableHydrator());
-        //$this->setObject($this->usrModel);
         $this->add([
             'name' => 'id',
             'type' => \Laminas\Form\Element\Hidden::class,
         ]);
-        // $this->add([
-        //     'name' => 'regDate',
-        //     'type' => \Laminas\Form\Element\Hidden::class,
-        // ]);
-        // $this->add([
-        //     'name' => 'userName',
-        //     'type' => \Laminas\Form\Element\Text::class,
-        //     'options' => [
-        //         'label' => 'User Name'
-        //     ]
-        // ]);
+        if ($this->options['mode'] === UserForm::CREATE_MODE) {
+            $this->add([
+                'name' => 'regDate',
+                'type' => \Laminas\Form\Element\Hidden::class,
+            ]);
+            $this->add([
+                'name' => 'userName',
+                'type' => \Laminas\Form\Element\Text::class,
+                'options' => [
+                    'label' => 'User Name'
+                ]
+            ]);
+        }
         $this->add([
             'name' => 'email',
             'type' => \Laminas\Form\Element\Text::class,
@@ -60,7 +62,7 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
     }
     public function getInputFilterSpecification()
     {
-        return [
+        $filters = [
             'id' => [
                 'filters' => [
                     ['name' => ToInt::class],
@@ -86,5 +88,28 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
                 ],
             ],
         ];
+        if($this->options['mode'] === UserForm::CREATE_MODE) {
+            $filter = [
+                'userName' => [
+                    'required' => true,
+                    'filters' => [
+                        ['name' => StripTags::class],
+                        ['name' => StringTrim::class],
+                    ],
+                    'validators' => [
+                        [
+                            'name' => StringLength::class,
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                                'min'      => 1,
+                                'max'      => 100, // could there be any reason why you would want a userName that is 100 chars long?
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+            $filters = \array_merge($filters, $filter);
+        }
+        return $filters;
     }
 }

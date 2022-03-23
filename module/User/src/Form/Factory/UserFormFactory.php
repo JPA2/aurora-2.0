@@ -12,13 +12,20 @@ use User\Permissions\PermissionsManager;
 
 class UserFormFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    const IDENTITY = 'userName';
+    public function __invoke(ContainerInterface $container, $requestedName, $options = [])
     {
+        $usrModel = $container->get(Users::class);
+        $auth = $container->get(AuthenticationService::class);
+        $usrModel->exchangeArray(
+            ($auth->hasIdentity() ? $usrModel->fetchByColumn(self::IDENTITY, $auth->getIdentity())->toArray() : $usrModel->fetchGuestContext())
+        );
         return new UserForm(
-            $container->get(AuthenticationService::class),
+            $auth,
             $container->get(PermissionsManager::class),
-            $container->get(Users::class),
-            $container->get(Settings::class)
+            $usrModel,
+            $container->get(Settings::class),
+            $options
         );
     }
 }

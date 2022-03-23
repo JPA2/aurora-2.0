@@ -31,7 +31,11 @@ class RoleFieldset extends Fieldset implements InputFilterProviderInterface
         $this->add([
             'name' => 'role',
             'type' => Select::class,
-            'value_options' => [$this->roleModel->fetchSelectData()], 
+            'options' => [
+                'label' => 'Assign Group?',
+                'value_options' => $this->roleModel->fetchSelectData(),
+            ]
+             
         ]);
     }
     public function getInputFilterSpecification()

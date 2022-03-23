@@ -19,7 +19,7 @@ use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Validator\StringLength;
 use Laminas\Validator\Between;
 use Laminas\Validator\Digits;
-
+use User\Form\UserForm;
 
 class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -35,11 +35,14 @@ class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
      * @return void 
      * @throws InvalidArgumentException 
      */
-    public function __construct(Settings $appSettings = null)
+    public function __construct(Settings $appSettings = null, $options = [])
     {
         $this->appSettings = $appSettings;
         parent::__construct('profile-data');
         $this->setAttribute('id', 'profile-data');
+        if(!empty($options)) {
+            $this->setOptions($options);
+        }
     }
     public function init()
     {
@@ -85,6 +88,7 @@ class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
     }
     public function getInputFilterSpecification()
     {
+        $options = $this->getOptions();
         return [
             'firstName' => [
                 'required' => true,
@@ -156,6 +160,9 @@ class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
                     ],
                 ],
             ],
+            // 'bio' => [
+            //     'required' => isset($options['mode']) && $options['mode'] === UserForm::CREATE_MODE ? false : true,
+            // ],
         ];
     }
 }
